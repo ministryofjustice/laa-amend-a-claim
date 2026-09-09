@@ -8,23 +8,28 @@ import org.junit.jupiter.api.Test;
 class FieldRuleEngineTest {
 
   private static final FieldRuleSpec FORMAT_RULE =
-      new FieldRuleSpec(RuleCategory.FORMAT, "format.invalid", value -> value.contains("!"));
+      new FieldRuleSpec(
+          RuleCategory.FORMAT, "format.invalid", (claimDetails, value) -> value.contains("!"));
   private static final FieldRuleSpec LENGTH_RULE =
-      new FieldRuleSpec(RuleCategory.LENGTH, "length.invalid", value -> value.length() > 5);
+      new FieldRuleSpec(
+          RuleCategory.LENGTH, "length.invalid", (claimDetails, value) -> value.length() > 5);
   private static final FieldRuleSpec MEMBERSHIP_RULE =
       new FieldRuleSpec(
-          RuleCategory.MEMBERSHIP, "membership.invalid", value -> !value.equals("ALLOWED"));
+          RuleCategory.MEMBERSHIP,
+          "membership.invalid",
+          (claimDetails, value) -> !value.equals("ALLOWED"));
 
   @Test
   void returnsEmptyWhenNoRuleFails() {
-    var result = FieldRuleEngine.firstFailingRule(List.of(FORMAT_RULE, LENGTH_RULE), "ok");
+    var result = FieldRuleEngine.firstFailingRule(List.of(FORMAT_RULE, LENGTH_RULE), "ok", null);
 
     assertThat(result).isEmpty();
   }
 
   @Test
   void returnsTheOnlyFailingRule() {
-    var result = FieldRuleEngine.firstFailingRule(List.of(FORMAT_RULE, LENGTH_RULE), "toolong");
+    var result =
+        FieldRuleEngine.firstFailingRule(List.of(FORMAT_RULE, LENGTH_RULE), "toolong", null);
 
     assertThat(result).contains(LENGTH_RULE);
   }
@@ -33,7 +38,8 @@ class FieldRuleEngineTest {
   void surfacesOnlyTheHigherPriorityRuleWhenSeveralRulesFail() {
     // Both FORMAT and LENGTH fail here ("toolong!" contains "!" and is over 5 chars), and rules
     // are supplied out of priority order - the evaluator must still pick FORMAT (lower ordinal).
-    var result = FieldRuleEngine.firstFailingRule(List.of(LENGTH_RULE, FORMAT_RULE), "toolong!");
+    var result =
+        FieldRuleEngine.firstFailingRule(List.of(LENGTH_RULE, FORMAT_RULE), "toolong!", null);
 
     assertThat(result).contains(FORMAT_RULE);
   }
@@ -42,10 +48,13 @@ class FieldRuleEngineTest {
   void priorityOrderIsFormatThenLengthThenMembership() {
     var allFailing = List.of(MEMBERSHIP_RULE, LENGTH_RULE, FORMAT_RULE);
 
-    assertThat(FieldRuleEngine.firstFailingRule(allFailing, "toolong!")).contains(FORMAT_RULE);
-    assertThat(FieldRuleEngine.firstFailingRule(List.of(MEMBERSHIP_RULE, LENGTH_RULE), "toolong"))
+    assertThat(FieldRuleEngine.firstFailingRule(allFailing, "toolong!", null))
+        .contains(FORMAT_RULE);
+    assertThat(
+            FieldRuleEngine.firstFailingRule(
+                List.of(MEMBERSHIP_RULE, LENGTH_RULE), "toolong", null))
         .contains(LENGTH_RULE);
-    assertThat(FieldRuleEngine.firstFailingRule(List.of(MEMBERSHIP_RULE), "ok"))
+    assertThat(FieldRuleEngine.firstFailingRule(List.of(MEMBERSHIP_RULE), "ok", null))
         .contains(MEMBERSHIP_RULE);
   }
 }

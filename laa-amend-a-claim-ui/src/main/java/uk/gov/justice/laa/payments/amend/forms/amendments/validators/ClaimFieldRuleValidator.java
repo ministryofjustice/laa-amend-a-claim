@@ -10,7 +10,9 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.FieldRuleEngine;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.RuleCategory;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 
 // Makes this validator run first before all others
@@ -32,19 +34,29 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
   @Override
   public void validate(
       ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var value = form.getInputs().get(field.name());
-    if (isBlank(value)) {
-      return;
-    }
+    var value = valueForValidation(field, form);
 
     var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
-    FieldRuleEngine.firstFailingRule(rules, value)
+    var rulesToEvaluate =
+        isBlank(value)
+            ? rules.stream().filter(rule -> rule.category() == RuleCategory.MANDATORY).toList()
+            : rules;
+
+    FieldRuleEngine.firstFailingRule(rulesToEvaluate, value, claimDetails)
         .ifPresent(
             rule -> {
-              var args = new ArrayList<Object>();
+              var args = new ArrayList<>();
               args.add(field.label(messageSource));
               args.addAll(rule.messageArgs());
               addUniqueFieldError(field, rule.messageCode(), args.toArray(), errors);
             });
+  }
+
+  private static String valueForValidation(ClaimViewField<?> field, AmendmentForm form) {
+    if (field.getFieldType() != FieldType.DATE) {
+      return form.getInputs().get(field.name());
+    }
+    var dateValue = form.getDateValue(field.name());
+    return dateValue == null ? "" : dateValue.toString();
   }
 }

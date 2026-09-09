@@ -228,6 +228,7 @@ class AmendmentFormValidatorTest {
   private static GenericAmendmentFieldValidator countingFieldValidator(
       FieldType type, AtomicInteger calls) {
     return new GenericAmendmentFieldValidator() {
+
       @Override
       public FieldType supportedType() {
         return type;

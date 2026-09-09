@@ -5,6 +5,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.SelectOption;
 import uk.gov.justice.laa.payments.amend.pages.LaaPage;
 
 public class AmendClient2Page extends LaaPage {
@@ -17,10 +18,26 @@ public class AmendClient2Page extends LaaPage {
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
   }
 
+  public void selectSelectionValue(String id, String value) {
+    var select = page.locator("#" + id);
+    if (value == null || value.isBlank()) {
+      return;
+    }
+    assertThat(select).isVisible();
+    select.selectOption(new SelectOption().setLabel(value));
+  }
+
   public void fillInput(String inputKey, String value) {
     var surnameInput = page.locator(String.format("input#%s", inputKey));
     assertThat(surnameInput).isVisible();
     surnameInput.fill(value);
+  }
+
+  public void selectFromComboBox(String fieldName, String optionName) {
+    Locator genderCombo = page.locator(String.format("#%s", fieldName));
+    genderCombo.click();                  // opens suggestions
+    genderCombo.fill(optionName);
+    genderCombo.press("Enter");
   }
 
   public void clickContinueButton() {

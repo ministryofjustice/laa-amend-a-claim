@@ -5,6 +5,7 @@ package uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules;
  * format issues)
  */
 public enum RuleCategory {
+  MANDATORY,
   PARSEABILITY,
   FORMAT,
   LENGTH,
