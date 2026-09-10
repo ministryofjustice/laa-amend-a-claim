@@ -163,7 +163,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(15), "London rate", "Yes", NOT_APPLICABLE, NOT_APPLICABLE);
     assertSummaryListRowContainsValues(
         clientDetails.get(16),
-        "National Immigration Asylum Team Disbursement prior authority number",
+        "Immigration prior authority number",
         "PRIOR_AUTHORITY_REF",
         NOT_APPLICABLE,
         NOT_APPLICABLE);
@@ -208,7 +208,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         "Case management review hearing (CMRH)-oral",
         "Case management review hearing (CMRH)-telephone",
         "London rate",
-        "National Immigration Asylum Team Disbursement prior authority number");
+        "Immigration prior authority number");
   }
 
   private CrimeClaimDetails createCrimeClaim() {

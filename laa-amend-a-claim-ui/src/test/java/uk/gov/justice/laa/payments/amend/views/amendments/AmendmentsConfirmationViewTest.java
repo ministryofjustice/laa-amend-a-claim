@@ -183,10 +183,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
         costs.get(14), "Case management review hearing (CMRH)-telephone", "100", CALCULATED);
     assertSummaryListRowContainsValues(costs.get(15), "London rate", "Yes", NOT_APPLICABLE);
     assertSummaryListRowContainsValues(
-        costs.get(16),
-        "National Immigration Asylum Team Disbursement prior authority number",
-        "PRIOR_AUTHORITY_REF",
-        NOT_APPLICABLE);
+        costs.get(16), "Immigration prior authority number", "PRIOR_AUTHORITY_REF", NOT_APPLICABLE);
     assertRowsHaveAmendedTags(
         doc,
         "List of costs",
