@@ -294,7 +294,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "adjourned hearing fee changed from before to after",
             "advice time (minutes) changed from before to after",
             "Asylum and Immigration Tribunal (AIT) hearing centre changed from before to after",
-            "case concluded date changed from before to after",
             "case concluded date or case claimed date changed from before to after",
             "case ID changed from before to after",
             "case management review hearing (CMRH)-oral changed from before to after",

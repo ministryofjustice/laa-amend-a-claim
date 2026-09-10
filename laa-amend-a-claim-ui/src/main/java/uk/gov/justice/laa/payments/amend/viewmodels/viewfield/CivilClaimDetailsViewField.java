@@ -118,12 +118,6 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       CivilClaimDetails::getUniqueFileNumber,
       Builder::uniqueFileNumber,
       "claim.uniqueFileNumber"),
-  CASE_CONCLUDED_DATE(
-      FieldType.DATE,
-      String.class,
-      CivilClaimDetails::getCaseEndDate,
-      Builder::caseConcludedDate,
-      "claim.caseConcludedDate"),
   CASE_STAGE(
       FieldType.ENUM,
       String.class,

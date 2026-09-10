@@ -102,7 +102,7 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_ID)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE))
-        .isFalse();
+        .isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_STAGE)).isFalse();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.PROCUREMENT_AREA)).isTrue();
