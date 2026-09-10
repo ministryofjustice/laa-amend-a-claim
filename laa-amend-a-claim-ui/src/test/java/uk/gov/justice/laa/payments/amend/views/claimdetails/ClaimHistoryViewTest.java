@@ -335,7 +335,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "medical reports claimed changed from before to after",
             "meetings attended changed from before to after",
             "mental health tribunal reference changed from before to after",
-            "National Immigration Asylum Team Disbursement prior authority number changed from before to after",
+            "immigration prior authority number changed from before to after",
             "National Referral Mechanism (NRM) advice changed from before to after",
             "net cost of counsel changed from before to after",
             "net disbursements changed from before to after",

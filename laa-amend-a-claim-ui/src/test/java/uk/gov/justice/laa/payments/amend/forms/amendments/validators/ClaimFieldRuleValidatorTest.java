@@ -1466,7 +1466,7 @@ class ClaimFieldRuleValidatorTest {
         Objects.requireNonNull(errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
     assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
-        .isEqualTo("National Immigration Asylum Team Disbursement prior authority number");
+        .isEqualTo("Immigration prior authority number");
     assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("7");
   }
 
