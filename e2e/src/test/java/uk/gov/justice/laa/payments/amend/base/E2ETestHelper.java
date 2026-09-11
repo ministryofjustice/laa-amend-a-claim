@@ -17,7 +17,7 @@ public class E2ETestHelper {
       }
       return mapper.readValue(is, ClaimDetailsFixture.class);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to load fixture: " + resourcePath, e);
+      throw new RuntimeException("Failed to load fixture : " + resourcePath, e);
     }
   }
 }
