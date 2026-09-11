@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import uk.gov.justice.laa.payments.amend.factories.ReferenceNumberFactory;
 
 @Controller
@@ -26,7 +26,7 @@ public class ErrorPageController implements ErrorController {
 
   private final ReferenceNumberFactory referenceNumberFactory;
 
-  @RequestMapping("/error")
+  @GetMapping("/error")
   public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
     int status =
         Optional.ofNullable(request.getAttribute(ERROR_STATUS_CODE))
@@ -43,7 +43,7 @@ public class ErrorPageController implements ErrorController {
     }
   }
 
-  @RequestMapping("not-found")
+  @GetMapping("not-found")
   public String handleNotFound(HttpServletResponse response) {
     response.setStatus(SC_NOT_FOUND);
     return "pages/not-found";
