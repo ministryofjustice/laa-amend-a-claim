@@ -23,12 +23,23 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
-  test:
-    name: Test
+  unit-test:
+    name: Unit Test
     uses: ./.github/workflows/test.yml
     with:
       branch: ${{ github.ref_name }}
       environment: dev
+      test_type: unit
+    secrets:
+      pat_token: ${{ secrets.PAT_TOKEN }}
+
+  integration-test:
+    name: Integration Test
+    uses: ./.github/workflows/test.yml
+    with:
+      branch: ${{ github.ref_name }}
+      environment: dev
+      test_type: integration
     secrets:
       pat_token: ${{ secrets.PAT_TOKEN }}
 
@@ -53,7 +64,6 @@ jobs:
 
   pact-test:
     name: Pact Test
-    needs: build
     uses: ministryofjustice/laa-ccms-common-workflows/.github/workflows/pact-and-publish.yml@0c06c747af49e3efb703717e6185cf693494d5a4 # v2.4.2
     permissions:
       contents: write
@@ -85,7 +95,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [ build, test, security, pact-test ]
+    needs: [ build, security ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
@@ -108,7 +118,7 @@ jobs:
 
   deploy-uat:
     name: Deploy to UAT
-    needs: [ build, test, security, pact-test, deploy-dev ]
+    needs: [ build, security, deploy-dev ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
@@ -131,7 +141,7 @@ jobs:
 
   deploy-staging:
     name: Deploy to Staging
-    needs: [ build, test, security, pact-test, deploy-uat ]
+    needs: [ build, security, deploy-uat ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
@@ -154,7 +164,7 @@ jobs:
 
   deploy-production:
     name: Deploy to Production
-    needs: [ build, test, security, pact-test, deploy-uat, deploy-staging ]
+    needs: [ build, security, deploy-uat, deploy-staging ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}

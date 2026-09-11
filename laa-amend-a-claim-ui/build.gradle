@@ -107,6 +107,20 @@ test {
     finalizedBy jacocoTestReport
 }
 
+tasks.register('jacocoIntegrationTestReport', JacocoReport) {
+    dependsOn tasks.named('integrationTest')
+
+    executionData(tasks.named('integrationTest'))
+    sourceDirectories.setFrom(files(sourceSets.main.allSource.srcDirs))
+    classDirectories.setFrom(files(sourceSets.main.output))
+
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
 tasks.register('checkstyleAll') {
     group = 'verification'
     description = 'Runs checkstyleMain, checkstyleTest, and checkstyleIntegrationTest.'

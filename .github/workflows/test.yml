@@ -10,6 +10,9 @@ on:
       environment:
         required: true
         type: string
+      test_type:
+        required: true
+        type: string
     secrets:
       pat_token:
         required: true
@@ -20,8 +23,8 @@ permissions:
   id-token: write
 
 jobs:
-  unit-and-integration-tests:
-    name: Unit & Integration Tests
+  test:
+    name: ${{ inputs.test_type == 'integration' && 'Integration Tests' || 'Unit Tests' }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
@@ -49,24 +52,18 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         
       # Run tests
-      - name: Run unit tests
-        run: ./gradlew :laa-amend-a-claim-ui:test
+      - name: Run selected tests
+        run: ./gradlew :laa-amend-a-claim-ui:${{ inputs.test_type == 'integration' && 'integrationTest jacocoIntegrationTestReport' || 'test jacocoTestCoverageVerification' }}
         env:
           GITHUB_TOKEN: ${{ secrets.pat_token }}
-
-      - name: Test coverage verification
-        run: ./gradlew :laa-amend-a-claim-ui:jacocoTestCoverageVerification
-
-      - name: Integration test
-        run: ./gradlew :laa-amend-a-claim-ui:integrationTest --tests '*IntegrationTest'
 
       # Upload artifacts
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: test-results
-          path: laa-amend-a-claim-ui/build/test-results
+          name: ${{ inputs.test_type }}-test-results
+          path: laa-amend-a-claim-ui/build/test-results/${{ inputs.test_type == 'integration' && 'integrationTest' || 'test' }}
           retention-days: 14
 
       - name: Upload checkstyle report
@@ -81,14 +78,14 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: test-report
-          path: laa-amend-a-claim-ui/build/reports/tests
+          name: ${{ inputs.test_type }}-test-report
+          path: laa-amend-a-claim-ui/build/reports/tests/${{ inputs.test_type == 'integration' && 'integrationTest' || 'test' }}
           retention-days: 14
 
       - name: Upload jacoco coverage report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: jacoco-coverage-report
-          path: laa-amend-a-claim-ui/build/reports/jacoco
+          name: ${{ inputs.test_type }}-jacoco-coverage-report
+          path: laa-amend-a-claim-ui/build/reports/jacoco/${{ inputs.test_type == 'integration' && 'jacocoIntegrationTestReport' || 'test' }}
           retention-days: 14
