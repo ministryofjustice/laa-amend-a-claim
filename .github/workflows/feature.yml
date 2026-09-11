@@ -124,7 +124,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [ build, unit-test, integration-test, pact-test ]
+    needs: [ build, unit-test, integration-test, pact-test, semgrep-scan ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
