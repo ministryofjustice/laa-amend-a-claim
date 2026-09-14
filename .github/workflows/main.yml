@@ -62,6 +62,17 @@ jobs:
       azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
+  semgrep-scan:
+    name: semgrep-security-scan
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: returntocorp/semgrep@sha256:34ab619bf1391a24bfda3f05debd0d8a6ce3093c2d5f9d39cfc00f83c1397823 # 1.176.1
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Run Semgrep scan
+        run: semgrep scan --exclude-rule python.django.security.django-no-csrf-token.django-no-csrf-token --error --config auto
+
   pact-test:
     name: Pact Test
     uses: ministryofjustice/laa-ccms-common-workflows/.github/workflows/pact-and-publish.yml@0c06c747af49e3efb703717e6185cf693494d5a4 # v2.4.2
@@ -95,7 +106,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [ build, unit-test, integration-test, security, pact-test ]
+    needs: [ build, unit-test, integration-test, e2e-tests, semgrep-scan, security, pact-test ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
