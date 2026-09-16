@@ -30,7 +30,15 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   FEE_CODE_DESCRIPTION(FieldType.TEXT, ClaimDetails::getFeeCodeDescription, "fee_code_description"),
   FEE_TYPE(FieldType.TEXT, ClaimDetails::getFeeType, "fee_type"),
   ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped, "escape_case_flag"),
-  VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable, "is_vat_applicable"),
+  VAT_REQUESTED(
+      FieldType.BOOLEAN,
+      NO_PATCH_TYPE,
+      ClaimDetails::getVatApplicable,
+      NO_PATCHER,
+      NO_OPTIONS,
+      Amendability.NEVER,
+      "is_vat_applicable",
+      NO_FEE_API_FIELD_NAME),
   TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount, "total_amount"),
 
   // Common client fields
@@ -133,7 +141,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   CALCULATED_VAT_AMOUNT(
       FieldType.MONETARY, ClaimDetails::getDisbursementVatAmount, "calculated_vat_amount"),
   VAT_RATE_APPLIED(FieldType.PERCENTAGE, NO_GETTER, "vat_rate_applied"),
-  VAT(
+  VAT_INDICATOR(
       FieldType.BOOLEAN,
       Boolean.class,
       ClaimDetails::getVatClaimed,

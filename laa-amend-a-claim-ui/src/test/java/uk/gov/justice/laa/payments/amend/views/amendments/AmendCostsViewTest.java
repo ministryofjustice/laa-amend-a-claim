@@ -45,7 +45,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costs.get(1), "Fixed fee", "Not applicable");
     Assertions.assertTrue(costs.get(1).get(2).select("input, select").isEmpty());
     assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "PROFIT_COST", "100.00");
-    assertBooleanSelectRow(costs.get(6), "VAT indicator", "Yes", "VAT", true);
+    assertBooleanSelectRow(costs.get(6), "VAT indicator", "Yes", "VAT_INDICATOR", true);
   }
 
   @Test
@@ -64,7 +64,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
     assertSummaryListRowContainsValues(costs.get(1), "Fixed fee", "Not applicable");
     Assertions.assertTrue(costs.get(1).get(2).select("input, select").isEmpty());
-    assertBooleanSelectRow(costs.get(2), "VAT indicator", "Yes", "VAT", true);
+    assertBooleanSelectRow(costs.get(2), "VAT indicator", "Yes", "VAT_INDICATOR", true);
     assertBigDecimalInputRow(
         costs.get(3), "Net disbursements", "£100.00", "DISBURSEMENTS", "100.00");
   }
@@ -86,7 +86,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     var costs = getSummaryListInCard(doc, "List of costs");
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
     assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "PROFIT_COST", "100.00");
-    assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "VAT", true);
+    assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "VAT_INDICATOR", true);
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Not applicable");
     Assertions.assertFalse(
         costs.get(11).get(2).select("select#SUBSTANTIVE_HEARING").isEmpty(),

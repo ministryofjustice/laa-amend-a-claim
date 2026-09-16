@@ -205,7 +205,7 @@ class CheckAmendmentsServiceTest {
                     entry("DISBURSEMENTS", "20.00"),
                     entry("TRAVEL_COSTS", "30.00"),
                     entry("WAITING_COSTS", "40.00"),
-                    entry("VAT", "false"),
+                    entry("VAT_INDICATOR", "false"),
                     entry("DISBURSEMENTS_VAT", "50.00")),
                 Map.ofEntries(
                     entry("FIXED_FEE", "100.00"),
@@ -213,7 +213,7 @@ class CheckAmendmentsServiceTest {
                     entry("DISBURSEMENTS", "21.00"),
                     entry("TRAVEL_COSTS", "31.00"),
                     entry("WAITING_COSTS", "41.00"),
-                    entry("VAT", "true"),
+                    entry("VAT_INDICATOR", "true"),
                     entry("DISBURSEMENTS_VAT", "51.00"))));
     amendmentForms.setRequestedByForm(createRequestedByForm());
     amendmentForms.setRequestedReasonForm(createRequestReasonForm());
@@ -412,7 +412,7 @@ class CheckAmendmentsServiceTest {
                     entry("COUNSELS_COST", "30.00"),
                     entry("DISBURSEMENTS_VAT", "40.00"),
                     entry("TRAVEL_AND_WAITING_COSTS", "50.00"),
-                    entry("VAT", "false"),
+                    entry("VAT_INDICATOR", "false"),
                     entry("ADJOURNED_HEARING_FEE", "1"),
                     entry("DETENTION_TRAVEL", "60.00"),
                     entry("JR_FORM_FILLING", "70.00"),
@@ -429,7 +429,7 @@ class CheckAmendmentsServiceTest {
                     entry("COUNSELS_COST", "31.00"),
                     entry("DISBURSEMENTS_VAT", "41.00"),
                     entry("TRAVEL_AND_WAITING_COSTS", "51.00"),
-                    entry("VAT", "true"),
+                    entry("VAT_INDICATOR", "true"),
                     entry("ADJOURNED_HEARING_FEE", "2"),
                     entry("DETENTION_TRAVEL", "61.00"),
                     entry("JR_FORM_FILLING", "71.00"),
@@ -630,12 +630,12 @@ class CheckAmendmentsServiceTest {
             forms(
                 Map.ofEntries(
                     entry("FIXED_FEE", "300.00"),
-                    entry("VAT", "false"),
+                    entry("VAT_INDICATOR", "false"),
                     entry("DISBURSEMENTS", "30.00"),
                     entry("DISBURSEMENTS_VAT", "40.00")),
                 Map.ofEntries(
                     entry("FIXED_FEE", "300.00"),
-                    entry("VAT", "true"),
+                    entry("VAT_INDICATOR", "true"),
                     entry("DISBURSEMENTS", "31.00"),
                     entry("DISBURSEMENTS_VAT", "41.00"))));
     amendmentForms.setRequestedByForm(createRequestedByForm());

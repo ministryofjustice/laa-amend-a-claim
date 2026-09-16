@@ -16,7 +16,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS_VAT;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.PROFIT_COST;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 
 import java.util.LinkedHashMap;
 import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
@@ -40,7 +40,7 @@ public record CivilClaimCostsView(
     putField(costFields, COUNSELS_COST, claim);
     putField(costFields, DISBURSEMENTS_VAT, claim);
     putField(costFields, TRAVEL_AND_WAITING_COSTS, claim);
-    putField(costFields, VAT, claim);
+    putField(costFields, VAT_INDICATOR, claim);
     putField(costFields, ADJOURNED_HEARING_FEE, claim);
     putField(costFields, DETENTION_TRAVEL, claim);
     putField(costFields, JR_FORM_FILLING, claim);

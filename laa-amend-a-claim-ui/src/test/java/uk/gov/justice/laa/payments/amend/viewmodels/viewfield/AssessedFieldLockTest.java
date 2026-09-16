@@ -18,7 +18,7 @@ class AssessedFieldLockTest {
             ClaimDetailsViewField.PROFIT_COST,
             ClaimDetailsViewField.DISBURSEMENTS,
             ClaimDetailsViewField.DISBURSEMENTS_VAT,
-            ClaimDetailsViewField.VAT);
+            ClaimDetailsViewField.VAT_INDICATOR);
   }
 
   @Test

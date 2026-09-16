@@ -5,7 +5,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS_VAT;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.PROFIT_COST;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.TRAVEL_COSTS;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.WAITING_COSTS;
 
@@ -30,7 +30,7 @@ public record CrimeClaimCostsView(
     putField(costFields, DISBURSEMENTS, claim);
     putField(costFields, TRAVEL_COSTS, claim);
     putField(costFields, WAITING_COSTS, claim);
-    putField(costFields, VAT, claim);
+    putField(costFields, VAT_INDICATOR, claim);
     putField(costFields, DISBURSEMENTS_VAT, claim);
     return costFields;
   }

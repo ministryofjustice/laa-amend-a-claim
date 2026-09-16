@@ -17,7 +17,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.SUBMITTED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.TOTAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_REQUESTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asMediationField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
@@ -52,25 +52,27 @@ public record MediationClaimOverviewView(
 
   private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createSummaryRows(
       MediationClaimDetails claim) {
-    return toFieldMap(
-        Stream.of(
-            asMediationField(CLIENT_NAME),
-            asMediationField(UNIQUE_FILE_NUMBER),
-            UNIQUE_CLIENT_NUMBER,
-            asMediationField(PROVIDER_NAME),
-            asMediationField(OFFICE_CODE),
-            asMediationField(SUBMITTED_DATE),
-            asMediationField(AREA_OF_LAW),
-            asMediationField(CATEGORY_OF_LAW),
-            asMediationField(FEE_CODE),
-            asMediationField(FEE_CODE_DESCRIPTION),
-            MATTER_TYPE_CODE_1,
-            MATTER_TYPE_CODE_2,
-            asMediationField(CASE_START_DATE),
-            CASE_CONCLUDED_DATE,
-            asMediationField(ESCAPED),
-            asMediationField(VAT_REQUESTED)),
-        claim);
+    var summaryRows =
+        toFieldMap(
+            Stream.of(
+                asMediationField(CLIENT_NAME),
+                asMediationField(UNIQUE_FILE_NUMBER),
+                UNIQUE_CLIENT_NUMBER,
+                asMediationField(PROVIDER_NAME),
+                asMediationField(OFFICE_CODE),
+                asMediationField(SUBMITTED_DATE),
+                asMediationField(AREA_OF_LAW),
+                asMediationField(CATEGORY_OF_LAW),
+                asMediationField(FEE_CODE),
+                asMediationField(FEE_CODE_DESCRIPTION),
+                MATTER_TYPE_CODE_1,
+                MATTER_TYPE_CODE_2,
+                asMediationField(CASE_START_DATE),
+                CASE_CONCLUDED_DATE,
+                asMediationField(ESCAPED),
+                asMediationField(VAT_REQUESTED)),
+            claim);
+    return summaryRows;
   }
 
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createSummaryFields(
@@ -80,7 +82,7 @@ public record MediationClaimOverviewView(
     putField(summaryFields, asMediationField(PROFIT_COST), claim);
     putField(summaryFields, asMediationField(DISBURSEMENTS), claim);
     putField(summaryFields, asMediationField(DISBURSEMENTS_VAT), claim);
-    putField(summaryFields, asMediationField(VAT), claim);
+    putField(summaryFields, asMediationField(VAT_INDICATOR), claim);
     if (!claim.isHasAssessment()) {
       putField(summaryFields, asMediationField(TOTAL), claim);
     }
