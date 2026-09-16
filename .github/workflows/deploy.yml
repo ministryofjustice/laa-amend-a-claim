@@ -51,6 +51,9 @@ on:
       PACT_BROKER_PASSWORD:
         required: true
 
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -117,6 +120,12 @@ jobs:
           pact_broker_url: 'https://laa-data-pact-broker.apps.live.cloud-platform.service.justice.gov.uk/'
           pact_broker_username: ${{ secrets.PACT_BROKER_USERNAME }}
           pact_broker_password: ${{ secrets.PACT_BROKER_PASSWORD }}
+
+      - name: Clear stale Helm lock
+        uses: ./.github/actions/clear-helm-lock
+        with:
+          release_name: laa-amend-a-claim
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
 
       - name: Deploy to Cloud Platform with Helm
         run: |
