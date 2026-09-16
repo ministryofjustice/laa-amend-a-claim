@@ -66,11 +66,11 @@ class ClaimHistoryAmendmentsServiceTest {
         .thenReturn(Map.of("CORRECTION", "Correction"));
     var changes =
         List.of(
-            change("REQUESTED", "client.genderCode", "M", "F"),
-            change("REQUESTED", "claim.caseStartDate", "2026-04-01", "2026-04-02"),
+            change("REQUESTED", "gender_code", "M", "F"),
+            change("REQUESTED", "case_start_date", "2026-04-01", "2026-04-02"),
             change("REQUESTED", "unknown.field", "before", "after"),
-            change("FSP", "claim.feeCode", "OLDFEE", "NEWFEE"),
-            change("FSP", "claim.caseConcludedDate", "2026-04-05", "2026-04-06"));
+            change("FSP", "fee_code", "OLDFEE", "NEWFEE"),
+            change("FSP", "case_concluded_date", "2026-04-05", "2026-04-06"));
 
     var history =
         new ClaimHistoryResultSet()
@@ -101,7 +101,7 @@ class ClaimHistoryAmendmentsServiceTest {
 
     var genderChange =
         amendmentEvent.amendmentChanges().stream()
-            .filter(change -> "client.genderCode".equals(change.fieldIdentifier()))
+            .filter(change -> "gender_code".equals(change.fieldIdentifier()))
             .findFirst()
             .orElseThrow();
     assertThat(genderChange.field()).isNotNull();
@@ -120,7 +120,7 @@ class ClaimHistoryAmendmentsServiceTest {
 
     var feeCodeChange =
         amendmentEvent.amendmentChanges().stream()
-            .filter(change -> "claim.feeCode".equals(change.fieldIdentifier()))
+            .filter(change -> "fee_code".equals(change.fieldIdentifier()))
             .findFirst()
             .orElseThrow();
     assertThat(feeCodeChange.field()).isNotNull();
@@ -160,7 +160,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 List.of(
                                     change(
                                         "REQUESTED",
-                                        "claim.matterTypeCode",
+                                        "matter_type_code",
                                         "ABC123:DEF456",
                                         "ABC123:XYZ999"))))));
 
@@ -191,7 +191,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 List.of(
                                     change(
                                         "REQUESTED",
-                                        "claim.matterTypeCode",
+                                        "matter_type_code",
                                         "AAA111:BBB222",
                                         "CCC333:DDD444"))))));
 
@@ -277,7 +277,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 true,
                                 "changes",
                                 List.of(
-                                    change("FSP", "fee.totalAmount", "100.00", "200.00"),
+                                    change("FSP", "total_amount", "100.00", "200.00"),
                                     change(
                                         "FSP",
                                         expectedField.getFeeApiFieldName(),
@@ -327,7 +327,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 true,
                                 "changes",
                                 List.of(
-                                    change("FSP", "fee.totalAmount", "100.00", "200.00"),
+                                    change("FSP", "total_amount", "100.00", "200.00"),
                                     change("FSP", fspFieldIdentifier, "1", "2"))))));
 
     var events =
@@ -343,16 +343,16 @@ class ClaimHistoryAmendmentsServiceTest {
 
   private static Stream<Arguments> ignoredFspFieldIdentifiers() {
     return Stream.of(
-            "fee.boltOnAdjournedHearingCount",
-            "fee.boltOnCmrhTelephoneCount",
-            "fee.boltOnCmrhOralCount",
-            "fee.boltOnHomeOfficeInterviewCount",
-            "fee.feeCodeDescription",
-            "fee.feeCode",
-            "fee.schemeId",
-            "fee.vatIndicator",
-            "fee.requestedNetProfitCostsAmount",
-            "fee.requestedNetDisbursementAmount")
+            "bolt_on_adjourned_hearing_count",
+            "bolt_on_cmrh_telephone_count",
+            "bolt_on_cmrh_oral_count",
+            "bolt_on_home_office_interview_count",
+            "fee_code_description",
+            "fee_code",
+            "scheme_id",
+            "vat_indicator",
+            "requested_net_profit_costs_amount",
+            "requested_net_disbursement_amount")
         .map(Arguments::of);
   }
 
@@ -423,16 +423,16 @@ class ClaimHistoryAmendmentsServiceTest {
 
   private static final Set<String> IGNORED_FSP_FIELDS =
       Set.of(
-          "boltOnAdjournedHearingCount",
-          "boltOnCmrhTelephoneCount",
-          "boltOnCmrhOralCount",
-          "boltOnHomeOfficeInterviewCount",
-          "feeCodeDescription",
-          "feeCode",
-          "schemeId",
-          "vatIndicator",
-          "requestedNetProfitCostsAmount",
-          "requestedNetDisbursementAmount");
+          "bolt_on_adjourned_hearing_count",
+          "bolt_on_cmrh_telephone_count",
+          "bolt_on_cmrh_oral_count",
+          "bolt_on_home_office_interview_count",
+          "fee_code_description",
+          "fee_code",
+          "scheme_id",
+          "vat_indicator",
+          "requested_net_profit_costs_amount",
+          "requested_net_disbursement_amount");
 
   private static boolean isIgnoredFspFieldIdentifier(String fieldIdentifier) {
     if (fieldIdentifier == null || fieldIdentifier.isBlank()) {
@@ -441,8 +441,7 @@ class ClaimHistoryAmendmentsServiceTest {
     if (IGNORED_FSP_FIELDS.contains(fieldIdentifier)) {
       return true;
     }
-    return fieldIdentifier.startsWith("fee.")
-        && IGNORED_FSP_FIELDS.contains(fieldIdentifier.substring("fee.".length()));
+    return false;
   }
 
   private static boolean hasClaimsApiIdentifier(ClaimViewField<?> field) {
@@ -526,7 +525,7 @@ class ClaimHistoryAmendmentsServiceTest {
                         .metadata(
                             Map.of(
                                 "changes",
-                                List.of(change("REQUESTED", "client.genderCode", "M", "F"))))));
+                                List.of(change("REQUESTED", "gender_code", "M", "F"))))));
 
     var events =
         claimHistoryAmendmentsService.toFspClaimHistoryEventsFromApiEvents(
@@ -553,9 +552,9 @@ class ClaimHistoryAmendmentsServiceTest {
                                 true,
                                 "changes",
                                 List.of(
-                                    change("FSP", "fee.totalAmount", "1000.00", "1200.50"),
+                                    change("FSP", "total_amount", "1000.00", "1200.50"),
                                     change(
-                                        "FSP", "fee.netProfitCostsAmount", "500.00", "600.00"))))));
+                                        "FSP", "net_profit_costs_amount", "500.00", "600.00"))))));
 
     var events =
         claimHistoryAmendmentsService
@@ -570,7 +569,7 @@ class ClaimHistoryAmendmentsServiceTest {
     assertThat(fspEvent.totalAfter()).isEqualByComparingTo(new BigDecimal("1200.50"));
     assertThat(fspEvent.recalculatedChanges()).hasSize(1);
     assertThat(fspEvent.recalculatedChanges().getFirst().fieldIdentifier())
-        .isEqualTo("fee.netProfitCostsAmount");
+        .isEqualTo("net_profit_costs_amount");
   }
 
   @Test
@@ -588,7 +587,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 "price_changed",
                                 true,
                                 "changes",
-                                List.of(change("FSP", "fee.totalAmount", "1000.00", "1200.50"))))));
+                                List.of(change("FSP", "total_amount", "1000.00", "1200.50"))))));
 
     var events =
         claimHistoryAmendmentsService
@@ -618,7 +617,7 @@ class ClaimHistoryAmendmentsServiceTest {
                                 "changes",
                                 List.of(
                                     change(
-                                        "FSP", "fee.netProfitCostsAmount", "500.00", "600.00"))))));
+                                        "FSP", "net_profit_costs_amount", "500.00", "600.00"))))));
 
     var events =
         claimHistoryAmendmentsService
@@ -632,6 +631,6 @@ class ClaimHistoryAmendmentsServiceTest {
     assertThat(fspEvent.totalAfter()).isNull();
     assertThat(fspEvent.recalculatedChanges()).hasSize(1);
     assertThat(fspEvent.recalculatedChanges().getFirst().fieldIdentifier())
-        .isEqualTo("fee.netProfitCostsAmount");
+        .isEqualTo("net_profit_costs_amount");
   }
 }

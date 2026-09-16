@@ -11,7 +11,7 @@ public class MatterTypeUtils {
   private static final String DELIMITER = "[+:]";
   private static final String PART_SUFFIX = "#";
 
-  public static final String MATTER_TYPE_CODE = "claim.matterTypeCode";
+  public static final String MATTER_TYPE_CODE = "matter_type_code";
 
   public static final int FIRST_PART = 0;
   public static final int SECOND_PART = 1;

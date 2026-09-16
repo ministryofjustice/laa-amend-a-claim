@@ -208,13 +208,13 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             List.of(
                 new ClaimHistoryAmendmentChange(
                     ClaimDetailsViewField.PROFIT_COST,
-                    "fee.netProfitCostsAmount",
+                    "net_profit_costs_amount",
                     new BigDecimal("500.00"),
                     new BigDecimal("600.00"),
                     AreaOfLaw.LEGAL_HELP),
                 new ClaimHistoryAmendmentChange(
                     ClaimDetailsViewField.DISBURSEMENTS,
-                    "fee.disbursementAmount",
+                    "disbursement_amount",
                     new BigDecimal("100.00"),
                     new BigDecimal("200.00"),
                     AreaOfLaw.LEGAL_HELP)));
@@ -484,7 +484,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             List.of(
                 new ClaimHistoryAmendmentChange(
                     ClaimDetailsViewField.VAT_RATE_APPLIED,
-                    "fee.vatRateApplied",
+                    "vat_rate_applied",
                     new BigDecimal("12.34"),
                     new BigDecimal("20"),
                     AreaOfLaw.LEGAL_HELP)));
@@ -512,31 +512,31 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             List.of(
                 new ClaimHistoryAmendmentChange(
                     CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE,
-                    "fee.boltOnAdjournedHearingFee",
+                    "bolt_on_adjourned_hearing_fee",
                     new BigDecimal("40.00"),
                     new BigDecimal("50.00"),
                     AreaOfLaw.LEGAL_HELP),
                 new ClaimHistoryAmendmentChange(
                     CivilClaimDetailsViewField.CMRH_ORAL,
-                    "fee.boltOnCmrhOralFee",
+                    "bolt_on_cmrh_oral_fee",
                     new BigDecimal("60.00"),
                     new BigDecimal("70.00"),
                     AreaOfLaw.LEGAL_HELP),
                 new ClaimHistoryAmendmentChange(
                     CivilClaimDetailsViewField.CMRH_TELEPHONE,
-                    "fee.boltOnCmrhTelephoneFee",
+                    "bolt_on_cmrh_telephone_fee",
                     new BigDecimal("80.00"),
                     new BigDecimal("90.00"),
                     AreaOfLaw.LEGAL_HELP),
                 new ClaimHistoryAmendmentChange(
                     CivilClaimDetailsViewField.HOME_OFFICE,
-                    "fee.boltOnHomeOfficeInterviewFee",
+                    "bolt_on_home_office_interview_fee",
                     new BigDecimal("100.00"),
                     new BigDecimal("110.00"),
                     AreaOfLaw.LEGAL_HELP),
                 new ClaimHistoryAmendmentChange(
                     CivilClaimDetailsViewField.SUBSTANTIVE_HEARING,
-                    "fee.boltOnSubstantiveHearingFee",
+                    "bolt_on_substantive_hearing_fee",
                     new BigDecimal("120.00"),
                     new BigDecimal("130.00"),
                     AreaOfLaw.LEGAL_HELP)));
@@ -700,16 +700,16 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
   private static final Set<String> IGNORED_FSP_FIELDS =
       Set.of(
-          "boltOnAdjournedHearingCount",
-          "boltOnCmrhTelephoneCount",
-          "boltOnCmrhOralCount",
-          "boltOnHomeOfficeInterviewCount",
-          "feeCodeDescription",
-          "feeCode",
-          "schemeId",
-          "vatIndicator",
-          "requestedNetProfitCostsAmount",
-          "requestedNetDisbursementAmount");
+          "bolt_on_adjourned_hearing_count",
+          "bolt_on_cmrh_telephone_count",
+          "bolt_on_cmrh_oral_count",
+          "bolt_on_home_office_interview_count",
+          "fee_code_description",
+          "fee_code",
+          "scheme_id",
+          "vat_indicator",
+          "requested_net_profit_costs_amount",
+          "requested_net_disbursement_amount");
 
   private static boolean isDisplayedFspHistoryField(ClaimViewField<?> field) {
     var identifier = field.getFeeApiFieldName();
@@ -720,8 +720,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
     if (IGNORED_FSP_FIELDS.contains(fieldIdentifier)) {
       return true;
     }
-    return fieldIdentifier.startsWith("fee.")
-        && IGNORED_FSP_FIELDS.contains(fieldIdentifier.substring("fee.".length()));
+    return false;
   }
 
   private void assertCommonPageContent(Document doc) {

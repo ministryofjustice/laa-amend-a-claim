@@ -85,7 +85,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setAreaOfLaw(LEGAL_HELP);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    mockClaimHistorySummary("fee.totalAmount", "fee.fixedFeeAmount");
+    mockClaimHistorySummary("total_amount", "fixed_fee_amount");
 
     Document doc = renderDocument();
 
@@ -102,7 +102,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setAreaOfLaw(LEGAL_HELP);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    mockClaimHistorySummary("client.clientSurname");
+    mockClaimHistorySummary("client_surname");
 
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(renderDocument(), "Summary", "Client name"));
@@ -435,25 +435,26 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
     mockClaimHistorySummary(
-        "claim.uniqueFileNumber",
-        "client.uniqueClientNumber",
-        "claim.feeCode",
-        "claim.matterTypeCode#0",
-        "claim.matterTypeCode#1",
-        "claim.caseStartDate",
-        "claim.caseConcludedDate",
-        "claimSummaryFee.netProfitCostsAmount",
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.disbursementsVatAmount",
-        "claimSummaryFee.detentionTravelWaitingCostsAmount",
-        "claimSummaryFee.jrFormFillingAmount",
-        "claimSummaryFee.netCounselCostsAmount",
-        "claimSummaryFee.cmrhOralCount",
-        "claimSummaryFee.cmrhTelephoneCount",
-        "claimSummaryFee.hoInterview",
-        "claimSummaryFee.isSubstantiveHearing",
-        "claimSummaryFee.adjournedHearingFeeAmount",
-        "claimSummaryFee.isVatApplicable");
+        "unique_file_number",
+        "unique_client_number",
+        "fee_code",
+        "matter_type_code#0",
+        "matter_type_code#1",
+        "case_start_date",
+        "case_concluded_date",
+        "escape_case_flag",
+        "net_profit_costs_amount",
+        "net_disbursement_amount",
+        "disbursements_vat_amount",
+        "detention_travel_waiting_costs_amount",
+        "jr_form_filling_amount",
+        "net_counsel_costs_amount",
+        "cmrh_oral_count",
+        "cmrh_telephone_count",
+        "ho_interview",
+        "is_substantive_hearing",
+        "adjourned_hearing_fee_amount",
+        "is_vat_applicable");
 
     Document doc = renderDocument();
 
@@ -467,6 +468,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Summary", "Case concluded date or case claimed date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Escape case"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "VAT requested"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
@@ -503,7 +506,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    mockClaimHistorySummary("claim.matterTypeCode#0");
+    mockClaimHistorySummary("matter_type_code#0");
 
     Document doc = renderDocument();
 
@@ -524,7 +527,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    mockClaimHistorySummary("claim.matterTypeCode#1");
+    mockClaimHistorySummary("matter_type_code#1");
 
     Document doc = renderDocument();
 
@@ -546,19 +549,20 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
     mockClaimHistorySummary(
-        "claim.uniqueFileNumber",
-        "claim.feeCode",
-        "claim.policeStationCourtPrisonId",
-        "claim.schemeId",
-        "claim.crimeMatterTypeCode",
-        "claim.caseStartDate",
-        "claim.caseConcludedDate",
-        "claimSummaryFee.netProfitCostsAmount",
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.disbursementsVatAmount",
-        "claimSummaryFee.travelWaitingCostsAmount",
-        "claimSummaryFee.netWaitingCostsAmount",
-        "claimSummaryFee.isVatApplicable");
+        "unique_file_number",
+        "fee_code",
+        "police_station_court_prison_id",
+        "scheme_id",
+        "crime_matter_type_code",
+        "case_start_date",
+        "case_concluded_date",
+        "escape_case_flag",
+        "net_profit_costs_amount",
+        "net_disbursement_amount",
+        "disbursements_vat_amount",
+        "travel_waiting_costs_amount",
+        "net_waiting_costs_amount",
+        "is_vat_applicable");
 
     Document doc = renderDocument();
 
@@ -572,6 +576,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Escape case"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "VAT requested"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
@@ -595,17 +601,18 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
     mockClaimHistorySummary(
-        "claim.uniqueFileNumber",
-        "client.uniqueClientNumber",
-        "claim.feeCode",
-        "claim.matterTypeCode#0",
-        "claim.matterTypeCode#1",
-        "claim.caseStartDate",
-        "claim.caseConcludedDate",
-        "claimSummaryFee.netProfitCostsAmount",
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.disbursementsVatAmount",
-        "claimSummaryFee.isVatApplicable");
+        "unique_file_number",
+        "unique_client_number",
+        "fee_code",
+        "matter_type_code#0",
+        "matter_type_code#1",
+        "case_start_date",
+        "case_concluded_date",
+        "escape_case_flag",
+        "net_profit_costs_amount",
+        "net_disbursement_amount",
+        "disbursements_vat_amount",
+        "is_vat_applicable");
 
     Document doc = renderDocument();
 
@@ -619,6 +626,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Escape case"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "VAT requested"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
@@ -643,7 +652,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
             ClaimHistorySummary.builder()
                 .lastUpdatedUser(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))
                 .lastUpdatedDateTime(updatedAt)
-                .amendedFields(Set.of("claim.feeCode"))
+                .amendedFields(Set.of("fee_code"))
                 .build());
 
     Document doc = renderDocument();

@@ -48,23 +48,23 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDeta
 @Slf4j
 public class ClaimHistoryAmendmentsService {
 
-  private static final String FIELD_IDENTIFIER_TOTAL_AMOUNT = "fee.totalAmount";
+  private static final String FIELD_IDENTIFIER_TOTAL_AMOUNT = "total_amount";
 
   // FSP echos back the fields passed to it. Ignore these as they aren't really
   // modified by FSP.
   private static final Set<String> FSP_IGNORED_FIELDS =
       Set.of(
-          "fee.boltOnAdjournedHearingCount",
-          "fee.boltOnCmrhTelephoneCount",
-          "fee.boltOnCmrhOralCount",
-          "fee.boltOnHomeOfficeInterviewCount",
-          "fee.feeCodeDescription",
-          "fee.feeCode",
-          "fee.schemeId",
-          "fee.vatIndicator",
-          "fee.requestedNetProfitCostsAmount",
-          "fee.requestedNetDisbursementAmount",
-          "fee.requestedNetDisbursementVatAmount");
+          "bolt_on_adjourned_hearing_count",
+          "bolt_on_cmrh_telephone_count",
+          "bolt_on_cmrh_oral_count",
+          "bolt_on_home_office_interview_count",
+          "fee_code_description",
+          "fee_code",
+          "scheme_id",
+          "vat_indicator",
+          "requested_net_profit_costs_amount",
+          "requested_net_disbursement_amount",
+          "requested_net_disbursement_vat_amount");
 
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;

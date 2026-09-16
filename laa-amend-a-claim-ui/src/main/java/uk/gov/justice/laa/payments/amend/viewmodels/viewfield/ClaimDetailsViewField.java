@@ -19,20 +19,19 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   CLIENT_NAME(FieldType.TEXT, ClaimDetailsViewField::getClientName) {
     @Override
     public Set<String> getAmendedFieldIdentifiers() {
-      return Set.of("client.clientForename", "client.clientSurname");
+      return Set.of("client_forename", "client_surname");
     }
   },
   PROVIDER_NAME(FieldType.TEXT, ClaimDetailsViewField::getProviderName),
   OFFICE_CODE(FieldType.TEXT, ClaimDetails::getOfficeCode),
   SUBMITTED_DATE(FieldType.DATE, ClaimDetails::getSubmittedDate),
   AREA_OF_LAW(FieldType.TEXT, ClaimDetailsViewField::getAreaOfLaw),
-  CATEGORY_OF_LAW(FieldType.TEXT, ClaimDetails::getCategoryOfLaw, "fee.categoryOfLaw"),
-  FEE_CODE_DESCRIPTION(
-      FieldType.TEXT, ClaimDetails::getFeeCodeDescription, "fee.feeCodeDescription"),
-  FEE_TYPE(FieldType.TEXT, ClaimDetails::getFeeType, "fee.feeType"),
-  ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped, "fee.escapeCaseFlag"),
-  VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable),
-  TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount, "fee.totalAmount"),
+  CATEGORY_OF_LAW(FieldType.TEXT, ClaimDetails::getCategoryOfLaw, "category_of_law"),
+  FEE_CODE_DESCRIPTION(FieldType.TEXT, ClaimDetails::getFeeCodeDescription, "fee_code_description"),
+  FEE_TYPE(FieldType.TEXT, ClaimDetails::getFeeType, "fee_type"),
+  ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped, "escape_case_flag"),
+  VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable, "is_vat_applicable"),
+  TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount, "total_amount"),
 
   // Common client fields
   SURNAME(
@@ -40,28 +39,28 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       String.class,
       ClaimDetails::getClientSurname,
       Builder::clientSurname,
-      "client.clientSurname"),
+      "client_surname"),
   GENDER(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientGender,
       Builder::genderCode,
       FieldOptions.GENDER,
-      "client.genderCode"),
+      "gender_code"),
   ETHNICITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientEthnicity,
       Builder::ethnicityCode,
       FieldOptions.ETHNICITY_CODE,
-      "client.ethnicityCode"),
+      "ethnicity_code"),
   DISABILITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientDisability,
       Builder::disabilityCode,
       FieldOptions.DISABILITY_CODE,
-      "client.disabilityCode"),
+      "disability_code"),
 
   // Common case details fields
   CASE_REFERENCE_NUMBER(
@@ -69,20 +68,20 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       String.class,
       Claim::getCaseReferenceNumber,
       Builder::caseReferenceNumber,
-      "claim.caseReferenceNumber"),
+      "case_reference_number"),
   CASE_START_DATE(
       FieldType.DATE,
       String.class,
       Claim::getCaseStartDate,
       Builder::caseStartDate,
       Amendability.UNTIL_ASSESSED,
-      "claim.caseStartDate"),
+      "case_start_date"),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
       Claim::getUniqueFileNumber,
       Builder::uniqueFileNumber,
-      "claim.uniqueFileNumber"),
+      "unique_file_number"),
   FEE_CODE(
       FieldType.TEXT,
       String.class,
@@ -90,8 +89,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::feeCode,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claim.feeCode",
-      "fee.feeCode"),
+      "fee_code",
+      "fee_code"),
 
   // Common cost fields
   FIXED_FEE(
@@ -102,8 +101,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       NO_OPTIONS,
       Amendability.NEVER,
       NO_CLAIMS_API_FIELD_NAME,
-      "fee.fixedFeeAmount"),
-  HOURLY_TOTAL_AMOUNT(FieldType.MONETARY, NO_GETTER, "fee.hourlyTotalAmount"),
+      "fixed_fee_amount"),
+  HOURLY_TOTAL_AMOUNT(FieldType.MONETARY, NO_GETTER, "hourly_total_amount"),
   PROFIT_COST(
       FieldType.MONETARY,
       BigDecimal.class,
@@ -111,8 +110,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::netProfitCostsAmount,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.netProfitCostsAmount",
-      "fee.netProfitCostsAmount"),
+      "net_profit_costs_amount",
+      "net_profit_costs_amount"),
   DISBURSEMENTS(
       FieldType.MONETARY,
       BigDecimal.class,
@@ -120,8 +119,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::netDisbursementAmount,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.netDisbursementAmount",
-      "fee.disbursementAmount"),
+      "net_disbursement_amount",
+      "disbursement_amount"),
   DISBURSEMENTS_VAT(
       FieldType.MONETARY,
       BigDecimal.class,
@@ -129,11 +128,11 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::disbursementsVatAmount,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.disbursementsVatAmount",
-      "fee.disbursementVatAmount"),
+      "disbursements_vat_amount",
+      "disbursement_vat_amount"),
   CALCULATED_VAT_AMOUNT(
-      FieldType.MONETARY, ClaimDetails::getDisbursementVatAmount, "fee.calculatedVatAmount"),
-  VAT_RATE_APPLIED(FieldType.PERCENTAGE, NO_GETTER, "fee.vatRateApplied"),
+      FieldType.MONETARY, ClaimDetails::getDisbursementVatAmount, "calculated_vat_amount"),
+  VAT_RATE_APPLIED(FieldType.PERCENTAGE, NO_GETTER, "vat_rate_applied"),
   VAT(
       FieldType.BOOLEAN,
       Boolean.class,
@@ -141,8 +140,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::isVatApplicable,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.isVatApplicable",
-      "fee.vatIndicator");
+      "is_vat_applicable",
+      "vat_indicator");
 
   private final ClaimDetailsViewFieldGetter<?> getter;
   private final String claimsApiFieldName;

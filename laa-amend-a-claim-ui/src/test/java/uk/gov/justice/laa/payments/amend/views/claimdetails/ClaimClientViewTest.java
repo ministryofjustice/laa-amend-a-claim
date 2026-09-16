@@ -63,11 +63,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCrimeClientDetails() {
     claim = createCrimeClaim();
     mockClaimHistorySummary(
-        "client.clientForename",
-        "client.clientSurname",
-        "client.genderCode",
-        "client.ethnicityCode",
-        "client.disabilityCode");
+        "client_forename", "client_surname", "gender_code", "ethnicity_code", "disability_code");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(
@@ -117,26 +113,26 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     mockClaimHistorySummary();
 
     mockClaimHistorySummary(
-        "client.clientForename",
-        "client.clientSurname",
-        "client.clientDateOfBirth",
-        "client.clientPostcode",
-        "client.uniqueClientNumber",
-        "client.genderCode",
-        "client.ethnicityCode",
-        "client.disabilityCode",
-        "client.isLegallyAided",
-        "claimCase.isPostalApplicationAccepted",
-        "client.client2Forename",
-        "client.client2Surname",
-        "client.client2DateOfBirth",
-        "client.client2Ucn",
-        "client.client2Postcode",
-        "client.client2GenderCode",
-        "client.client2EthnicityCode",
-        "client.client2DisabilityCode",
-        "client.client2IsLegallyAided",
-        "claimCase.isClient2PostalApplicationAccepted");
+        "client_forename",
+        "client_surname",
+        "client_date_of_birth",
+        "client_postcode",
+        "unique_client_number",
+        "gender_code",
+        "ethnicity_code",
+        "disability_code",
+        "is_legally_aided",
+        "is_postal_application_accepted",
+        "client2_forename",
+        "client2_surname",
+        "client2_date_of_birth",
+        "client2_ucn",
+        "client2_postcode",
+        "client2_gender_code",
+        "client2_ethnicity_code",
+        "client2_disability_code",
+        "client2_is_legally_aided",
+        "is_client2_postal_application_accepted");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(
@@ -199,18 +195,18 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCivilClientDetails() {
     claim = createCivilClaim();
     mockClaimHistorySummary(
-        "client.clientForename",
-        "client.clientSurname",
-        "client.clientDateOfBirth",
-        "client.genderCode",
-        "client.ethnicityCode",
-        "client.disabilityCode",
-        "client.clientPostcode",
-        "claimSummaryFee.isEligibleClient",
-        "client.clientTypeCode",
-        "client.uniqueClientNumber",
-        "client.homeOfficeClientNumber",
-        "claimCase.isPostalApplicationAccepted");
+        "client_forename",
+        "client_surname",
+        "client_date_of_birth",
+        "gender_code",
+        "ethnicity_code",
+        "disability_code",
+        "client_postcode",
+        "is_eligible_client",
+        "client_type_code",
+        "unique_client_number",
+        "home_office_client_number",
+        "is_postal_application_accepted");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(

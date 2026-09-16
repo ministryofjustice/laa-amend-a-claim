@@ -18,37 +18,37 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getClientForename,
       Builder::clientForename,
-      "client.clientForename"),
+      "client_forename"),
   DATE_OF_BIRTH(
       FieldType.DATE,
       String.class,
       MediationClaimDetails::getClientDateOfBirth,
       Builder::clientDateOfBirth,
-      "client.clientDateOfBirth"),
+      "client_date_of_birth"),
   POSTCODE(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getClientPostcode,
       Builder::clientPostcode,
-      "client.clientPostcode"),
+      "client_postcode"),
   UNIQUE_CLIENT_NUMBER(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getUniqueClientNumber,
       Builder::uniqueClientNumber,
-      "client.uniqueClientNumber"),
+      "unique_client_number"),
   IS_LEGALLY_AIDED(
       FieldType.BOOLEAN,
       Boolean.class,
       MediationClaimDetails::getIsClientLegallyAided,
       Builder::isLegallyAided,
-      "client.isLegallyAided"),
+      "is_legally_aided"),
   IS_POSTAL_APPLICATION_ACCEPTED(
       FieldType.BOOLEAN,
       Boolean.class,
       MediationClaimDetails::getIsClientPostalApplicationAccepted,
       Builder::isPostalApplicationAccepted,
-      "claimCase.isPostalApplicationAccepted"),
+      "is_postal_application_accepted"),
 
   // Client 2 fields
   CLIENT_2_FORENAME(
@@ -56,64 +56,64 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getClient2Forename,
       Builder::client2Forename,
-      "client.client2Forename"),
+      "client2_forename"),
   CLIENT_2_SURNAME(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getClient2Surname,
       Builder::client2Surname,
-      "client.client2Surname"),
+      "client2_surname"),
   CLIENT_2_DATE_OF_BIRTH(
       FieldType.DATE,
       String.class,
       MediationClaimDetails::getClient2DateOfBirth,
       Builder::client2DateOfBirth,
-      "client.client2DateOfBirth"),
+      "client2_date_of_birth"),
   CLIENT_2_UCN(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getClient2Ucn,
       Builder::client2Ucn,
-      "client.client2Ucn"),
+      "client2_ucn"),
   CLIENT_2_POSTCODE(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getClient2Postcode,
       Builder::client2Postcode,
-      "client.client2Postcode"),
+      "client2_postcode"),
   CLIENT_2_GENDER(
       FieldType.ENUM,
       String.class,
       MediationClaimDetails::getClient2Gender,
       Builder::client2GenderCode,
       FieldOptions.GENDER,
-      "client.client2GenderCode"),
+      "client2_gender_code"),
   CLIENT_2_ETHNICITY(
       FieldType.ENUM,
       String.class,
       MediationClaimDetails::getClient2Ethnicity,
       Builder::client2EthnicityCode,
       FieldOptions.ETHNICITY_CODE,
-      "client.client2EthnicityCode"),
+      "client2_ethnicity_code"),
   CLIENT_2_DISABILITY(
       FieldType.ENUM,
       String.class,
       MediationClaimDetails::getClient2Disability,
       Builder::client2DisabilityCode,
       FieldOptions.DISABILITY_CODE,
-      "client.client2DisabilityCode"),
+      "client2_disability_code"),
   IS_CLIENT_2_LEGALLY_AIDED(
       FieldType.BOOLEAN,
       Boolean.class,
       MediationClaimDetails::getIsClient2LegallyAided,
       Builder::client2IsLegallyAided,
-      "client.client2IsLegallyAided"),
+      "client2_is_legally_aided"),
   IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED(
       FieldType.BOOLEAN,
       Boolean.class,
       MediationClaimDetails::getIsClient2PostalApplicationAccepted,
       Builder::isClient2PostalApplicationAccepted,
-      "claimCase.isClient2PostalApplicationAccepted"),
+      "is_client2_postal_application_accepted"),
 
   // Case Type fields
   MATTER_TYPE_CODE_1(
@@ -131,61 +131,57 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
 
   // Case Details fields
   CLAIM_ID(
-      FieldType.TEXT,
-      String.class,
-      MediationClaimDetails::getCaseId,
-      Builder::caseId,
-      "claimCase.caseId"),
+      FieldType.TEXT, String.class, MediationClaimDetails::getCaseId, Builder::caseId, "case_id"),
   UNIQUE_CASE_ID(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getUniqueCaseId,
       Builder::uniqueCaseId,
-      "claimCase.uniqueCaseId"),
+      "unique_case_id"),
   MEDIATION_SESSIONS_COUNT(
       FieldType.NUMBER,
       Integer.class,
       MediationClaimDetails::getMediationSessionsCount,
       Builder::mediationSessionsCount,
-      "claim.mediationSessionsCount"),
+      "mediation_sessions_count"),
   MEDIATION_TIME_MINUTES(
       FieldType.NUMBER,
       Integer.class,
       MediationClaimDetails::getMediationTimeMinutes,
       Builder::mediationTimeMinutes,
-      "claim.mediationTimeMinutes"),
+      "mediation_time_minutes"),
   OUTCOME(
       FieldType.ENUM,
       String.class,
       MediationClaimDetails::getOutcome,
       Builder::outcomeCode,
       FieldOptions.MEDIATION_OUTCOME,
-      "claimCase.outcomeCode"),
+      "outcome_code"),
   OUTREACH_LOCATION(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getOutreachLocation,
       Builder::outreachLocation,
-      "claim.outreachLocation"),
+      "outreach_location"),
   REFERRAL_SOURCE(
       FieldType.ENUM,
       String.class,
       MediationClaimDetails::getReferralSource,
       Builder::referralSource,
       FieldOptions.REFERRAL_SOURCE,
-      "claim.referralSource"),
+      "referral_source"),
   SCHEDULE_REFERENCE(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getScheduleReference,
       Builder::scheduleReference,
-      "claim.scheduleReference"),
+      "schedule_reference"),
   CASE_CONCLUDED_DATE(
       FieldType.DATE,
       String.class,
       MediationClaimDetails::getCaseEndDate,
       Builder::caseConcludedDate,
-      "claim.caseConcludedDate");
+      "case_concluded_date");
 
   private final MediationClaimViewFieldGetter<?> getter;
   private final String claimsApiFieldName;
