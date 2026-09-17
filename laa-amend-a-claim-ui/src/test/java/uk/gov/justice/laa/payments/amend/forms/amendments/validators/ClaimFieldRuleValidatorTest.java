@@ -37,7 +37,7 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(ClaimDetailsViewField.PROFIT_COST)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS_VAT)).isTrue();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.VAT)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.VAT_INDICATOR)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.FIXED_FEE)).isFalse();
     assertThat(validator.appliesTo(ClaimDetailsViewField.GENDER)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISABILITY)).isTrue();

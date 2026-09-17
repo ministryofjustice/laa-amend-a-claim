@@ -52,8 +52,8 @@ class ClaimHistoryMetadataMapperTest {
                                 false,
                                 "changes",
                                 List.of(
-                                    change("claim.feeCode", null, "NEWFEE", "FSP"),
-                                    change("client.surname", "OLD", "NEW", "REQUESTED"),
+                                    change("fee_code", null, "NEWFEE", "FSP"),
+                                    change("client_surname", "OLD", "NEW", "REQUESTED"),
                                     "not-a-map"))),
                     new ClaimHistoryEvent()
                         .eventType(ClaimHistoryEventType.ASSESSMENT)
@@ -83,14 +83,14 @@ class ClaimHistoryMetadataMapperTest {
     assertThat(mappedEvents.get(1).amendmentMetadata().getEscapeCaseLogged()).isFalse();
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges()).hasSize(2);
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(0).getFieldIdentifier())
-        .isEqualTo("claim.feeCode");
+        .isEqualTo("fee_code");
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(0).getBefore()).isNull();
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(0).getAfter())
         .isEqualTo("NEWFEE");
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(0).getChangeSource())
         .isEqualTo(ClaimHistoryChangeEntry.ChangeSourceEnum.FSP);
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(1).getFieldIdentifier())
-        .isEqualTo("client.surname");
+        .isEqualTo("client_surname");
     assertThat(mappedEvents.get(1).amendmentMetadata().getChanges().get(1).getChangeSource())
         .isEqualTo(ClaimHistoryChangeEntry.ChangeSourceEnum.REQUESTED);
     assertThat(mappedEvents.get(2).assessmentMetadata().getAssessmentOutcome())

@@ -216,10 +216,10 @@ public class ClaimHistoryServiceTest {
 
     var requestedChanges =
         List.of(
-            change("REQUESTED", "claim.feeCode"),
-            change("REQUESTED", "claimSummaryFee.netProfitCostsAmount"),
-            change("FSP", "fee.totalAmount"),
-            change("REQUESTED", "claim.feeCode"));
+            change("REQUESTED", "fee_code"),
+            change("REQUESTED", "net_profit_costs_amount"),
+            change("FSP", "total_amount"),
+            change("REQUESTED", "fee_code"));
 
     var history =
         new ClaimHistoryResultSet()
@@ -243,8 +243,7 @@ public class ClaimHistoryServiceTest {
     assertThat(summary.lastUpdatedUser()).isEqualTo(amendedUser);
     assertThat(summary.lastUpdatedDateTime()).isEqualTo(amendedDateTime);
     assertThat(summary.amendedFields())
-        .containsExactlyInAnyOrder(
-            "claim.feeCode", "claimSummaryFee.netProfitCostsAmount", "fee.totalAmount");
+        .containsExactlyInAnyOrder("fee_code", "net_profit_costs_amount", "total_amount");
   }
 
   @Test
@@ -266,14 +265,14 @@ public class ClaimHistoryServiceTest {
                                 List.of(
                                     change(
                                         "REQUESTED",
-                                        "claim.matterTypeCode",
+                                        "matter_type_code",
                                         "FAMA:FPET",
                                         "FAMA:FPRO"))))));
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
 
     assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
-        .containsExactlyInAnyOrder("claim.matterTypeCode#1");
+        .containsExactlyInAnyOrder("matter_type_code#1");
   }
 
   @Test
@@ -295,14 +294,14 @@ public class ClaimHistoryServiceTest {
                                 List.of(
                                     change(
                                         "REQUESTED",
-                                        "claim.matterTypeCode",
+                                        "matter_type_code",
                                         "FAMA:FPET",
                                         "FAMB:FPRO"))))));
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
 
     assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
-        .containsExactlyInAnyOrder("claim.matterTypeCode#0", "claim.matterTypeCode#1");
+        .containsExactlyInAnyOrder("matter_type_code#0", "matter_type_code#1");
   }
 
   @Test
@@ -509,9 +508,9 @@ public class ClaimHistoryServiceTest {
 
     var changes =
         List.of(
-            change("REQUESTED", "claimSummaryFee.netProfitCostsAmount"),
-            change("FSP", "fee.netProfitCostsAmount"),
-            change("FSP", "fee.disbursementAmount"));
+            change("REQUESTED", "net_profit_costs_amount"),
+            change("FSP", "net_profit_costs_amount"),
+            change("FSP", "disbursement_amount"));
 
     var history =
         new ClaimHistoryResultSet()
@@ -527,11 +526,7 @@ public class ClaimHistoryServiceTest {
     assertThat(claimHistoryService.getAmendmentConfirmation(claim))
         .isEqualTo(
             new AmendmentConfirmation(
-                true,
-                Set.of(
-                    "claimSummaryFee.netProfitCostsAmount",
-                    "fee.netProfitCostsAmount",
-                    "fee.disbursementAmount")));
+                true, Set.of("net_profit_costs_amount", "disbursement_amount")));
   }
 
   @Test

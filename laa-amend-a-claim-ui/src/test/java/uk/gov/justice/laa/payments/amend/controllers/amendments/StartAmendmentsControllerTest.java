@@ -120,7 +120,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     costsRows.put("DISBURSEMENTS", "100.00");
     costsRows.put("TRAVEL_COSTS", "100.00");
     costsRows.put("WAITING_COSTS", "100.00");
-    costsRows.put("VAT", "true");
+    costsRows.put("VAT_INDICATOR", "true");
     costsRows.put("DISBURSEMENTS_VAT", "100.00");
     var costsForm = new AmendmentForm();
     costsForm.setInputs(costsRows);

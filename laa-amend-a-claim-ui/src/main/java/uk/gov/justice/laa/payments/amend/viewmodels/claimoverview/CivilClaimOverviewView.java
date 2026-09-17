@@ -29,7 +29,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.SUBMITTED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.TOTAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_REQUESTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asCivilField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
@@ -60,25 +60,27 @@ public record CivilClaimOverviewView(
 
   private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createSummaryRows(
       CivilClaimDetails claim) {
-    return toFieldMap(
-        Stream.of(
-            asCivilField(CLIENT_NAME),
-            asCivilField(UNIQUE_FILE_NUMBER),
-            UNIQUE_CLIENT_NUMBER,
-            asCivilField(PROVIDER_NAME),
-            asCivilField(OFFICE_CODE),
-            asCivilField(SUBMITTED_DATE),
-            asCivilField(AREA_OF_LAW),
-            asCivilField(CATEGORY_OF_LAW),
-            asCivilField(FEE_CODE),
-            asCivilField(FEE_CODE_DESCRIPTION),
-            MATTER_TYPE_CODE_1,
-            MATTER_TYPE_CODE_2,
-            asCivilField(CASE_START_DATE),
-            CASE_CONCLUDED_CLAIMED_DATE,
-            asCivilField(ESCAPED),
-            asCivilField(VAT_REQUESTED)),
-        claim);
+    var summaryRows =
+        toFieldMap(
+            Stream.of(
+                asCivilField(CLIENT_NAME),
+                asCivilField(UNIQUE_FILE_NUMBER),
+                UNIQUE_CLIENT_NUMBER,
+                asCivilField(PROVIDER_NAME),
+                asCivilField(OFFICE_CODE),
+                asCivilField(SUBMITTED_DATE),
+                asCivilField(AREA_OF_LAW),
+                asCivilField(CATEGORY_OF_LAW),
+                asCivilField(FEE_CODE),
+                asCivilField(FEE_CODE_DESCRIPTION),
+                MATTER_TYPE_CODE_1,
+                MATTER_TYPE_CODE_2,
+                asCivilField(CASE_START_DATE),
+                CASE_CONCLUDED_CLAIMED_DATE,
+                asCivilField(ESCAPED),
+                asCivilField(VAT_REQUESTED)),
+            claim);
+    return summaryRows;
   }
 
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createSummaryFields(
@@ -96,7 +98,7 @@ public record CivilClaimOverviewView(
     putField(summaryFields, HOME_OFFICE, claim);
     putField(summaryFields, SUBSTANTIVE_HEARING, claim);
     putField(summaryFields, ADJOURNED_HEARING_FEE, claim);
-    putField(summaryFields, asCivilField(VAT), claim);
+    putField(summaryFields, asCivilField(VAT_INDICATOR), claim);
     if (!claim.isHasAssessment()) {
       putField(summaryFields, asCivilField(TOTAL), claim);
     }

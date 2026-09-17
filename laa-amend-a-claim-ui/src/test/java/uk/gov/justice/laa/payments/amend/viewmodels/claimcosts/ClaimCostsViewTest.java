@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimD
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.PROFIT_COST;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.TOTAL;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.TRAVEL_COSTS;
 
 import java.math.BigDecimal;
@@ -42,12 +42,12 @@ class ClaimCostsViewTest {
 
   @Test
   void costFieldsExposeFeeApiFieldNamesForCalculatedCostRows() {
-    assertThat(PROFIT_COST.getFeeApiFieldName()).isEqualTo("fee.netProfitCostsAmount");
-    assertThat(VAT.getFeeApiFieldName()).isEqualTo("fee.vatIndicator");
-    assertThat(COUNSELS_COST.getFeeApiFieldName()).isEqualTo("fee.netCostOfCounselAmount");
-    assertThat(TRAVEL_COSTS.getFeeApiFieldName()).isEqualTo("fee.netTravelCostsAmount");
-    assertThat(FIXED_FEE.getFeeApiFieldName()).isEqualTo("fee.fixedFeeAmount");
-    assertThat(TOTAL.getFeeApiFieldName()).isEqualTo("fee.totalAmount");
+    assertThat(PROFIT_COST.getFeeApiFieldName()).isEqualTo("net_profit_costs_amount");
+    assertThat(VAT_INDICATOR.getFeeApiFieldName()).isEqualTo("vat_indicator");
+    assertThat(COUNSELS_COST.getFeeApiFieldName()).isEqualTo("net_cost_of_counsel_amount");
+    assertThat(TRAVEL_COSTS.getFeeApiFieldName()).isEqualTo("net_travel_costs_amount");
+    assertThat(FIXED_FEE.getFeeApiFieldName()).isEqualTo("fixed_fee_amount");
+    assertThat(TOTAL.getFeeApiFieldName()).isEqualTo("total_amount");
     assertThat(FIXED_FEE.getClaimsApiFieldName()).isBlank();
     assertThat(TOTAL.getClaimsApiFieldName()).isBlank();
   }

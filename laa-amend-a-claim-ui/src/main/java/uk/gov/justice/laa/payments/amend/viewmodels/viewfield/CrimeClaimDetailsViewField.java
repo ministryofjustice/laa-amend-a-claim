@@ -19,7 +19,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       String.class,
       CrimeClaimDetails::getClientForename,
       Builder::clientForename,
-      "client.clientForename"),
+      "client_forename"),
 
   // Case type fields
   MATTER_TYPE_CODE(
@@ -27,7 +27,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       String.class,
       CrimeClaimDetails::getMatterTypeCode,
       Builder::crimeMatterTypeCode,
-      "claim.crimeMatterTypeCode"),
+      "crime_matter_type_code"),
 
   // Case fields
   STAGE_REACHED(
@@ -36,61 +36,61 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       ClaimDetails::getStageReached,
       Builder::stageReachedCode,
       FieldOptions.CRIME_STAGE_REACHED,
-      "claimCase.stageReachedCode"),
+      "stage_reached_code"),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getUniqueFileNumber,
       Builder::uniqueFileNumber,
       Amendability.UNTIL_ASSESSED,
-      "claim.uniqueFileNumber"),
+      "unique_file_number"),
   REPRESENTATION_ORDER_DATE(
       FieldType.DATE,
       String.class,
       CrimeClaimDetails::getRepresentationOrderDate,
       Builder::representationOrderDate,
       Amendability.UNTIL_ASSESSED,
-      "claim.representationOrderDate"),
+      "representation_order_date"),
   CASE_CONCLUDED_DATE(
       FieldType.DATE,
       String.class,
       CrimeClaimDetails::getCaseEndDate,
       Builder::caseConcludedDate,
       Amendability.UNTIL_ASSESSED,
-      "claim.caseConcludedDate"),
+      "case_concluded_date"),
   STANDARD_FEE_CATEGORY(
       FieldType.ENUM,
       String.class,
       CrimeClaimDetails::getStandardFeeCategory,
       Builder::standardFeeCategoryCode,
       FieldOptions.STANDARD_FEE_CATEGORY,
-      "claimCase.standardFeeCategoryCode"),
+      "standard_fee_category_code"),
   OUTCOME_FOR_CLIENT(
       FieldType.ENUM,
       String.class,
       CrimeClaimDetails::getOutcome,
       Builder::outcomeCode,
       FieldOptions.CRIME_LOWER_OUTCOME,
-      "claimCase.outcomeCode"),
+      "outcome_code"),
   SUSPECTS_DEFENDANTS_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CrimeClaimDetails::getSuspectsDefendantsCount,
       Builder::suspectsDefendantsCount,
-      "claim.suspectsDefendantsCount"),
+      "suspects_defendants_count"),
   POLICE_STATION_COURT_ATTENDANCES_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CrimeClaimDetails::getPoliceStationCourtAttendancesCount,
       Builder::policeStationCourtAttendancesCount,
-      "claim.policeStationCourtAttendancesCount"),
+      "police_station_court_attendances_count"),
   POLICE_STATION_COURT_PRISON_ID(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getPoliceStationCourtPrisonId,
       Builder::policeStationCourtPrisonId,
       Amendability.UNTIL_ASSESSED,
-      "claim.policeStationCourtPrisonId"),
+      "police_station_court_prison_id"),
   SCHEME_ID(
       FieldType.TEXT,
       String.class,
@@ -98,34 +98,33 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       Builder::schemeId,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claim.schemeId",
-      "fee.schemeId"),
+      "scheme_id",
+      "scheme_id"),
   DSCC_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getDsccNumber,
       Builder::dsccNumber,
-      "claim.dsccNumber"),
-  MAAT_ID(
-      FieldType.TEXT, String.class, CrimeClaimDetails::getMaatId, Builder::maatId, "claim.maatId"),
+      "dscc_number"),
+  MAAT_ID(FieldType.TEXT, String.class, CrimeClaimDetails::getMaatId, Builder::maatId, "maat_id"),
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getPrisonLawPriorApprovalNumber,
       Builder::prisonLawPriorApprovalNumber,
-      "claim.prisonLawPriorApprovalNumber"),
+      "prison_law_prior_approval_number"),
   IS_DUTY_SOLICITOR(
       FieldType.BOOLEAN,
       Boolean.class,
       CrimeClaimDetails::getIsDutySolicitor,
       Builder::isDutySolicitor,
-      "claim.dutySolicitor"),
+      "duty_solicitor"),
   IS_YOUTH_COURT(
       FieldType.BOOLEAN,
       Boolean.class,
       CrimeClaimDetails::getIsYouthCourt,
       Builder::isYouthCourt,
-      "claim.youthCourt"),
+      "youth_court"),
 
   // Cost fields
   TRAVEL_COSTS(
@@ -135,8 +134,8 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       Builder::travelWaitingCostsAmount,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.travelWaitingCostsAmount",
-      "fee.netTravelCostsAmount"),
+      "travel_waiting_costs_amount",
+      "net_travel_costs_amount"),
   WAITING_COSTS(
       FieldType.MONETARY,
       BigDecimal.class,
@@ -144,8 +143,8 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       Builder::netWaitingCostsAmount,
       NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claimSummaryFee.netWaitingCostsAmount",
-      "fee.netWaitingCostsAmount");
+      "net_waiting_costs_amount",
+      "net_waiting_costs_amount");
 
   private final CrimeClaimViewFieldGetter<?> getter;
   private final String claimsApiFieldName;

@@ -140,23 +140,23 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCrimeClientDetails() {
     claim = createCrimeClaim();
     mockClaimHistorySummary(
-        "claim.feeCode",
-        "claim.crimeMatterTypeCode",
-        "claimCase.stageReachedCode",
-        "claim.uniqueFileNumber",
-        "claim.representationOrderDate",
-        "claim.caseConcludedDate",
-        "claimCase.standardFeeCategoryCode",
-        "claimCase.outcomeCode",
-        "claim.suspectsDefendantsCount",
-        "claim.policeStationCourtAttendancesCount",
-        "claim.policeStationCourtPrisonId",
-        "claim.schemeId",
-        "claim.dsccNumber",
-        "claim.maatId",
-        "claim.prisonLawPriorApprovalNumber",
-        "claim.dutySolicitor",
-        "claim.youthCourt");
+        "fee_code",
+        "crime_matter_type_code",
+        "stage_reached_code",
+        "unique_file_number",
+        "representation_order_date",
+        "case_concluded_date",
+        "standard_fee_category_code",
+        "outcome_code",
+        "suspects_defendants_count",
+        "police_station_court_attendances_count",
+        "police_station_court_prison_id",
+        "scheme_id",
+        "dscc_number",
+        "maat_id",
+        "prison_law_prior_approval_number",
+        "duty_solicitor",
+        "youth_court");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Stage reached");
@@ -216,20 +216,20 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForMediationClientDetails() {
     claim = createMediationClaim();
     mockClaimHistorySummary(
-        "claim.feeCode",
-        "claim.matterTypeCode#0",
-        "claim.matterTypeCode#1",
-        "claimCase.caseId",
-        "claimCase.uniqueCaseId",
-        "claim.mediationSessionsCount",
-        "claim.mediationTimeMinutes",
-        "claimCase.outcomeCode",
-        "claim.outreachLocation",
-        "claim.referralSource",
-        "claim.scheduleReference",
-        "claim.caseReferenceNumber",
-        "claim.caseStartDate",
-        "claim.caseConcludedDate");
+        "fee_code",
+        "matter_type_code#0",
+        "matter_type_code#1",
+        "case_id",
+        "unique_case_id",
+        "mediation_sessions_count",
+        "mediation_time_minutes",
+        "outcome_code",
+        "outreach_location",
+        "referral_source",
+        "schedule_reference",
+        "case_reference_number",
+        "case_start_date",
+        "case_concluded_date");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Matter type 1", "Matter type 2");
@@ -252,7 +252,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   @Test
   void testTagsOnlySecondMatterTypeRowWhenSecondHalfOfCodeChanged() {
     claim = createCivilClaim();
-    mockClaimHistorySummary("claim.matterTypeCode", "claim.matterTypeCode#1");
+    mockClaimHistorySummary("matter_type_code", "matter_type_code#1");
 
     var doc = renderDocument();
 
@@ -263,7 +263,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   @Test
   void testTagsOnlyFirstMatterTypeRowWhenFirstHalfOfCodeChanged() {
     claim = createCivilClaim();
-    mockClaimHistorySummary("claim.matterTypeCode", "claim.matterTypeCode#0");
+    mockClaimHistorySummary("matter_type_code", "matter_type_code#0");
 
     var doc = renderDocument();
 
@@ -366,47 +366,47 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCivilClientDetails() {
     claim = createCivilClaim();
     mockClaimHistorySummary(
-        "claim.feeCode",
-        "claim.matterTypeCode#0",
-        "claim.matterTypeCode#1",
-        "claim.scheduleReference",
-        "claimCase.caseId",
-        "claim.caseReferenceNumber",
-        "claim.caseStartDate",
-        "claim.caseConcludedDate",
-        "claim.uniqueFileNumber",
-        "claimCase.caseStageCode",
-        "claimSummaryFee.costsDamagesRecoveredAmount",
-        "claim.procurementAreaCode",
-        "claim.accessPointCode",
-        "claimCase.stageReachedCode",
-        "claimCase.outcomeCode",
-        "claimCase.exceptionalCaseFundingReference",
-        "client.claReferenceNumber",
-        "client.claExemptionCode",
-        "claim.deliveryLocation",
-        "claimSummaryFee.courtLocationCode",
-        "claimSummaryFee.aitHearingCentreCode",
-        "claimSummaryFee.localAuthorityNumber",
-        "claimCase.designatedAccreditedRepresentativeCode",
-        "claimSummaryFee.adviceTime",
-        "claimSummaryFee.travelTime",
-        "claimSummaryFee.waitingTime",
-        "claimSummaryFee.isAdditionalTravelPayment",
-        "claimCase.followOnWork",
-        "claimSummaryFee.isToleranceApplicable",
-        "claimCase.isLegacyCase",
-        "claimSummaryFee.meetingsAttendedCode",
-        "claimSummaryFee.adviceTypeCode",
-        "claimCase.transferDate",
-        "claimSummaryFee.medicalReportsCount",
-        "claimCase.exemptionCriteriaSatisfied",
-        "claimSummaryFee.isIrcSurgery",
-        "claimSummaryFee.surgeryDate",
-        "claimSummaryFee.surgeryClientsCount",
-        "claimSummaryFee.surgeryMattersCount",
-        "claimCase.mentalHealthTribunalReference",
-        "claimCase.isNrmAdvice");
+        "fee_code",
+        "matter_type_code#0",
+        "matter_type_code#1",
+        "schedule_reference",
+        "case_id",
+        "case_reference_number",
+        "case_start_date",
+        "case_concluded_date",
+        "unique_file_number",
+        "case_stage_code",
+        "costs_damages_recovered_amount",
+        "procurement_area_code",
+        "access_point_code",
+        "stage_reached_code",
+        "outcome_code",
+        "exceptional_case_funding_reference",
+        "cla_reference_number",
+        "cla_exemption_code",
+        "delivery_location",
+        "court_location_code",
+        "ait_hearing_centre_code",
+        "local_authority_number",
+        "designated_accredited_representative_code",
+        "advice_time",
+        "travel_time",
+        "waiting_time",
+        "is_additional_travel_payment",
+        "follow_on_work",
+        "is_tolerance_applicable",
+        "is_legacy_case",
+        "meetings_attended_code",
+        "advice_type_code",
+        "transfer_date",
+        "medical_reports_count",
+        "exemption_criteria_satisfied",
+        "is_irc_surgery",
+        "surgery_date",
+        "surgery_clients_count",
+        "surgery_matters_count",
+        "mental_health_tribunal_reference",
+        "is_nrm_advice");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Matter type 1", "Matter type 2");

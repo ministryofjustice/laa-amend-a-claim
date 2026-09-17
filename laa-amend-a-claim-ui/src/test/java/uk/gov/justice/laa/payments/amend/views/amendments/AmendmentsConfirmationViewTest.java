@@ -69,13 +69,13 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     var changedFields =
         new HashSet<>(
             Set.of(
-                "fee.fixedFeeAmount",
-                "fee.netProfitCostsAmount",
-                "fee.disbursementAmount",
-                "fee.netTravelCostsAmount",
-                "fee.netWaitingCostsAmount",
-                "fee.vatIndicator",
-                "fee.disbursementVatAmount"));
+                "fixed_fee_amount",
+                "net_profit_costs_amount",
+                "disbursement_amount",
+                "net_travel_costs_amount",
+                "net_waiting_costs_amount",
+                "vat_indicator",
+                "disbursement_vat_amount"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
         .thenReturn(new AmendmentConfirmation(true, changedFields));
 
@@ -109,10 +109,10 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     var changedFields =
         new HashSet<>(
             Set.of(
-                "fee.fixedFeeAmount",
-                "fee.vatIndicator",
-                "fee.disbursementAmount",
-                "fee.disbursementVatAmount"));
+                "fixed_fee_amount",
+                "vat_indicator",
+                "disbursement_amount",
+                "disbursement_vat_amount"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
         .thenReturn(new AmendmentConfirmation(true, changedFields));
 
@@ -140,20 +140,20 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     var changedFields =
         new HashSet<>(
             Set.of(
-                "fee.fixedFeeAmount",
-                "fee.netProfitCostsAmount",
-                "fee.disbursementAmount",
-                "fee.netCostOfCounselAmount",
-                "fee.disbursementVatAmount",
-                "fee.travelAndWaitingCostsAmount",
-                "fee.vatIndicator",
-                "fee.boltOnAdjournedHearingFee",
-                "fee.detentionTravelAndWaitingCostsAmount",
-                "fee.jrFormFillingAmount",
-                "fee.boltOnSubstantiveHearingFee",
-                "fee.boltOnHomeOfficeInterviewFee",
-                "fee.boltOnCmrhOralFee",
-                "fee.boltOnCmrhTelephoneFee"));
+                "fixed_fee_amount",
+                "net_profit_costs_amount",
+                "disbursement_amount",
+                "net_cost_of_counsel_amount",
+                "disbursement_vat_amount",
+                "travel_and_waiting_costs_amount",
+                "vat_indicator",
+                "bolt_on_adjourned_hearing_fee",
+                "detention_travel_and_waiting_costs_amount",
+                "jr_form_filling_amount",
+                "bolt_on_substantive_hearing_fee",
+                "bolt_on_home_office_interview_fee",
+                "bolt_on_cmrh_oral_fee",
+                "bolt_on_cmrh_telephone_fee"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
         .thenReturn(new AmendmentConfirmation(true, changedFields));
 

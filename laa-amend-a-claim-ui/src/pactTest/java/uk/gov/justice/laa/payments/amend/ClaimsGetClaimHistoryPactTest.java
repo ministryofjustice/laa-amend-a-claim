@@ -76,7 +76,7 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
                                                 changes.object(
                                                     change -> {
                                                       change.stringType(
-                                                          "field_identifier", "fee.schemeId");
+                                                          "field_identifier", "scheme_id");
                                                       change.nullValue("before");
                                                       change.stringType("after", "SCHEME-TEST");
                                                       change.stringMatcher(
@@ -170,7 +170,7 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
                         ClaimHistoryChangeEntry::getAfter,
                         ClaimHistoryChangeEntry::getChangeSource)
                     .containsExactly(
-                        "fee.schemeId",
+                        "scheme_id",
                         null,
                         "SCHEME-TEST",
                         ClaimHistoryChangeEntry.ChangeSourceEnum.FSP));

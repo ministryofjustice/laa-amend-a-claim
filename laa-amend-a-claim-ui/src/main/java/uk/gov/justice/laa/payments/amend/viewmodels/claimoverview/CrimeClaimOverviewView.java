@@ -17,7 +17,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.SUBMITTED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.TOTAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_INDICATOR;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_REQUESTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
@@ -54,25 +54,27 @@ public record CrimeClaimOverviewView(
 
   private static LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> createSummaryRows(
       CrimeClaimDetails claim) {
-    return toFieldMap(
-        Stream.of(
-            asCrimeField(CLIENT_NAME),
-            asCrimeField(UNIQUE_FILE_NUMBER),
-            asCrimeField(PROVIDER_NAME),
-            asCrimeField(OFFICE_CODE),
-            asCrimeField(SUBMITTED_DATE),
-            asCrimeField(AREA_OF_LAW),
-            asCrimeField(CATEGORY_OF_LAW),
-            asCrimeField(FEE_CODE),
-            asCrimeField(FEE_CODE_DESCRIPTION),
-            POLICE_STATION_COURT_PRISON_ID,
-            SCHEME_ID,
-            MATTER_TYPE_CODE,
-            asCrimeField(CASE_START_DATE),
-            CASE_CONCLUDED_DATE,
-            asCrimeField(ESCAPED),
-            asCrimeField(VAT_REQUESTED)),
-        claim);
+    var summaryRows =
+        toFieldMap(
+            Stream.of(
+                asCrimeField(CLIENT_NAME),
+                asCrimeField(UNIQUE_FILE_NUMBER),
+                asCrimeField(PROVIDER_NAME),
+                asCrimeField(OFFICE_CODE),
+                asCrimeField(SUBMITTED_DATE),
+                asCrimeField(AREA_OF_LAW),
+                asCrimeField(CATEGORY_OF_LAW),
+                asCrimeField(FEE_CODE),
+                asCrimeField(FEE_CODE_DESCRIPTION),
+                POLICE_STATION_COURT_PRISON_ID,
+                SCHEME_ID,
+                MATTER_TYPE_CODE,
+                asCrimeField(CASE_START_DATE),
+                CASE_CONCLUDED_DATE,
+                asCrimeField(ESCAPED),
+                asCrimeField(VAT_REQUESTED)),
+            claim);
+    return summaryRows;
   }
 
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createSummaryFields(
@@ -84,7 +86,7 @@ public record CrimeClaimOverviewView(
     putField(summaryFields, asCrimeField(DISBURSEMENTS_VAT), claim);
     putField(summaryFields, TRAVEL_COSTS, claim);
     putField(summaryFields, WAITING_COSTS, claim);
-    putField(summaryFields, asCrimeField(VAT), claim);
+    putField(summaryFields, asCrimeField(VAT_INDICATOR), claim);
     if (!claim.isHasAssessment()) {
       putField(summaryFields, asCrimeField(TOTAL), claim);
     }

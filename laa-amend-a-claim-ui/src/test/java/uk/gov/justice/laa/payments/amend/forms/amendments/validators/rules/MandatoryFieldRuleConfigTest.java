@@ -103,7 +103,7 @@ public class MandatoryFieldRuleConfigTest {
         CivilClaimDetailsViewField.MATTER_TYPE_CODE_1,
         CivilClaimDetailsViewField.MATTER_TYPE_CODE_2,
         ClaimDetailsViewField.PROFIT_COST,
-        ClaimDetailsViewField.VAT);
+        ClaimDetailsViewField.VAT_INDICATOR);
   }
 
   private static Stream<ClaimViewField<?>> mandatoryParameterizedCrimeClaimFields() {

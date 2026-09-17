@@ -58,12 +58,12 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCrimeCosts() {
     claim = createCrimeClaim();
     mockClaimHistorySummary(
-        "claimSummaryFee.netProfitCostsAmount",
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.travelWaitingCostsAmount",
-        "claimSummaryFee.netWaitingCostsAmount",
-        "claimSummaryFee.isVatApplicable",
-        "claimSummaryFee.disbursementsVatAmount");
+        "net_profit_costs_amount",
+        "net_disbursement_amount",
+        "travel_waiting_costs_amount",
+        "net_waiting_costs_amount",
+        "is_vat_applicable",
+        "disbursements_vat_amount");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(
@@ -101,9 +101,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForMediationCosts() {
     claim = createMediationClaim();
     mockClaimHistorySummary(
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.disbursementsVatAmount",
-        "claimSummaryFee.isVatApplicable");
+        "net_disbursement_amount", "disbursements_vat_amount", "is_vat_applicable");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(
@@ -174,21 +172,21 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   void testShowsAmendedTagsForCivilCosts() {
     claim = createCivilClaim();
     mockClaimHistorySummary(
-        "claimSummaryFee.netProfitCostsAmount",
-        "claimSummaryFee.netDisbursementAmount",
-        "claimSummaryFee.netCounselCostsAmount",
-        "claimSummaryFee.disbursementsVatAmount",
-        "claimSummaryFee.travelWaitingCostsAmount",
-        "claimSummaryFee.isVatApplicable",
-        "claimSummaryFee.adjournedHearingFeeAmount",
-        "claimSummaryFee.detentionTravelWaitingCostsAmount",
-        "claimSummaryFee.jrFormFillingAmount",
-        "claimSummaryFee.isSubstantiveHearing",
-        "claimSummaryFee.hoInterview",
-        "claimSummaryFee.cmrhOralCount",
-        "claimSummaryFee.cmrhTelephoneCount",
-        "claimSummaryFee.isLondonRate",
-        "claimSummaryFee.priorAuthorityReference");
+        "net_profit_costs_amount",
+        "net_disbursement_amount",
+        "net_counsel_costs_amount",
+        "disbursements_vat_amount",
+        "travel_waiting_costs_amount",
+        "is_vat_applicable",
+        "adjourned_hearing_fee_amount",
+        "detention_travel_waiting_costs_amount",
+        "jr_form_filling_amount",
+        "is_substantive_hearing",
+        "ho_interview",
+        "cmrh_oral_count",
+        "cmrh_telephone_count",
+        "is_london_rate",
+        "prior_authority_reference");
 
     var doc = renderDocument();
     assertRowsHaveAmendedTags(

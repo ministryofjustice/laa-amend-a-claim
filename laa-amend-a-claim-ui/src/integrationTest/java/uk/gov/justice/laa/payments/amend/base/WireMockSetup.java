@@ -272,7 +272,7 @@ public class WireMockSetup {
                         "metadata": {
                             "changes": [
                                 {
-                                    "field_identifier": "client.clientForename",
+                                    "field_identifier": "client_forename",
                                     "before": "Jane",
                                     "after": "Janet",
                                     "change_source": "REQUESTED"
