@@ -39,9 +39,14 @@ jobs:
           client_id: ${{ secrets.SNYK_CLIENT_ID }}
           client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
 
+
+      - name: Check working directory
+        run: ls -la
+
       - name: Run Snyk dependency scan
         id: snyk
         run: snyk test --file=laa-amend-a-claim-ui/build.gradle \
+          --all-sub-projects \
           --package-manager=gradle \
           --severity-threshold=high \
           --json-file-output=snyk-app.json
