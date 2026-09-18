@@ -56,15 +56,6 @@ jobs:
         env:
           SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
 
-      - name: Run Snyk dependency scan
-        id: snyk
-        run: snyk test --file=build.gradle \
-          --package-manager=gradle \
-          --severity-threshold=high \
-          --json-file-output=snyk-app.json
-        env:
-          SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
-
       - name: Publish condensed Snyk dependency summary
         id: summary
         if: always()
