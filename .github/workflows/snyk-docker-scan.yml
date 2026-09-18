@@ -60,7 +60,7 @@ jobs:
       - name: Pull Docker image from ECR
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG spring-boot-microservice:scan
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG ministryofjustice/laa-amend-a-claim:scan
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
@@ -78,7 +78,7 @@ jobs:
           SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
         with:
-          image: spring-boot-microservice:scan
+          image: ministryofjustice/laa-amend-a-claim:scan
           args: --file=Dockerfile --severity-threshold=high --policy-path=.snyk
           command: ${{ inputs.branch == 'main' && 'monitor' || 'test' }}
 
@@ -88,7 +88,7 @@ jobs:
           SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
         with:
-          image: submit-a-bulk-claim:scan
+          image: ministryofjustice/laa-amend-a-claim:scan
           args: --file=Dockerfile --policy-path=.snyk
           command: monitor
 
