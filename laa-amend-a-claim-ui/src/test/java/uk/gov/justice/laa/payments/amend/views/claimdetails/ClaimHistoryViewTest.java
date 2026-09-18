@@ -227,7 +227,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
     var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
     assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
-        .isEqualTo("Total claim value recalculated");
+        .isEqualTo("Claim recalculated");
     assertThat(timelineItem.selectFirst(".moj-timeline__byline").text())
         .isEqualTo("by Fee Scheme Platform");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
@@ -627,7 +627,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
     var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
     assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
-        .isEqualTo("Total claim value recalculated");
+        .isEqualTo("Claim recalculated");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
         .isEqualTo("Total claim value recalculated from £1,000.00 to £1,200.50");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(2)").text())

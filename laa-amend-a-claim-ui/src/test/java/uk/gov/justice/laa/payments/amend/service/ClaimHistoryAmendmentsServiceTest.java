@@ -273,6 +273,8 @@ class ClaimHistoryAmendmentsServiceTest {
                         .eventType(AMENDMENT)
                         .metadata(
                             Map.of(
+                                "pricing_recalculated",
+                                true,
                                 "price_changed",
                                 true,
                                 "changes",
@@ -323,6 +325,8 @@ class ClaimHistoryAmendmentsServiceTest {
                         .eventType(AMENDMENT)
                         .metadata(
                             Map.of(
+                                "pricing_recalculated",
+                                true,
                                 "price_changed",
                                 true,
                                 "changes",
@@ -548,6 +552,8 @@ class ClaimHistoryAmendmentsServiceTest {
                         .eventTimestamp(eventTime)
                         .metadata(
                             Map.of(
+                                "pricing_recalculated",
+                                true,
                                 "price_changed",
                                 true,
                                 "changes",
@@ -573,6 +579,45 @@ class ClaimHistoryAmendmentsServiceTest {
   }
 
   @Test
+  void toFspClaimHistoryEventsReturnsFspEventWhenPricingRecalculatedWithoutTotalChange() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var eventTime = java.time.OffsetDateTime.of(2026, 5, 1, 10, 0, 0, 0, java.time.ZoneOffset.UTC);
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .eventTimestamp(eventTime)
+                        .metadata(
+                            Map.of(
+                                "pricing_recalculated",
+                                true,
+                                "price_changed",
+                                false,
+                                "changes",
+                                List.of(
+                                    change(
+                                        "FSP", "net_profit_costs_amount", "500.00", "500.00"))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+
+    assertThat(events).hasSize(1);
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.eventDateTime()).isEqualTo(eventTime);
+    assertThat(fspEvent.totalBefore()).isNull();
+    assertThat(fspEvent.totalAfter()).isNull();
+    assertThat(fspEvent.recalculatedChanges()).hasSize(1);
+    assertThat(fspEvent.recalculatedChanges().getFirst().fieldIdentifier())
+        .isEqualTo("net_profit_costs_amount");
+  }
+
+  @Test
   void toFspClaimHistoryEventsExcludesTotalAmountFromRecalculatedFields() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     var history =
@@ -584,6 +629,8 @@ class ClaimHistoryAmendmentsServiceTest {
                         .eventType(AMENDMENT)
                         .metadata(
                             Map.of(
+                                "pricing_recalculated",
+                                true,
                                 "price_changed",
                                 true,
                                 "changes",
@@ -612,6 +659,8 @@ class ClaimHistoryAmendmentsServiceTest {
                         .eventType(AMENDMENT)
                         .metadata(
                             Map.of(
+                                "pricing_recalculated",
+                                true,
                                 "price_changed",
                                 true,
                                 "changes",
