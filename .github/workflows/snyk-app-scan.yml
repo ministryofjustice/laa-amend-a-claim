@@ -40,7 +40,7 @@ jobs:
           client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
 
       - name: Run Snyk app vulnerability scan
-        run: snyk test --file=laa-amend-a-claim-ui/build.gradle \
+        run: snyk test --file=build.gradle \
           --all-sub-projects \
           --package-manager=gradle \
           --severity-threshold=high \
