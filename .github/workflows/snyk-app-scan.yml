@@ -40,8 +40,21 @@ jobs:
           client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
 
 
-      - name: Check working directory
-        run: ls -la
+      - name: Verify Gradle dependencies
+        run: ./gradlew dependencies --no-daemon --stacktrace
+
+      - name: Run Snyk dependency scan
+        id: snyk
+        continue-on-error: true
+        run: |
+          snyk test \
+            --file=build.gradle \
+            --package-manager=gradle \
+            --severity-threshold=high \
+            --json-file-output=snyk-app.json \
+            --debug
+        env:
+          SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
 
       - name: Run Snyk dependency scan
         id: snyk
