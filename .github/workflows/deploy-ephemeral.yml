@@ -29,6 +29,10 @@ on:
       KUBE_CLUSTER:
         required: true
 
+concurrency:
+  group: deploy-ephemeral-${{ inputs.branch }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -83,6 +87,12 @@ jobs:
           kube-cluster: ${{ secrets.KUBE_CLUSTER }}
           kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
           kube-sa: deploy-user
+
+      - name: Clear stale Helm lock
+        uses: ./.github/actions/clear-helm-lock
+        with:
+          release_name: ${{ steps.sanitize.outputs.release_name }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
 
       - name: Deploy Ephemeral Environment with Helm
         env:

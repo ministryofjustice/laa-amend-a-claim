@@ -1,0 +1,40 @@
+name: 'Clear stale Helm lock'
+description: 'Clears a Helm release left in a pending state by an interrupted deploy'
+inputs:
+  release_name:
+    description: 'The Helm release to check'
+    required: true
+  namespace:
+    description: 'The Kubernetes namespace containing the release'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clear stale Helm lock
+      shell: bash
+      env:
+        INPUT_RELEASE_NAME: ${{ inputs.release_name }}
+        INPUT_NAMESPACE: ${{ inputs.namespace }}
+      run: |
+        set -euo pipefail
+
+        STATUS="$(helm status "${INPUT_RELEASE_NAME}" --namespace "${INPUT_NAMESPACE}" -o json 2>/dev/null \
+          | jq -r '.info.status // empty' 2>/dev/null || true)"
+
+        case "${STATUS}" in
+          pending-install)
+            echo "::warning::Release ${INPUT_RELEASE_NAME} is stuck in ${STATUS}; uninstalling before deploy"
+            helm uninstall "${INPUT_RELEASE_NAME}" --namespace "${INPUT_NAMESPACE}" --wait --timeout 5m
+            ;;
+          pending-*)
+            echo "::warning::Release ${INPUT_RELEASE_NAME} is stuck in ${STATUS}; rolling back before deploy"
+            helm rollback "${INPUT_RELEASE_NAME}" --namespace "${INPUT_NAMESPACE}" --wait --timeout 5m
+            ;;
+          '')
+            echo "No existing release found for ${INPUT_RELEASE_NAME}; nothing to clear"
+            ;;
+          *)
+            echo "Release ${INPUT_RELEASE_NAME} status is ${STATUS}; nothing to clear"
+            ;;
+        esac
