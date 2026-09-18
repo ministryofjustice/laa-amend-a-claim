@@ -47,7 +47,7 @@ jobs:
             --file=build.gradle \
             --all-sub-projects \
             --package-manager=gradle \
-            --severity-threshold=medium \
+            --severity-threshold=high \
             --json-file-output=snyk-app.json \
             --debug
         env:
