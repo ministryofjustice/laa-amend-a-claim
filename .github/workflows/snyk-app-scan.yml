@@ -30,7 +30,7 @@ jobs:
         uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
 
       - name: Install Snyk CLI
-        run: npm install -g snyk
+        run: npm install --global snyk@1.1306.4
 
       - name: Obtain Short-lived Snyk token
         id: auth
@@ -39,8 +39,9 @@ jobs:
           client_id: ${{ secrets.SNYK_CLIENT_ID }}
           client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
 
-      - name: Run Snyk app vulnerability scan
-        run: snyk test --file=build.gradle \
+      - name: Run Snyk dependency scan
+        id: snyk
+        run: snyk test --file=laa-amend-a-claim-ui/build.gradle \
           --all-sub-projects \
           --package-manager=gradle \
           --severity-threshold=high \
