@@ -39,7 +39,11 @@ ext['jackson-bom.version'] = '3.1.6'
 
 dependencyManagement {
     dependencies {
-        // === INSERT YOUR OVERRIDES HERE ===
+        dependencySet(group: 'org.bouncycastle', version: '1.85') {
+            entry 'bcpkix-jdk18on'
+            entry 'bcprov-jdk18on'
+            entry 'bcutil-jdk18on'
+        }
     }
 }
 
