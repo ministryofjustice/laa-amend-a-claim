@@ -45,6 +45,7 @@ jobs:
         run: |
           snyk test \
             --file=build.gradle \
+            --all-sub-projects \
             --package-manager=gradle \
             --severity-threshold=medium \
             --json-file-output=snyk-app.json \
