@@ -114,7 +114,7 @@ public class ClaimHistoryAmendmentsService {
         Optional.ofNullable(apiEvent.amendmentMetadata())
             .orElseGet(ClaimHistoryAmendmentMetadata::new);
 
-    if (!TRUE.equals(metadata.getPriceChanged())) {
+    if (!TRUE.equals(metadata.getPricingRecalculated())) {
       return Optional.empty();
     }
 
@@ -133,17 +133,18 @@ public class ClaimHistoryAmendmentsService {
             .filter(c -> FIELD_IDENTIFIER_TOTAL_AMOUNT.equals(c.getFieldIdentifier()))
             .findFirst()
             .orElse(null);
-    if (totalAmountChange == null) {
-      log.warn(
-          "Price changed is true for event at {} but no {} change was present",
-          apiEvent.eventTimestamp(),
-          FIELD_IDENTIFIER_TOTAL_AMOUNT);
-    } else {
+
+    if (totalAmountChange != null) {
       totalBefore =
           toBigDecimalOrNull(
               totalAmountChange.getBefore(), FIELD_IDENTIFIER_TOTAL_AMOUNT, "before");
       totalAfter =
           toBigDecimalOrNull(totalAmountChange.getAfter(), FIELD_IDENTIFIER_TOTAL_AMOUNT, "after");
+    } else if (TRUE.equals(metadata.getPriceChanged())) {
+      log.warn(
+          "Price changed is true for event at {} but no {} change was present",
+          apiEvent.eventTimestamp(),
+          FIELD_IDENTIFIER_TOTAL_AMOUNT);
     }
 
     var recalculatedChanges =
