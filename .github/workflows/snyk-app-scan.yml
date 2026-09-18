@@ -45,8 +45,7 @@ jobs:
 
       - name: Run Snyk dependency scan
         id: snyk
-        run: snyk test --file=laa-amend-a-claim-ui/build.gradle \
-          --all-sub-projects \
+        run: snyk test --file=build.gradle \
           --package-manager=gradle \
           --severity-threshold=high \
           --json-file-output=snyk-app.json
