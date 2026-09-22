@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.payments.amend.views.amendments;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +49,9 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     assertPageHasHeading(doc, "Amendments complete");
     assertPageHasPanel(doc);
     assertPageHasContent(doc, "The claim details have been updated with your amendments.");
+    assertThat(doc.text()).doesNotContain("Changes to calculated costs");
+    assertThat(doc.text())
+        .doesNotContain("Amendments have affected the calculated costs for this claim.");
     assertPageHasLink(doc, "view-amended-claim", "View amended claim", overviewUrl);
     assertPageHasLink(
         doc, "back-to-search", "Back to search results", "/?officeCode=0P322F&page=1");
@@ -61,6 +65,8 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     Document doc = renderDocument();
 
     assertPageHasContent(doc, "The updated claim total is £200.00");
+    assertH2Exists(doc, "Changes to calculated costs");
+    assertParagraphExists(doc, "Amendments have affected the calculated costs for this claim.");
   }
 
   @Test
