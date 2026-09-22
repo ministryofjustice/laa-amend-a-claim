@@ -39,7 +39,7 @@ ext['jackson-bom.version'] = '3.1.6'
 
 dependencyManagement {
     dependencies {
-        dependencySet(group: 'org.bouncycastle', version: '1.85') {
+        dependencySet(group: 'org.bouncycastle', version: '1.86') {
             entry 'bcpkix-jdk18on'
             entry 'bcprov-jdk18on'
             entry 'bcutil-jdk18on'
@@ -71,7 +71,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.webjars.npm:govuk-frontend:6.5.0'
+    implementation 'org.webjars.npm:govuk-frontend:6.5.1'
     implementation 'org.webjars.npm:ministryofjustice__frontend:11.0.1'
     implementation 'org.webjars.npm:accessible-autocomplete:3.0.1'
     implementation("org.apache.commons:commons-csv:1.14.1")
