@@ -117,7 +117,7 @@ jobs:
       branch: ${{ github.ref_name }}
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
-      image_scan_threshold: 'critical'
+      image_scan_threshold: 'high'
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       SNYK_CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
