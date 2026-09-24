@@ -41,7 +41,6 @@ jobs:
       branch: ${{ github.sha }}
       image_tag: ${{ needs.upload-image.outputs.published_image_version }}
       aws_region: ${{ vars.ECR_REGION }}
-      ecr_repository: ${{ vars.ECR_REPOSITORY }}
       image_scan_threshold: 'medium'
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
