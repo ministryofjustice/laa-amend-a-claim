@@ -10,57 +10,52 @@
 <body>
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-panel govuk-panel--confirmation">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-6">
         <h1 class="govuk-panel__title" th:text="#{amendments.confirmation.title}"></h1>
         <div class="govuk-panel__body">
           <div th:text="#{amendments.confirmation.body}"></div>
           <div
-              class="govuk-body"
+              class="govuk-body-l govuk-!-margin-top-6"
               th:if="${confirmation.hasCalculatedCostsChanged}"
               th:text="#{amendments.confirmation.updatedClaimTotal(${@ThymeleafUtils.getFormattedValue(updatedClaimTotal).resolve(#messages)})}"></div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="govuk-grid-row" th:if="${confirmation.hasCalculatedCostsChanged}">
-    <div class="govuk-grid-column-full">
-      <div class="govuk-summary-card">
-        <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title" th:text="#{claimCosts.listOfCosts}"></h2>
+      <th:block th:if="${confirmation.hasCalculatedCostsChanged}">
+        <h2 class="govuk-heading-xl" th:text="#{amendments.confirmation.costsTitle}"></h2>
+        <p class="govuk-body-l" th:text="#{amendments.confirmation.costsBody}"></p>
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title" th:text="#{claimCosts.listOfCosts}"></h2>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key" th:text="#{claimCosts.item}"></dt>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.submitted}"></dd>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.calculated}"></dd>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimCosts.assessed}"></dd>
+              </div>
+
+              <div class="govuk-summary-list__row"
+                   th:each="entry : ${claim.costFields}"
+                   th:with="field=${entry.key}, row=${entry.value}">
+                <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + field.name()}}"></dt>
+                <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
+                <dd class="govuk-summary-list__value"
+                    th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
+                <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
+                <dd class="govuk-summary-list__actions"
+                    th:if="${field.isAmended(confirmation.amendedFields)}">
+                  <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
+                </dd>
+              </div>
+            </dl>
+          </div>
         </div>
-        <div class="govuk-summary-card__content">
-          <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key" th:text="#{claimCosts.item}"></dt>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.submitted}"></dd>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.calculated}"></dd>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimCosts.assessed}"></dd>
-            </div>
-
-            <div class="govuk-summary-list__row"
-                 th:each="entry : ${claim.costFields}"
-                 th:with="field=${entry.key}, row=${entry.value}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + field.name()}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
-              <dd class="govuk-summary-list__value"
-                  th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
-              <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
-              <dd class="govuk-summary-list__actions"
-                  th:if="${field.isAmended(confirmation.amendedFields)}">
-                <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-    <div class="govuk-button-group govuk-!-margin-top-8">
+      </th:block>
+      <div class="govuk-button-group">
         <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
            th:text="#{amendments.confirmation.viewClaim}"
            role="button"
