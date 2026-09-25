@@ -17,9 +17,11 @@ import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveClaim;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
@@ -30,6 +32,9 @@ import uk.gov.justice.laa.payments.amend.service.DummyUserSecurityService;
 public class VoidConfirmationControllerTest extends BaseControllerTest {
 
   private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
+  private static final long VERSION = 0;
+
+  @Autowired private MockMvc mockMvc;
 
   @MockitoBean private ClaimService claimService;
 
@@ -46,13 +51,14 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
     claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
+    claim.setVersion(VERSION);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     saveClaim(session, claimId, claim);
   }
 
   @Test
   public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-    when(claimService.voidClaim(claimId, USER_ID))
+    when(claimService.voidClaim(claimId, USER_ID, VERSION))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
     mockMvc
@@ -69,7 +75,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
   public void testSuccessfulSubmitRedirectsToSearch() throws Exception {
     var redirectUrl = "/";
 
-    when(claimService.voidClaim(claimId, USER_ID))
+    when(claimService.voidClaim(claimId, USER_ID, VERSION))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
     mockMvc
@@ -85,7 +91,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
     var searchUrl = "/?officeCode=123456";
     session.setAttribute("searchUrl", searchUrl);
 
-    when(claimService.voidClaim(claimId, USER_ID))
+    when(claimService.voidClaim(claimId, USER_ID, VERSION))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
     mockMvc
@@ -98,7 +104,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
 
   @Test
   public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-    when(claimService.voidClaim(claimId, USER_ID)).thenThrow(new RuntimeException());
+    when(claimService.voidClaim(claimId, USER_ID, VERSION)).thenThrow(new RuntimeException());
 
     mockMvc
         .perform(post(buildPath()).session(session).with(csrf()))
