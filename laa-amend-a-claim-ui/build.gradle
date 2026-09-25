@@ -40,7 +40,7 @@ ext['netty.version'] = '4.2.18.Final'
 
 dependencyManagement {
     dependencies {
-        dependencySet(group: 'org.bouncycastle', version: '1.85') {
+        dependencySet(group: 'org.bouncycastle', version: '1.86') {
             entry 'bcpkix-jdk18on'
             entry 'bcprov-jdk18on'
             entry 'bcutil-jdk18on'
@@ -72,7 +72,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.webjars.npm:govuk-frontend:6.5.0'
+    implementation 'org.webjars.npm:govuk-frontend:6.5.1'
     implementation 'org.webjars.npm:ministryofjustice__frontend:11.0.1'
     implementation 'org.webjars.npm:accessible-autocomplete:3.0.1'
     implementation("org.apache.commons:commons-csv:1.14.1")
@@ -80,7 +80,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.56.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.57.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
