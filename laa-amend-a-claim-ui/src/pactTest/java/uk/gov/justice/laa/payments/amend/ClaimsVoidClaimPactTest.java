@@ -32,6 +32,8 @@ import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 @DisplayName("POST: /api/v1/claims/{claimId}/void PACT tests")
 public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
 
+  private static final long VERSION = 0;
+
   @Autowired ClaimsApiClient claimsApiClient;
 
   @Pact(consumer = CONSUMER)
@@ -79,6 +81,8 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
   @PactTestFor(pactMethod = "voidClaim201")
   void verify201Response() {
     VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(VERSION);
+
     VoidClaim201Response response = claimsApiClient.voidClaim(CLAIM_ID, request).block();
 
     assertThat(response).isNotNull();
@@ -90,6 +94,8 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
   @PactTestFor(pactMethod = "voidClaim404")
   void verify404Response() {
     VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(VERSION);
+
     assertThrows(NotFound.class, () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
   }
 

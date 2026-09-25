@@ -131,9 +131,11 @@ public class ClaimService {
     return claimDetails;
   }
 
-  public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
+  public VoidClaim201Response voidClaim(UUID claimId, UUID userId, long version) {
     try {
       var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+      request.setVersion(version);
+
       var response = claimsApiClient.voidClaim(claimId, request).block();
       voidClaimCounter.increment();
       return response;

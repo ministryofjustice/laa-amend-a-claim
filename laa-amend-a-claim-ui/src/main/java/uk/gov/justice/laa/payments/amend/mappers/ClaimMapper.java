@@ -246,6 +246,7 @@ public interface ClaimMapper {
       case VOIDED -> DerivedClaimStatus.VOIDED;
       case INVALID -> DerivedClaimStatus.INVALID;
       case READY_TO_PROCESS -> DerivedClaimStatus.READY_TO_PROCESS;
+      case VALIDATED_PENDING_APPROVAL -> DerivedClaimStatus.VALIDATED_PENDING_APPROVAL;
     };
   }
 
