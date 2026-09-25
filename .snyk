@@ -20,15 +20,6 @@ ignore:
   'snyk:lic:maven:com.github.spotbugs:spotbugs-annotations:LGPL-2.1':
     - '*':
         reason: Approved license
-
-  SNYK-JAVA-ORGHDRHISTOGRAM-17821182:
-    - '*':
-        reason: Transitive via micrometer-core/actuator; low severity, no fix available yet
-        expires: 2026-07-31T00:00:00.000Z
-  SNYK-JAVA-ORGHDRHISTOGRAM-17821183:
-    - '*':
-        reason: Transitive via micrometer-core/actuator; low severity, no fix available yet
-        expires: 2026-07-31T00:00:00.000Z
 patch: {}
 exclude:
   global:
