@@ -16,6 +16,8 @@ public record ClaimInsert(
     String feeCode,
     String outreachLocation,
     String referralSource,
+    String schemeId,
+    Integer mediationSessionsCount,
     String userId,
     Boolean hasAssessment)
     implements Insert {
@@ -38,6 +40,8 @@ public record ClaimInsert(
         feeCode != null ? feeCode : "INVC",
         outreachLocation,
         referralSource,
+        schemeId,
+        mediationSessionsCount,
         userId,
         userId,
         hasAssessment != null ? hasAssessment : false);
