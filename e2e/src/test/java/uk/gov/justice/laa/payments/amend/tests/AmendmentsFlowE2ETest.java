@@ -146,6 +146,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .uniqueFileNumber(MEDIATION_UFN)
             .outreachLocation("001")
             .referralSource("08")
+            .mediationSessionsCount(2)
             .userId(USER_ID)
             .build(),
         ClientInsert.builder()
@@ -202,6 +203,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .matterType("01")
             .crimeMatterType("01")
             .feeCode("INVC")
+            .schemeId("1001")
             .userId(USER_ID)
             .build(),
         ClaimCaseInsert.builder()
