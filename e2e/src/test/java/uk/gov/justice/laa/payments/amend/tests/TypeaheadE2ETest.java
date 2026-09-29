@@ -35,6 +35,8 @@ class TypeaheadE2ETest extends BaseTest {
   private static final String CLAIM_ID = UUID.randomUUID().toString();
   private static final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
   private static final String EXISTING_FEE_CODE = "IMCA";
+  private static final String EXISTING_FEE_CODE_DESCRIPTION =
+      "IMCA - Standard Fee - Immigration CLR (2a)";
   private static final String QUERY = "IAX";
   private static final String MATCHING_FEE_CODE = "IAXC";
 
@@ -120,7 +122,7 @@ class TypeaheadE2ETest extends BaseTest {
   @Test
   @DisplayName("Fee code typeahead opens with matching options only after typing")
   void opensWithMatchingOptionsOnlyAfterTyping() {
-    assertThat(feeCodePage.getFeeCodeInput()).hasValue(EXISTING_FEE_CODE);
+    assertThat(feeCodePage.getFeeCodeInput()).hasValue(EXISTING_FEE_CODE_DESCRIPTION);
     assertThat(feeCodePage.getFeeCodeMenu()).isHidden();
 
     feeCodePage.getFeeCodeInput().click();
