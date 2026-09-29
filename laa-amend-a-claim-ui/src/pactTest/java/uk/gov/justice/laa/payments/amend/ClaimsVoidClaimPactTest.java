@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
 
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
+import au.com.dius.pact.consumer.dsl.LambdaDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit.MockServerConfig;
 import au.com.dius.pact.consumer.junit5.PactConsumerTest;
@@ -31,6 +32,8 @@ import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 @MockServerConfig(port = "1245")
 @DisplayName("POST: /api/v1/claims/{claimId}/void PACT tests")
 public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
+
+  private static final long VERSION = 0;
 
   @Autowired ClaimsApiClient claimsApiClient;
 
@@ -79,6 +82,8 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
   @PactTestFor(pactMethod = "voidClaim201")
   void verify201Response() {
     VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(VERSION);
+
     VoidClaim201Response response = claimsApiClient.voidClaim(CLAIM_ID, request).block();
 
     assertThat(response).isNotNull();
@@ -90,12 +95,14 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
   @PactTestFor(pactMethod = "voidClaim404")
   void verify404Response() {
     VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(VERSION);
+
     assertThrows(NotFound.class, () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
   }
 
-  private static void buildVoidClaimRequestBody(
-      au.com.dius.pact.consumer.dsl.LambdaDslJsonBody body) {
+  private static void buildVoidClaimRequestBody(LambdaDslJsonBody body) {
     body.uuid("created_by_user_id");
     body.stringType("assessment_reason", ASSESSMENT_REASON_VOID);
+    body.numberType("version", VERSION);
   }
 }

@@ -459,10 +459,12 @@ class ClaimServiceTest {
   @DisplayName("Should return void response and increment success counter")
   void voidClaim() {
     var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    request.setVersion(2L);
+
     var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
     when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
 
-    var actualResponse = claimService.voidClaim(claimId, userId);
+    var actualResponse = claimService.voidClaim(claimId, userId, 2L);
 
     assertEquals(expectedResponse, actualResponse);
     assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(1.0);
@@ -473,9 +475,11 @@ class ClaimServiceTest {
   @DisplayName("Should increment failure counter when void claim throws an exception")
   void voidClaim_failure() {
     var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    request.setVersion(2L);
+
     when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
 
-    assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));
+    assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId, 2L));
 
     assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(0.0);
     assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(1.0);

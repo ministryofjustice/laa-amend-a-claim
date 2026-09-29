@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.payments.amend.controllers;
 
+import static java.util.Objects.requireNonNull;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.removeAllForClaim;
 
@@ -52,7 +53,8 @@ public class VoidConfirmationController {
     var claim = getValidClaim(session, submissionId, claimId);
 
     try {
-      claimService.voidClaim(claimId, userId);
+      requireNonNull(claim.getVersion(), "Claims must have a version");
+      claimService.voidClaim(claimId, userId, claim.getVersion());
 
       String searchUrl =
           (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
