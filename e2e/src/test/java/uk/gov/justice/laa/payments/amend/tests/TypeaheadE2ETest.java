@@ -123,6 +123,7 @@ class TypeaheadE2ETest extends BaseTest {
   @DisplayName("Fee code typeahead opens with matching options only after typing")
   void opensWithMatchingOptionsOnlyAfterTyping() {
     assertThat(feeCodePage.getFeeCodeInput()).hasValue(EXISTING_FEE_CODE_DESCRIPTION);
+    assertThat(feeCodePage.getFeeCodeInput()).hasCSS("cursor", "text");
     assertThat(feeCodePage.getFeeCodeMenu()).isHidden();
 
     feeCodePage.getFeeCodeInput().click();
