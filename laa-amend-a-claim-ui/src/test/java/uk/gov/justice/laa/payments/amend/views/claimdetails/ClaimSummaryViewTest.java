@@ -168,9 +168,9 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(8), "Case management review hearing (CMRH)-oral", "100", "£200.00");
+        summaryList2.get(8), "Case management review hearing (CMRH) - oral", "100", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(9), "Case management review hearing (CMRH)-telephone", "100", "£200.00");
+        summaryList2.get(9), "Case management review hearing (CMRH) - telephone", "100", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(10), "Home Office interview", "100", "£200.00");
     assertSummaryListRowContainsValues(
@@ -261,13 +261,13 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(8),
-        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH) - oral",
         "100",
         "£200.00",
         "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(9),
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - telephone",
         "100",
         "£200.00",
         "£300.00");
@@ -481,9 +481,10 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Values", "Net cost of counsel"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Values", "Case management review hearing (CMRH)-oral"));
+        getSummaryListRowInCard(doc, "Values", "Case management review hearing (CMRH) - oral"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Values", "Case management review hearing (CMRH)-telephone"));
+        getSummaryListRowInCard(
+            doc, "Values", "Case management review hearing (CMRH) - telephone"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Values", "Home Office interview"));
     assertSummaryListRowHasAmendedTag(

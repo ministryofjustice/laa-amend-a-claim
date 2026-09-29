@@ -184,9 +184,9 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Yes", CALCULATED);
     assertSummaryListRowContainsValues(costs.get(12), "Home Office interview", "100", CALCULATED);
     assertSummaryListRowContainsValues(
-        costs.get(13), "Case management review hearing (CMRH)-oral", "100", CALCULATED);
+        costs.get(13), "Case management review hearing (CMRH) - oral", "100", CALCULATED);
     assertSummaryListRowContainsValues(
-        costs.get(14), "Case management review hearing (CMRH)-telephone", "100", CALCULATED);
+        costs.get(14), "Case management review hearing (CMRH) - telephone", "100", CALCULATED);
     assertSummaryListRowContainsValues(costs.get(15), "London rate", "Yes", NOT_APPLICABLE);
     assertSummaryListRowContainsValues(
         costs.get(16), "Immigration prior authority number", "PRIOR_AUTHORITY_REF", NOT_APPLICABLE);
@@ -205,8 +205,8 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
         "Judicial review or form filling",
         "Substantive hearing",
         "Home Office interview",
-        "Case management review hearing (CMRH)-oral",
-        "Case management review hearing (CMRH)-telephone");
+        "Case management review hearing (CMRH) - oral",
+        "Case management review hearing (CMRH) - telephone");
   }
 
   private void setClaimForConfirmation(ClaimDetails claimDetails) {
