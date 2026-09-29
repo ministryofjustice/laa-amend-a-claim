@@ -276,6 +276,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);
+    amendFeeCode.assertTypeaheadBehaviour("IMCA", "IAX", "IAXC");
     amendFeeCode.fillFeeCodeInput("IAXC");
     amendFeeCode.clickContinueButton();
 
