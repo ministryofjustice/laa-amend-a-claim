@@ -15,7 +15,7 @@ java {
 }
 
 dependencies {
-    implementation 'com.microsoft.playwright:playwright:1.62.0'
+    implementation 'com.microsoft.playwright:playwright:1.63.0'
     implementation 'com.deque.html.axe-core:playwright:4.13.0'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
