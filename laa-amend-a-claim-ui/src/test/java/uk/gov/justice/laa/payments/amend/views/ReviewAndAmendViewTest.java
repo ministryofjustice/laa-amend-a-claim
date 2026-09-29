@@ -113,13 +113,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(7),
-        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH) - oral",
         "100",
         "£200.00",
         "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(8),
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - telephone",
         "100",
         "£200.00",
         "£300.00");
@@ -468,13 +468,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(7),
-        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH) - oral",
         "100",
         "£200.00",
         "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(8),
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - telephone",
         "100",
         "£200.00",
         "£300.00");
@@ -650,13 +650,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(7),
-        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH) - oral",
         "100",
         "Not applicable",
         "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(8),
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - telephone",
         "100",
         "Not applicable",
         "Not applicable");

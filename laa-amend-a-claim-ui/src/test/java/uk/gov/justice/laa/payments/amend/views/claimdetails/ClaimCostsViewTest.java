@@ -147,13 +147,13 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(12), "Home Office interview", "100", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(13),
-        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH) - oral",
         "100",
         CALCULATED,
         ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(14),
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - telephone",
         "100",
         CALCULATED,
         ASSESSED);
@@ -203,8 +203,8 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         "Judicial review or form filling",
         "Substantive hearing",
         "Home Office interview",
-        "Case management review hearing (CMRH)-oral",
-        "Case management review hearing (CMRH)-telephone",
+        "Case management review hearing (CMRH) - oral",
+        "Case management review hearing (CMRH) - telephone",
         "London rate",
         "Immigration prior authority number");
   }
