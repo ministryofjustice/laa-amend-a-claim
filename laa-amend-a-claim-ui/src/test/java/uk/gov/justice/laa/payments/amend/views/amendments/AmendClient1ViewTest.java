@@ -67,7 +67,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(clientDetails.get(1), "Initial", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
-    assertEnumTypeaheadRow(clientDetails.get(3), "Gender", GENDER_LABEL, "GENDER", GENDER);
+    assertEnumDropdownRow(clientDetails.get(3), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         clientDetails.get(4), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -117,7 +117,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         client1Details.get(4), "Unique client number (UCN)", UCN, UCN);
     assertSummaryListRowContainsValues(client1Details.get(5), "Postcode", POSTCODE, POSTCODE);
-    assertEnumTypeaheadRow(client1Details.get(6), "Gender", GENDER_LABEL, "GENDER", GENDER);
+    assertEnumDropdownRow(client1Details.get(6), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         client1Details.get(7), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -162,7 +162,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
     assertDateOfBirthRow(clientDetails.get(3));
-    assertEnumTypeaheadRow(clientDetails.get(4), "Gender", GENDER_LABEL, "GENDER", GENDER);
+    assertEnumDropdownRow(clientDetails.get(4), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         clientDetails.get(5), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -170,7 +170,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(7), "Postcode", POSTCODE, POSTCODE);
     assertBooleanSelectRow(
         clientDetails.get(8), "Eligible client", "Yes", "IS_ELIGIBLE_CLIENT", true);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         clientDetails.get(9), "Client type", CLIENT_TYPE_LABEL, "CLIENT_TYPE", CLIENT_TYPE);
     assertSummaryListRowContainsValues(
         clientDetails.get(10), "Unique client number (UCN)", UCN, UCN);

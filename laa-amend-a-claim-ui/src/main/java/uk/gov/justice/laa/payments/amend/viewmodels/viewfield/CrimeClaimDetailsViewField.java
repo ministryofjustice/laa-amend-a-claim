@@ -31,7 +31,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
 
   // Case fields
   STAGE_REACHED(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       ClaimDetails::getStageReached,
       Builder::stageReachedCode,
@@ -59,14 +59,14 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       Amendability.UNTIL_ASSESSED,
       "case_concluded_date"),
   STANDARD_FEE_CATEGORY(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CrimeClaimDetails::getStandardFeeCategory,
       Builder::standardFeeCategoryCode,
       FieldOptions.STANDARD_FEE_CATEGORY,
       "standard_fee_category_code"),
   OUTCOME_FOR_CLIENT(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CrimeClaimDetails::getOutcome,
       Builder::outcomeCode,

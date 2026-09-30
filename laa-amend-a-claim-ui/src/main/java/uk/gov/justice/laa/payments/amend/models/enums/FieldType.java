@@ -7,5 +7,10 @@ public enum FieldType {
   PERCENTAGE,
   NUMBER,
   DATE,
-  ENUM
+  ENUM_TYPEAHEAD,
+  ENUM_DROPDOWN;
+
+  public boolean isEnum() {
+    return this == ENUM_TYPEAHEAD || this == ENUM_DROPDOWN;
+  }
 }

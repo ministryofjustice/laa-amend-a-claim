@@ -45,10 +45,10 @@
                          th:each="entry : ${clientView.client1Rows}"
                          th:if="${client1Form.isAmendment(entry.key.name(), forms.client1Form.original)}">
                         <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key.name()}}"></dt>
-                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
                         <dd class="govuk-summary-list__value"
-                            th:text="${@ThymeleafUtils.getFormattedValue(client1Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                            th:text="${@ThymeleafUtils.getFormattedValue(entry.key, client1Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
                     </div>
                 </dl>
             </div>
@@ -82,10 +82,10 @@
                  th:each="entry : ${clientView.client2Rows}"
                  th:if="${client2Form.isAmendment(entry.key.name(), forms.client2Form.original)}">
               <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key.name()}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
-                  th:text="${@ThymeleafUtils.getFormattedValue(client2Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, client2Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

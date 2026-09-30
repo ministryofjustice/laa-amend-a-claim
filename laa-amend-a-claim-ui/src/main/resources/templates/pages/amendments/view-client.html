@@ -47,7 +47,7 @@
 
               <dd class="govuk-summary-list__value"
                   th:if="${client1Form.isAmendment(entry.key.name(), forms.client1Form.original)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(client1Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, client1Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
@@ -86,7 +86,7 @@
 
               <dd class="govuk-summary-list__value"
                   th:if="${client2Form.isAmendment(entry.key.name(), forms.client2Form.original)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(client2Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, client2Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

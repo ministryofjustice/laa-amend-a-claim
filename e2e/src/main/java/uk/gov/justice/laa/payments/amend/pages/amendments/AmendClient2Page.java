@@ -33,11 +33,11 @@ public class AmendClient2Page extends LaaPage {
     surnameInput.fill(value);
   }
 
-  public void selectFromComboBox(String fieldName, String optionName) {
-    Locator genderCombo = page.locator(String.format("#%s", fieldName));
-    genderCombo.click();                  // opens suggestions
-    genderCombo.fill(optionName);
-    genderCombo.press("Enter");
+  public void selectFromTypeahead(String fieldName, String optionName) {
+    Locator typeahead = page.locator(String.format("#%s", fieldName));
+    typeahead.click();                  // opens suggestions
+    typeahead.fill(optionName);
+    typeahead.press("Enter");
   }
 
   public void clickContinueButton() {

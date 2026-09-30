@@ -68,7 +68,7 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         client2Details.get(4), "Unique client number (UCN)", CLIENT_2_UCN, CLIENT_2_UCN);
     assertSummaryListRowContainsValues(
         client2Details.get(5), "Postcode", CLIENT_2_POSTCODE, CLIENT_2_POSTCODE);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         client2Details.get(6), "Gender", CLIENT_2_GENDER_LABEL, "CLIENT_2_GENDER", CLIENT_2_GENDER);
     assertEnumTypeaheadRow(
         client2Details.get(7),

@@ -121,6 +121,22 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     Assertions.assertEquals(currentValue, selectedOption.text());
   }
 
+  protected void assertEnumDropdownRow(
+      List<Element> row, String label, String currentValue, String inputId, String expectedValue) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), currentValue);
+
+    Element select = selectFirst(row.get(2), "select.govuk-select");
+    Assertions.assertEquals(inputId, select.attr("id"), "Enum select id");
+    Assertions.assertFalse(select.hasAttr("data-module"), "Enum dropdown should not autocomplete");
+    Element selectLabel = selectFirst(row.get(2), "label[for=%s]".formatted(inputId));
+    Assertions.assertEquals(label, selectLabel.text());
+
+    Element selectedOption = selectFirst(select, "option[selected]");
+    Assertions.assertEquals(expectedValue, selectedOption.attr("value"));
+    Assertions.assertEquals(currentValue, selectedOption.text());
+  }
+
   protected void assertBigDecimalInputRow(
       List<Element> row, String label, BigDecimal expectedValue, String inputId) {
     assertCellContainsText(row.getFirst(), label);
