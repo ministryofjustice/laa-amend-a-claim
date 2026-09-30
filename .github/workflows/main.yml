@@ -156,13 +156,14 @@ jobs:
     needs: [ build, security, deploy-uat, deploy-staging ]
     uses: ./.github/workflows/deploy.yml
     with:
-      branch: ${{ github.ref_name }}
+      branch: ${{ needs.build.outputs.image_tag }}
       environment: production
       sentry_env: production
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/production.yaml
       claim_api_environment_name: prod
+      serialise: false
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}

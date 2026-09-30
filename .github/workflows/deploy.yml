@@ -31,6 +31,11 @@ on:
         required: true
         type: string
         description: 'Claims API environment name for Pact broker (e.g., main, stg, prod)'
+      serialise:
+        required: false
+        type: boolean
+        default: true
+        description: 'Queue behind other deploys to this environment. Disable where an approval gate would otherwise hold the queue.'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -52,7 +57,7 @@ on:
         required: true
 
 concurrency:
-  group: deploy-${{ inputs.environment }}
+  group: ${{ inputs.serialise && format('deploy-{0}', inputs.environment) || format('deploy-{0}-{1}', inputs.environment, github.run_id) }}
   cancel-in-progress: false
 
 jobs:
