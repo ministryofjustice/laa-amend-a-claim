@@ -8,7 +8,7 @@
   <th:block th:if="${field.fieldType.name() == 'BOOLEAN'}">
     <th:block th:replace="~{fragments/amendments/boolean-input :: amendmentBooleanInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
-  <th:block th:if="${field.fieldType.name() == 'ENUM'}">
+  <th:block th:if="${field.fieldType.name() == 'ENUM_TYPEAHEAD'}">
     <th:block th:replace="~{fragments/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'MONETARY'}">

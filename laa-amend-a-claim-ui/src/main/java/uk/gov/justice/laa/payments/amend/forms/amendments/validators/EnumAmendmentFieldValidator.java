@@ -22,7 +22,7 @@ public class EnumAmendmentFieldValidator implements GenericAmendmentFieldValidat
 
   @Override
   public FieldType supportedType() {
-    return FieldType.ENUM;
+    return FieldType.ENUM_TYPEAHEAD;
   }
 
   @Override

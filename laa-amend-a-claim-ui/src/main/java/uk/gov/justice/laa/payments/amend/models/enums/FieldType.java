@@ -7,5 +7,5 @@ public enum FieldType {
   PERCENTAGE,
   NUMBER,
   DATE,
-  ENUM
+  ENUM_TYPEAHEAD
 }

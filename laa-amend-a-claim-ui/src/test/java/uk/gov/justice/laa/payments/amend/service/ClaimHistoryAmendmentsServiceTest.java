@@ -496,7 +496,7 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "2026-04-02" : "2026-04-01";
         yield new SampleValue(raw, LocalDate.parse(raw));
       }
-      case ENUM -> {
+      case ENUM_TYPEAHEAD -> {
         var options = field.getOptions();
         var option = options.get(isAfter && options.size() > 1 ? 1 : 0);
         yield new SampleValue(option.value(), option);

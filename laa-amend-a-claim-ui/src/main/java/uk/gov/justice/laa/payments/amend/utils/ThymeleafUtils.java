@@ -115,7 +115,7 @@ public class ThymeleafUtils {
       return getFormattedValue(value);
     }
 
-    if (field.getFieldType() == FieldType.ENUM && value != null) {
+    if (field.getFieldType() == FieldType.ENUM_TYPEAHEAD && value != null) {
       return getFormattedOptionValue(field.getOptions(), value);
     }
 

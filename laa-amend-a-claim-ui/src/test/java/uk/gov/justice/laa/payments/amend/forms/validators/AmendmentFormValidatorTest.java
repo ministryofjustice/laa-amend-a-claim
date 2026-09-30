@@ -65,7 +65,7 @@ class AmendmentFormValidatorTest {
     var validator =
         new AmendmentFormValidator(
             MockClaimsFunctions.createMockCrimeClaim(),
-            List.of(countingFieldValidator(FieldType.ENUM, new AtomicInteger())),
+            List.of(countingFieldValidator(FieldType.ENUM_TYPEAHEAD, new AtomicInteger())),
             List.of());
 
     assertThatThrownBy(() -> validate(validator, Map.of("UNIQUE_FILE_NUMBER", "value")))

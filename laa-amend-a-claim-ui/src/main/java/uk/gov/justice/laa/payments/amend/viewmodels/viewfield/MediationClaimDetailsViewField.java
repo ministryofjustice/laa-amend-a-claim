@@ -82,21 +82,21 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Builder::client2Postcode,
       "client2_postcode"),
   CLIENT_2_GENDER(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       MediationClaimDetails::getClient2Gender,
       Builder::client2GenderCode,
       FieldOptions.GENDER,
       "client2_gender_code"),
   CLIENT_2_ETHNICITY(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       MediationClaimDetails::getClient2Ethnicity,
       Builder::client2EthnicityCode,
       FieldOptions.ETHNICITY_CODE,
       "client2_ethnicity_code"),
   CLIENT_2_DISABILITY(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       MediationClaimDetails::getClient2Disability,
       Builder::client2DisabilityCode,
@@ -151,7 +151,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Builder::mediationTimeMinutes,
       "mediation_time_minutes"),
   OUTCOME(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       MediationClaimDetails::getOutcome,
       Builder::outcomeCode,
@@ -164,7 +164,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Builder::outreachLocation,
       "outreach_location"),
   REFERRAL_SOURCE(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       MediationClaimDetails::getReferralSource,
       Builder::referralSource,
