@@ -19,7 +19,7 @@ public class AmendFeeCodePage extends LaaPage {
     super(page, "Amend fee code");
     this.continueButton =
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
-    this.feeCodeInput = page.locator("#fee-code-input");
+    this.feeCodeInput = page.locator("#fee-code-input.autocomplete__input");
     this.feeCodeMenu = page.locator("#fee-code-input__listbox");
   }
 

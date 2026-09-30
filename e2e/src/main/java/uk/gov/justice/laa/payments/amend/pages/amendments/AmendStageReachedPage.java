@@ -15,7 +15,7 @@ public class AmendStageReachedPage extends LaaPage {
     super(page, "Amend stage reached");
     this.continueButton =
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
-    this.stageReachedInput = page.locator("#stage-reached-input");
+    this.stageReachedInput = page.locator("#stage-reached-input.autocomplete__input");
   }
 
   public void fillStageReachedInput(String value) {
