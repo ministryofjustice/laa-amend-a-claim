@@ -480,7 +480,7 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "false" : "true";
         yield new SampleValue(raw, Boolean.parseBoolean(raw));
       }
-      case NUMBER -> {
+      case NUMBER, SINGLE_DIGIT -> {
         var raw = isAfter ? "8" : "7";
         yield new SampleValue(raw, Integer.parseInt(raw));
       }

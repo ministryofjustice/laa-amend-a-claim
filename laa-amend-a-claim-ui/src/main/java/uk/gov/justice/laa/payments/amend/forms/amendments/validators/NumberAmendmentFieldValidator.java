@@ -22,12 +22,13 @@ public class NumberAmendmentFieldValidator implements GenericAmendmentFieldValid
 
   @Override
   public FieldType supportedType() {
-    return FieldType.NUMBER;
+    throw new UnsupportedOperationException(
+        "This validator supports multiple types. Use supports() method instead.");
   }
 
   @Override
   public boolean supports(FieldType fieldType) {
-    return fieldType == FieldType.NUMBER;
+    return fieldType != null && fieldType.isNumber();
   }
 
   @Override

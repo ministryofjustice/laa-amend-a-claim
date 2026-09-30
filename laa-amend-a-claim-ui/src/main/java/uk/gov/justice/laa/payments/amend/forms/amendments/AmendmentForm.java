@@ -52,7 +52,7 @@ public class AmendmentForm {
         putDateInputs(inputs, field.name(), entry.getValue());
       } else if (field.getFieldType() == FieldType.BOOLEAN) {
         inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
-      } else if (field.getFieldType() == FieldType.NUMBER) {
+      } else if (field.getFieldType().isNumber()) {
         inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
@@ -179,7 +179,7 @@ public class AmendmentForm {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
       case MONETARY, PERCENTAGE -> getBigDecimalValue(field.name());
-      case NUMBER -> getIntegerValue(field.name());
+      case NUMBER, SINGLE_DIGIT -> getIntegerValue(field.name());
       case ENUM_TYPEAHEAD, ENUM_DROPDOWN, TEXT -> inputs.get(field.name());
     };
   }

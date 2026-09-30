@@ -24,20 +24,6 @@ public abstract class ClaimField {
     setAssessableToDefault();
   }
 
-  public boolean hasSubmittedValue() {
-    return !hasNoSubmittedValue();
-  }
-
-  private boolean hasNoSubmittedValue() {
-    return switch (this.getSubmitted()) {
-      case null -> true;
-      case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
-      case Integer i -> i == 0;
-      case Boolean b -> !b;
-      default -> false;
-    };
-  }
-
   public abstract void setAssessableToDefault();
 
   public boolean isNotAssessable() {

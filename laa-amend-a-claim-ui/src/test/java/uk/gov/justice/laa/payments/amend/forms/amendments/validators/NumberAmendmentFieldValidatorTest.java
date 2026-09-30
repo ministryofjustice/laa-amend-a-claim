@@ -1,12 +1,14 @@
 package uk.gov.justice.laa.payments.amend.forms.amendments.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.support.TestMessageSources;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
@@ -14,6 +16,18 @@ class NumberAmendmentFieldValidatorTest {
 
   private final NumberAmendmentFieldValidator validator =
       new NumberAmendmentFieldValidator(TestMessageSources.real());
+
+  @Test
+  void supportsBothNumberFieldTypes() {
+    assertThat(validator.supports(FieldType.NUMBER)).isTrue();
+    assertThat(validator.supports(FieldType.SINGLE_DIGIT)).isTrue();
+    assertThat(validator.supports(FieldType.TEXT)).isFalse();
+  }
+
+  @Test
+  void supportedTypeIsUnsupported() {
+    assertThatThrownBy(validator::supportedType).isInstanceOf(UnsupportedOperationException.class);
+  }
 
   @Test
   void acceptsWellFormedNumberValue() {

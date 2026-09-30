@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.payments.amend.forms.amendments.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,11 @@ class EnumAmendmentFieldValidatorTest {
     assertThat(validator.supports(FieldType.ENUM_TYPEAHEAD)).isTrue();
     assertThat(validator.supports(FieldType.ENUM_DROPDOWN)).isTrue();
     assertThat(validator.supports(FieldType.TEXT)).isFalse();
+  }
+
+  @Test
+  void supportedTypeIsUnsupported() {
+    assertThatThrownBy(validator::supportedType).isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentSingleDigitInput(fieldKey, labelMessageKey, formErrors)"
+          th:with="label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey}">
+  <label class="govuk-label govuk-visually-hidden"
+         th:for="${fieldKey}"
+         th:text="${label}"></label>
+  <th:block th:replace="~{fragments/amendments/field-error :: fieldError(${fieldKey}, ${formErrors})}"></th:block>
+  <select class="govuk-select"
+          th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
+          th:id="${fieldKey}"
+          th:field="*{inputs[__${fieldKey}__]}">
+    <option value=""></option>
+    <option th:each="digit : ${#numbers.sequence(0, 9)}"
+            th:value="${digit}"
+            th:text="${digit}"></option>
+  </select>
+</th:block>
+</body>
+</html>

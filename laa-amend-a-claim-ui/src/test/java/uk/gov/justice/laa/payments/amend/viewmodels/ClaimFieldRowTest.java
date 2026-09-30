@@ -275,9 +275,10 @@ public class ClaimFieldRowTest {
   @Test
   void whenBoltOnClaimFieldWithZeroSubmittedValue() {
     BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
-    field.setSubmitted(BigDecimal.ZERO);
+    field.setSubmitted(0);
     ClaimFieldRow result = ClaimFieldRow.from(field);
-    Assertions.assertNull(result);
+    Assertions.assertNotNull(result);
+    Assertions.assertEquals(0, result.submitted());
   }
 
   @Test
@@ -310,5 +311,29 @@ public class ClaimFieldRowTest {
     Assertions.assertEquals(field.getAssessed(), result.assessed());
     Assertions.assertFalse(result.assessable());
     Assertions.assertNull(result.changeUrl());
+  }
+
+  @Test
+  void fromCustomKeepsZeroCountBoltOnAsSubmittedValue() {
+    var field = new BoltOnClaimField("key", 0, BigDecimal.ZERO);
+    ClaimFieldRow result = ClaimFieldRow.fromCustom(field);
+    Assertions.assertEquals(0, result.submitted());
+    Assertions.assertEquals(BigDecimal.ZERO, result.calculated());
+  }
+
+  @Test
+  void fromCustomTreatsMissingCountBoltOnAsNotProvided() {
+    var field = new BoltOnClaimField("key", null, BigDecimal.ZERO);
+    ClaimFieldRow result = ClaimFieldRow.fromCustom(field);
+    Assertions.assertNull(result.submitted());
+    Assertions.assertNull(result.calculated());
+  }
+
+  @Test
+  void fromCustomKeepsFalseBooleanBoltOnAsSubmittedValue() {
+    var field = new BoltOnClaimField("key", false, BigDecimal.ZERO);
+    ClaimFieldRow result = ClaimFieldRow.fromCustom(field);
+    Assertions.assertEquals(false, result.submitted());
+    Assertions.assertEquals(BigDecimal.ZERO, result.calculated());
   }
 }

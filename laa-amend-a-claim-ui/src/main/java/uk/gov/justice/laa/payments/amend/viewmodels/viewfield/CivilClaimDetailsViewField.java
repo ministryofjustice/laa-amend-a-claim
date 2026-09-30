@@ -344,7 +344,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "jr_form_filling_amount",
       "jr_form_filling_amount"),
   ADJOURNED_HEARING_FEE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
@@ -353,7 +353,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "adjourned_hearing_fee_amount",
       "bolt_on_adjourned_hearing_fee"),
   CMRH_TELEPHONE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
@@ -362,7 +362,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_telephone_count",
       "bolt_on_cmrh_telephone_fee"),
   CMRH_ORAL(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhOral,
