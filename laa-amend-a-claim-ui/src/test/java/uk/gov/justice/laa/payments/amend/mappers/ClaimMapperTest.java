@@ -932,7 +932,15 @@ class ClaimMapperTest {
 
   @ParameterizedTest
   @ValueSource(
-      strings = {"ACCEPTED", "AMENDED", "ASSESSED", "VOIDED", "INVALID", "READY_TO_PROCESS"})
+      strings = {
+        "ACCEPTED",
+        "AMENDED",
+        "ASSESSED",
+        "VOIDED",
+        "INVALID",
+        "READY_TO_PROCESS",
+        "VALIDATED_PENDING_APPROVAL"
+      })
   void testMapDerivedClaimStatus(String derivedClaimStatus) {
     var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
     response.setDerivedClaimStatus(DerivedClaimStatus.valueOf(derivedClaimStatus));

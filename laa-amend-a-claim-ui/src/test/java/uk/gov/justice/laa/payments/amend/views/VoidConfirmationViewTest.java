@@ -22,6 +22,7 @@ import uk.gov.justice.laa.payments.amend.service.DummyUserSecurityService;
 class VoidConfirmationViewTest extends ViewTestBase {
 
   private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
+  private static final long VERSION = 1;
 
   @MockitoBean ClaimService claimService;
 
@@ -44,8 +45,9 @@ class VoidConfirmationViewTest extends ViewTestBase {
     claim.setClientSurname("Doe");
     claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
     claim.setCategoryOfLaw("TEST");
+    claim.setVersion(VERSION);
 
-    when(claimService.voidClaim(claimId, USER_ID))
+    when(claimService.voidClaim(claimId, USER_ID, VERSION))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
     Document doc = renderDocument();
@@ -83,8 +85,9 @@ class VoidConfirmationViewTest extends ViewTestBase {
     claim.setClientSurname("Doe");
     claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
     claim.setCategoryOfLaw("TEST");
+    claim.setVersion(VERSION);
 
-    when(claimService.voidClaim(claimId, USER_ID))
+    when(claimService.voidClaim(claimId, USER_ID, VERSION))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
     Document doc = renderDocument();

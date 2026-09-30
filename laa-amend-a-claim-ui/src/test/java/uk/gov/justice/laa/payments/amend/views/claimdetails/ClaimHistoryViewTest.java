@@ -296,8 +296,8 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "Asylum and Immigration Tribunal (AIT) hearing centre changed from before to after",
             "case concluded date or case claimed date changed from before to after",
             "case ID changed from before to after",
-            "case management review hearing (CMRH)-oral changed from before to after",
-            "case management review hearing (CMRH)-telephone changed from before to after",
+            "case management review hearing (CMRH) - oral changed from before to after",
+            "case management review hearing (CMRH) - telephone changed from before to after",
             "case reference number (CRN) changed from before to after",
             "case stage or level changed from before to after",
             "case start date changed from before to after",
@@ -436,8 +436,8 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "adjourned hearing fee changed from before to after",
             "bolt-on total fee amount changed from before to after",
             "calculated VAT amount changed from before to after",
-            "case management review hearing (CMRH)-oral changed from before to after",
-            "case management review hearing (CMRH)-telephone changed from before to after",
+            "case management review hearing (CMRH) - oral changed from before to after",
+            "case management review hearing (CMRH) - telephone changed from before to after",
             "category of law changed from before to after",
             "detention, travel and waiting (DTW) costs changed from before to after",
             "disbursements VAT changed from before to after",
@@ -553,8 +553,8 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
     assertThat(bulletItems)
         .containsExactlyInAnyOrder(
             "adjourned hearing fee changed from £40.00 to £50.00",
-            "case management review hearing (CMRH)-oral changed from £60.00 to £70.00",
-            "case management review hearing (CMRH)-telephone changed from £80.00 to £90.00",
+            "case management review hearing (CMRH) - oral changed from £60.00 to £70.00",
+            "case management review hearing (CMRH) - telephone changed from £80.00 to £90.00",
             "Home Office interview changed from £100.00 to £110.00",
             "substantive hearing changed from £120.00 to £130.00");
   }
