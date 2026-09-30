@@ -344,7 +344,7 @@ public class ClaimHistoryAmendmentsService {
             raw instanceof Number n ? n.intValue() : Integer.parseInt(String.valueOf(raw));
         case MONETARY, PERCENTAGE -> new BigDecimal(String.valueOf(raw));
         case DATE -> LocalDate.parse(String.valueOf(raw));
-        case ENUM_TYPEAHEAD -> resolveEnumValue(raw, field.getOptions());
+        case ENUM_TYPEAHEAD, ENUM_DROPDOWN -> resolveEnumValue(raw, field.getOptions());
       };
     } catch (Exception e) {
       log.warn(

@@ -41,7 +41,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::isEligibleClient,
       "is_eligible_client"),
   CLIENT_TYPE(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getClientType,
       Builder::clientTypeCode,
@@ -188,7 +188,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::localAuthorityNumber,
       "local_authority_number"),
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getDesignatedAccreditedRepresentative,
       Builder::designatedAccreditedRepresentativeCode,
@@ -244,7 +244,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldOptions.MEETINGS_ATTENDED,
       "meetings_attended_code"),
   ADVICE_TYPE(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getAdviceType,
       Builder::adviceTypeCode,

@@ -180,7 +180,7 @@ public class AmendmentForm {
       case BOOLEAN -> getBooleanValue(field.name());
       case MONETARY, PERCENTAGE -> getBigDecimalValue(field.name());
       case NUMBER -> getIntegerValue(field.name());
-      case ENUM_TYPEAHEAD, TEXT -> inputs.get(field.name());
+      case ENUM_TYPEAHEAD, ENUM_DROPDOWN, TEXT -> inputs.get(field.name());
     };
   }
 

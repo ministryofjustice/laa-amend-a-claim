@@ -372,9 +372,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient2.fillInput("CLIENT_2_DATE_OF_BIRTH-year", "1995");
     amendClient2.fillInput("CLIENT_2_UCN", "01051995/X/WXYZ");
     amendClient2.fillInput("CLIENT_2_POSTCODE", "XX196XX");
-    amendClient2.selectFromComboBox("CLIENT_2_GENDER", "Female");
-    amendClient2.selectFromComboBox("CLIENT_2_ETHNICITY", "00 - White British");
-    amendClient2.selectFromComboBox("CLIENT_2_DISABILITY", "NCD - No Condition Declared");
+    amendClient2.selectSelectionValue("CLIENT_2_GENDER", "Female");
+    amendClient2.selectFromTypeahead("CLIENT_2_ETHNICITY", "00 - White British");
+    amendClient2.selectFromTypeahead("CLIENT_2_DISABILITY", "NCD - No Condition Declared");
     amendClient2.selectSelectionValue("IS_CLIENT_2_LEGALLY_AIDED", "Yes");
     amendClient2.selectSelectionValue("IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED", "Yes");
     amendClient2.clickContinueButton();
@@ -385,9 +385,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Client 2 details", "Date of birth", "Not applicable","01 May 1995");
     assertSummaryListRow(page, "Client 2 details", "Unique client number (UCN)", "Not applicable","01051995/X/WXYZ");
     assertSummaryListRow(page, "Client 2 details", "Postcode", "Not applicable","XX196XX");
-    assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","F");
-    assertSummaryListRow(page, "Client 2 details", "Ethnicity", "Not applicable","00");
-    assertSummaryListRow(page, "Client 2 details", "Disability", "Not applicable","NCD");
+    assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","Female");
+    assertSummaryListRow(page, "Client 2 details", "Ethnicity", "Not applicable","00 - White British");
+    assertSummaryListRow(page, "Client 2 details", "Disability", "Not applicable","NCD - No condition declared");
     assertSummaryListRow(page, "Client 2 details", "Legally aided", "Not applicable","Yes");
     assertSummaryListRow(page, "Client 2 details", "Postal application accepted", "Not applicable","Yes");
 

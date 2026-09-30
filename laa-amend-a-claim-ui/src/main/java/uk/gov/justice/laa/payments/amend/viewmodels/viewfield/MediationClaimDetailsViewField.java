@@ -82,7 +82,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Builder::client2Postcode,
       "client2_postcode"),
   CLIENT_2_GENDER(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       MediationClaimDetails::getClient2Gender,
       Builder::client2GenderCode,
@@ -151,7 +151,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Builder::mediationTimeMinutes,
       "mediation_time_minutes"),
   OUTCOME(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       MediationClaimDetails::getOutcome,
       Builder::outcomeCode,

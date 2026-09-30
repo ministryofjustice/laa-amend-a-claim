@@ -127,6 +127,24 @@ class AmendClientTabViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void testShowsOptionLabelsForAmendedEnumFieldInAmendedColumn() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientGender("M");
+
+    var forms = createClientForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("GENDER", "F");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.get(4), "Gender", "Male", "Female");
+  }
+
+  @Test
   void testShowsUnamendedMediationClientDetails() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     this.claim = claim;

@@ -49,7 +49,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Builder::clientSurname,
       "client_surname"),
   GENDER(
-      FieldType.ENUM_TYPEAHEAD,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       ClaimDetails::getClientGender,
       Builder::genderCode,

@@ -22,7 +22,13 @@ public class EnumAmendmentFieldValidator implements GenericAmendmentFieldValidat
 
   @Override
   public FieldType supportedType() {
-    return FieldType.ENUM_TYPEAHEAD;
+    throw new UnsupportedOperationException(
+        "This validator supports multiple types. Use supports() method instead.");
+  }
+
+  @Override
+  public boolean supports(FieldType fieldType) {
+    return fieldType != null && fieldType.isEnum();
   }
 
   @Override

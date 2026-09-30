@@ -220,7 +220,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Local authority number",
         LOCAL_AUTHORITY_NUMBER,
         LOCAL_AUTHORITY_NUMBER);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(20),
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL,
@@ -243,7 +243,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         MEETINGS_ATTENDED_LABEL,
         "MEETINGS_ATTENDED",
         MEETINGS_ATTENDED);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(29), "Type of advice", ADVICE_TYPE_LABEL, "ADVICE_TYPE", ADVICE_TYPE);
     assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
     assertNumberInputRow(
@@ -417,7 +417,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Mediation time (minutes)",
         MEDIATION_TIME_MINUTES,
         "MEDIATION_TIME_MINUTES");
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(8), "Outcome", OUTCOME_FOR_CLIENT, "OUTCOME", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(9), "Outreach location", OUTREACH_LOCATION, OUTREACH_LOCATION);
