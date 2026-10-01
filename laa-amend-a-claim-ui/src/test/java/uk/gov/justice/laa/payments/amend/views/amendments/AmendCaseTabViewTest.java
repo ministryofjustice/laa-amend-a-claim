@@ -41,7 +41,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
   private static final String CRIME_OUTCOME_FOR_CLIENT_LABEL = "CN01 - No further instructions";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
-  private static final String CLA_EXEMPTION = "claexemption";
+  private static final String CLA_EXEMPTION = "ECHI";
+  private static final String CLA_EXEMPTION_LABEL = "ECHI - Client is a child";
   private static final String DELIVERY_LOCATION = "deliverylocation";
   private static final String COURT_LOCATION = "courtlocation";
   private static final String AIT_HEARING_CENTRE = "16";
@@ -183,7 +184,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(13), "Civil Legal Advice (CLA) reference number", CLA_REFERENCE);
     assertSummaryListRowContainsValues(
-        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION);
+        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION_LABEL);
     assertSummaryListRowContainsValues(caseDetails.get(15), "Delivery location", DELIVERY_LOCATION);
     assertSummaryListRowContainsValues(
         caseDetails.get(16),
@@ -329,7 +330,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(13), "Civil Legal Advice (CLA) reference number", CLA_REFERENCE);
     assertSummaryListRowContainsValues(
-        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION);
+        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION_LABEL);
     assertSummaryListRowContainsValues(caseDetails.get(15), "Delivery location", DELIVERY_LOCATION);
     assertSummaryListRowContainsValues(
         caseDetails.get(16),

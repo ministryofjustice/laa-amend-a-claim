@@ -6,11 +6,16 @@ public enum FieldType {
   MONETARY,
   PERCENTAGE,
   NUMBER,
+  SINGLE_DIGIT,
   DATE,
   ENUM_TYPEAHEAD,
   ENUM_DROPDOWN;
 
   public boolean isEnum() {
     return this == ENUM_TYPEAHEAD || this == ENUM_DROPDOWN;
+  }
+
+  public boolean isNumber() {
+    return this == NUMBER || this == SINGLE_DIGIT;
   }
 }

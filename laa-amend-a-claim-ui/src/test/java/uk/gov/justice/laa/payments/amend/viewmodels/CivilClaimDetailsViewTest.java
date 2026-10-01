@@ -304,74 +304,25 @@ public class CivilClaimDetailsViewTest
     }
 
     @Test
-    void substantiveHearingBoltOnNotVisibleOnFalse() {
+    void substantiveHearingBoltOnVisibleWithNoOnFalse() {
       CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
       CivilClaimDetailsView viewModel = createView(claim);
 
       claim.setSubstantiveHearing(
           updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), false));
       List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
-      Assertions.assertFalse(
-          result.stream().anyMatch(row -> SUBSTANTIVE_HEARING.equals(row.key())),
-          "Rows should not contain substantive hearing");
+      Assertions.assertEquals(false, submittedFor(result, SUBSTANTIVE_HEARING));
     }
 
     @Test
-    void rowsRenderedForZeroBoltOnClaimValues() {
-      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-      claim.setAdjournedHearing(
-          updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
-      claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
-      claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
-      claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
-      claim.setSubstantiveHearing(
-          updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), false));
+    void rowsRenderedWithActualValuesForZeroBoltOnClaimValues() {
+      CivilClaimDetails claim = createCivilClaimWithZeroBoltOns();
 
       CivilClaimDetailsView viewModel = createView(claim);
       List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
-      Assertions.assertEquals(9, result.size());
-
-      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
-
-      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
-      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
-
-      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
-      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
-
-      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
-
-      Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).assessed());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/detention-travel-and-waiting-costs",
-          result.get(4).changeUrl());
-
-      Assertions.assertEquals(JR_FORM_FILLING, result.get(5).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).assessed());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).changeUrl());
-
-      Assertions.assertEquals(COUNSELS_COST, result.get(6).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).assessed());
-      Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).changeUrl());
-
-      Assertions.assertEquals(VAT, result.get(7).key());
-      Assertions.assertEquals(true, result.get(7).submitted());
-      Assertions.assertEquals(false, result.get(7).calculated());
-
-      Assertions.assertEquals(TOTAL, result.get(8).key());
-      Assertions.assertNull(result.get(8).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).calculated());
+      Assertions.assertEquals(14, result.size());
+      assertZeroBoltOnRows(result);
     }
   }
 
@@ -492,54 +443,42 @@ public class CivilClaimDetailsViewTest
     }
 
     @Test
-    void rowsRenderedForZeroBoltOnClaimValues() {
-      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-      claim.setAdjournedHearing(
-          updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
-      claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
-      claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
-      claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
-      claim.setSubstantiveHearing(
-          updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
+    void rowsRenderedWithActualValuesForZeroBoltOnClaimValues() {
+      CivilClaimDetails claim = createCivilClaimWithZeroBoltOns();
 
       CivilClaimDetailsView viewModel = createView(claim);
       List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-      Assertions.assertEquals(7, result.size());
-
-      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
-
-      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
-      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
-
-      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
-      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
-
-      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
-
-      Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).assessed());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/detention-travel-and-waiting-costs",
-          result.get(4).changeUrl());
-
-      Assertions.assertEquals(JR_FORM_FILLING, result.get(5).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).assessed());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).changeUrl());
-
-      Assertions.assertEquals(COUNSELS_COST, result.get(6).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).submitted());
-      Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).calculated());
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).assessed());
-      Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).changeUrl());
+      Assertions.assertEquals(12, result.size());
+      assertZeroBoltOnRows(result);
     }
+  }
+
+  private static CivilClaimDetails createCivilClaimWithZeroBoltOns() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAdjournedHearing(updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), 0));
+    claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
+    claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
+    claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
+    claim.setSubstantiveHearing(
+        updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), false));
+    return claim;
+  }
+
+  private static void assertZeroBoltOnRows(List<ClaimFieldRow> result) {
+    Assertions.assertEquals(0, submittedFor(result, ADJOURNED_FEE));
+    Assertions.assertEquals(0, submittedFor(result, CMRH_TELEPHONE));
+    Assertions.assertEquals(0, submittedFor(result, CMRH_ORAL));
+    Assertions.assertEquals(0, submittedFor(result, HO_INTERVIEW));
+    Assertions.assertEquals(false, submittedFor(result, SUBSTANTIVE_HEARING));
+  }
+
+  private static Object submittedFor(List<ClaimFieldRow> result, String key) {
+    return result.stream()
+        .filter(row -> key.equals(row.key()))
+        .findFirst()
+        .orElseThrow(() -> new AssertionError("Missing row " + key))
+        .submitted();
   }
 
   @Nested

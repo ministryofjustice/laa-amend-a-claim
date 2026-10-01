@@ -157,10 +157,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::claReferenceNumber,
       "cla_reference_number"),
   CIVIL_LEGAL_ADVICE_EXEMPTION(
-      FieldType.TEXT,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getCivilLegalAdviceExemption,
       Builder::claExemptionCode,
+      FieldOptions.CLA_EXEMPTION_CODE,
       "cla_exemption_code"),
   DELIVERY_LOCATION(
       FieldType.TEXT,
@@ -344,7 +345,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "jr_form_filling_amount",
       "jr_form_filling_amount"),
   ADJOURNED_HEARING_FEE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
@@ -353,7 +354,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "adjourned_hearing_fee_amount",
       "bolt_on_adjourned_hearing_fee"),
   CMRH_TELEPHONE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
@@ -362,7 +363,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_telephone_count",
       "bolt_on_cmrh_telephone_fee"),
   CMRH_ORAL(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhOral,
@@ -371,7 +372,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_oral_count",
       "bolt_on_cmrh_oral_fee"),
   HOME_OFFICE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getHoInterview,

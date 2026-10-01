@@ -41,4 +41,12 @@ class FieldOptionsTest {
     assertThat(CrimeLowerOutcomeCode.CHANGE_OF_SOLICITOR_PL02.messageKey())
         .isEqualTo("claimCase.options.outcomeCode.CHANGE_OF_SOLICITOR_PL02");
   }
+
+  @Test
+  void findsOptionIgnoringCase() {
+    assertThat(FieldOptions.find(FieldOptions.MEDIATION_OUTCOME, "a"))
+        .contains(MediationOutcomeCode.A);
+    assertThat(FieldOptions.find(FieldOptions.MEDIATION_OUTCOME, "Z")).isEmpty();
+    assertThat(FieldOptions.find(FieldOptions.MEDIATION_OUTCOME, null)).isEmpty();
+  }
 }
