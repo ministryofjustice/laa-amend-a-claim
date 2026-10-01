@@ -11,7 +11,7 @@
           th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
           th:id="${fieldKey}"
           th:field="*{inputs[__${fieldKey}__]}">
-    <option value=""></option>
+    <option value="" th:text="#{service.noData}"></option>
     <option value="true" th:text="#{service.yes}"></option>
     <option value="false" th:text="#{service.no}"></option>
   </select>

@@ -100,6 +100,10 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     Element selectLabel = selectFirst(row.get(2), "label[for=%s]".formatted(inputId));
     Assertions.assertEquals(label, selectLabel.text());
 
+    Element blankOption = selectFirst(select, "option[value='']");
+    Assertions.assertNotNull(blankOption, "Expected blank option");
+    Assertions.assertEquals("Not applicable", blankOption.text());
+
     Element selectedOption = selectFirst(select, "option[selected]");
     Assertions.assertEquals(Boolean.toString(expectedValue), selectedOption.attr("value"));
     Assertions.assertEquals(expectedValue ? "Yes" : "No", selectedOption.text());
@@ -131,6 +135,11 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     Assertions.assertFalse(select.hasAttr("data-module"), "Enum dropdown should not autocomplete");
     Element selectLabel = selectFirst(row.get(2), "label[for=%s]".formatted(inputId));
     Assertions.assertEquals(label, selectLabel.text());
+
+    Element blankOption = selectFirst(select, "option[value='']");
+    Assertions.assertNotNull(blankOption, "Expected blank option");
+    Assertions.assertEquals(
+        "Not applicable", blankOption.text(), "Enum dropdown blank option label");
 
     Element selectedOption = selectFirst(select, "option[selected]");
     Assertions.assertEquals(expectedValue, selectedOption.attr("value"));

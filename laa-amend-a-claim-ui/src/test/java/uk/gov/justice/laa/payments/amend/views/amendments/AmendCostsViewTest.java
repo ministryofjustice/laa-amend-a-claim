@@ -145,6 +145,9 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
         List.of("", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"),
         select.select("option").eachAttr("value"),
         inputId + " options");
+    Element blankOption = selectFirst(select, "option[value='']");
+    Assertions.assertNotNull(blankOption, inputId + " expected blank option");
+    Assertions.assertEquals("Not applicable", blankOption.text(), inputId + " blank option label");
     var selected = select.selectFirst("option[selected]");
     Assertions.assertEquals(
         expectedValue, selected == null ? null : selected.attr("value"), inputId + " value");
