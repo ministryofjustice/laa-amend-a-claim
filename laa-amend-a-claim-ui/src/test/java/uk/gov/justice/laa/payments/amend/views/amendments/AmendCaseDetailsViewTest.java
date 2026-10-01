@@ -45,7 +45,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String CRIME_OUTCOME_FOR_CLIENT_LABEL = "CN01 - No further instructions";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
-  private static final String CLA_EXEMPTION = "claexemption";
+  private static final String CLA_EXEMPTION = "EDET";
+  private static final String CLA_EXEMPTION_LABEL = "EDET - Client is in detention";
   private static final String DELIVERY_LOCATION = "deliverylocation";
   private static final String COURT_LOCATION = "courtlocation";
   private static final String AIT_HEARING_CENTRE = "16";
@@ -197,10 +198,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Civil Legal Advice (CLA) reference number",
         CLA_REFERENCE,
         CLA_REFERENCE);
-    assertSummaryListRowContainsValues(
+    assertEnumDropdownRow(
         caseDetails.get(15),
         "Civil Legal Advice (CLA) exemption code",
-        CLA_EXEMPTION,
+        CLA_EXEMPTION_LABEL,
+        "CIVIL_LEGAL_ADVICE_EXEMPTION",
         CLA_EXEMPTION);
     assertSummaryListRowContainsValues(
         caseDetails.get(16), "Delivery location", DELIVERY_LOCATION, DELIVERY_LOCATION);

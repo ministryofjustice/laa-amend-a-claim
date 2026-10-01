@@ -46,6 +46,17 @@ class AmendmentFormTest {
   }
 
   @Test
+  void seedsEnumFieldWithMatchingOptionValueIgnoringCase() {
+    var rows = new LinkedHashMap<ClaimViewField<?>, Object>();
+    rows.put(ClaimDetailsViewField.GENDER, "f");
+    rows.put(CivilClaimDetailsViewField.CLIENT_TYPE, "x");
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("GENDER", "F").containsEntry("CLIENT_TYPE", "x");
+  }
+
+  @Test
   void throwsWhenDateFieldValueIsNotLocalDate() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, "not-a-date");

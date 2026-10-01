@@ -28,6 +28,7 @@ import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafString;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.FieldOption;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.FieldOptions;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -131,12 +132,9 @@ public class ThymeleafUtils {
       return getFormattedValue(null);
     }
 
-    var selectedValue = value.toString();
-    return options.stream()
-        .filter(option -> option.value().equals(selectedValue))
-        .findFirst()
+    return FieldOptions.find(options, value)
         .<ThymeleafString>map(option -> new ThymeleafMessage(option.messageKey()))
-        .orElseGet(() -> new ThymeleafLiteralString(selectedValue));
+        .orElseGet(() -> new ThymeleafLiteralString(value.toString()));
   }
 
   public ThymeleafString getFormattedBoolean(Boolean value) {

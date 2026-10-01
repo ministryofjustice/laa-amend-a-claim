@@ -349,5 +349,14 @@ public class ThymeleafUtilsTest {
       assertThat(((ThymeleafMessage) result).getKey())
           .isEqualTo("claimCase.options.genderCode.MALE");
     }
+
+    @Test
+    void formatsLowerCaseOptionValueUsingItsLocalizedLabel() {
+      var result = new ThymeleafUtils().getFormattedValue(ClaimDetailsViewField.GENDER, "f");
+
+      assertThat(result).isInstanceOf(ThymeleafMessage.class);
+      assertThat(((ThymeleafMessage) result).getKey())
+          .isEqualTo("claimCase.options.genderCode.FEMALE");
+    }
   }
 }

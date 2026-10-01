@@ -102,6 +102,29 @@ class EnumAmendmentFieldValidatorTest {
   }
 
   @Test
+  void acceptsClaExemptionValueMatchingAnAllowedOption() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION,
+            Map.of("CIVIL_LEGAL_ADVICE_EXEMPTION", "EPRE"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsClaExemptionValueNotMatchingAnAllowedOptionNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION,
+            Map.of("CIVIL_LEGAL_ADVICE_EXEMPTION", "EXXX"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_EXEMPTION]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) exemption code");
+  }
+
+  @Test
   void acceptsClient2GenderValueMatchingAnAllowedOption() {
     var errors =
         validate(MediationClaimDetailsViewField.CLIENT_2_GENDER, Map.of("CLIENT_2_GENDER", "M"));

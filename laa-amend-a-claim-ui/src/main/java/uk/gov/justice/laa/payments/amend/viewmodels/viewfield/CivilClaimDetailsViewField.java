@@ -157,10 +157,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::claReferenceNumber,
       "cla_reference_number"),
   CIVIL_LEGAL_ADVICE_EXEMPTION(
-      FieldType.TEXT,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getCivilLegalAdviceExemption,
       Builder::claExemptionCode,
+      FieldOptions.CLA_EXEMPTION_CODE,
       "cla_exemption_code"),
   DELIVERY_LOCATION(
       FieldType.TEXT,

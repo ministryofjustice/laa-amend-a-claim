@@ -24,6 +24,8 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsV
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.FieldOption;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.FieldOptions;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 @Data
@@ -54,6 +56,8 @@ public class AmendmentForm {
         inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
       } else if (field.getFieldType().isNumber()) {
         inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
+      } else if (field.getFieldType().isEnum()) {
+        inputs.put(field.name(), formatEnumValue(field, entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
       }
@@ -274,6 +278,13 @@ public class AmendmentForm {
           throw new IllegalArgumentException(
               "Unsupported value type '%s' for text field".formatted(value.getClass()));
     };
+  }
+
+  // Upstream validation accepts some codes in any case, so match the option ignoring case
+  private static String formatEnumValue(ClaimViewField<?> field, Object value) {
+    return FieldOptions.find(field.getOptions(), value)
+        .map(FieldOption::value)
+        .orElseGet(() -> formatValue(value));
   }
 
   private static String formatBooleanValue(String name, Object value) {
