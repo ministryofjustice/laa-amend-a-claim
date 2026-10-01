@@ -11,7 +11,7 @@
           th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
           th:id="${fieldKey}"
           th:field="*{inputs[__${fieldKey}__]}">
-    <option value=""></option>
+    <option value="" th:text="#{service.noData}"></option>
     <option th:each="digit : ${#numbers.sequence(0, 9)}"
             th:value="${digit}"
             th:text="${digit}"></option>
