@@ -46,6 +46,13 @@ public class AmendCaseDetailsPage extends LaaPage {
     caseDetailInput.press("Enter");
   }
 
+  public void clearTypeahead(String inputKey) {
+    var caseDetailInput = page.locator(String.format("input#%s", inputKey));
+    assertThat(caseDetailInput).isVisible();
+    caseDetailInput.clear();
+    caseDetailInput.blur();
+  }
+
   public void clickContinueButton() {
     continueButton.click();
   }

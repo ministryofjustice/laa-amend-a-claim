@@ -5,6 +5,7 @@ INSERT INTO claims.claim_case (
   unique_case_id,
   outcome_code,
   stage_reached_code,
+  standard_fee_category_code,
   created_by_user_id,
   created_on,
   updated_by_user_id,
@@ -12,6 +13,7 @@ INSERT INTO claims.claim_case (
 ) VALUES (
   ?::uuid,
   ?::uuid,
+  ?,
   ?,
   ?,
   ?,
