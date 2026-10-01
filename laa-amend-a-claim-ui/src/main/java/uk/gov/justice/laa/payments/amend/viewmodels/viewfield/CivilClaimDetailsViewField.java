@@ -372,7 +372,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_oral_count",
       "bolt_on_cmrh_oral_fee"),
   HOME_OFFICE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getHoInterview,

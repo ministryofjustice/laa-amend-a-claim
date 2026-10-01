@@ -3,6 +3,7 @@ package uk.gov.justice.laa.payments.amend.views.amendments;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_ORAL;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
 
@@ -122,6 +123,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     claim.setAdjournedHearing(BoltOnClaimField.builder().key(ADJOURNED_FEE).submitted(3).build());
     claim.setCmrhOral(BoltOnClaimField.builder().key(CMRH_ORAL).submitted(0).build());
     claim.setCmrhTelephone(BoltOnClaimField.builder().key(CMRH_TELEPHONE).build());
+    claim.setHoInterview(BoltOnClaimField.builder().key(HO_INTERVIEW).submitted(4).build());
     this.claim = claim;
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
@@ -134,6 +136,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertSingleDigitSelect(doc, "ADJOURNED_HEARING_FEE", "3");
     assertSingleDigitSelect(doc, "CMRH_ORAL", "0");
     assertSingleDigitSelect(doc, "CMRH_TELEPHONE", null);
+    assertSingleDigitSelect(doc, "HOME_OFFICE", "4");
   }
 
   private void assertSingleDigitSelect(Document doc, String inputId, String expectedValue) {
