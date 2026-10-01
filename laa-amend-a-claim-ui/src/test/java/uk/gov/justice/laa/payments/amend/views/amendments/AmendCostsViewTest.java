@@ -183,6 +183,42 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void testErrorSummaryListsEveryErrorInOrderWithLinksToFields() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "not-a-number");
+    forms.getCostsForm().getCurrent().getInputs().put("DISBURSEMENTS", "not-a-number");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var errors =
+        List.of(
+            new AmendmentFormError(
+                "PROFIT_COST",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net profit costs"}),
+            new AmendmentFormError(
+                "DISBURSEMENTS",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net disbursements"}));
+
+    var doc = renderDocument(Map.of("formErrors", errors));
+
+    var links = doc.select(".govuk-error-summary__list li a");
+    Assertions.assertEquals(
+        List.of(
+            "Net profit costs must be entered as a valid amount",
+            "Net disbursements must be entered as a valid amount"),
+        links.eachText());
+    Assertions.assertEquals(List.of("#PROFIT_COST", "#DISBURSEMENTS"), links.eachAttr("href"));
+    Assertions.assertFalse(doc.select("#PROFIT_COST").isEmpty());
+    Assertions.assertFalse(doc.select("#DISBURSEMENTS").isEmpty());
+  }
+
+  @Test
   void testShowsInlineErrorOnBigDecimalInputWhenErrorPresent() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;

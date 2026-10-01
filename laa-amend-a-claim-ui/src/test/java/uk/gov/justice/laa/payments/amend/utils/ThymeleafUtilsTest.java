@@ -185,34 +185,67 @@ public class ThymeleafUtilsTest {
     }
 
     @Test
-    void filterOutDuplicateErrorMessages() {
+    void keepsSameMessageForDifferentFields() {
       List<FieldError> errors =
           List.of(
-              new FieldError(
-                  "caseTypeForm",
-                  "inputs[FEE_CODE]",
-                  null,
-                  false,
-                  new String[] {"Value is required"},
-                  new Object[] {},
-                  null),
-              new FieldError(
-                  "caseTypeForm",
-                  "inputs[MATTER_TYPE_CODE]",
-                  null,
-                  false,
-                  new String[] {"Value is required"},
-                  new Object[] {},
-                  null));
+              fieldError("FEE_CODE", "Value is required"),
+              fieldError("MATTER_TYPE_CODE", "Value is required"));
 
       ThymeleafUtils sut = new ThymeleafUtils();
 
       List<AmendmentFormError> result = sut.toAmendmentFormErrors(errors);
 
       List<AmendmentFormError> expectedResult =
-          List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+          List.of(
+              new AmendmentFormError("FEE_CODE", "Value is required"),
+              new AmendmentFormError("MATTER_TYPE_CODE", "Value is required"));
 
       Assertions.assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void keepsFirstErrorPerField() {
+      List<FieldError> errors =
+          List.of(
+              fieldError("FEE_CODE", "Value is required"),
+              fieldError("FEE_CODE", "Value is not a valid option"));
+
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      List<AmendmentFormError> result = sut.toAmendmentFormErrors(errors);
+
+      Assertions.assertEquals(
+          List.of(new AmendmentFormError("FEE_CODE", "Value is required")), result);
+    }
+
+    @Test
+    void ordersErrorsByPageFieldOrder() {
+      List<FieldError> errors =
+          List.of(
+              fieldError("UNKNOWN_FIELD", "Unknown error"),
+              fieldError("POSTCODE", "Postcode error"),
+              fieldError("SURNAME", "Surname error"),
+              fieldError("DATE_OF_BIRTH", "Date of birth error"));
+
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      List<AmendmentFormError> result =
+          sut.toAmendmentFormErrors(errors, List.of("SURNAME", "DATE_OF_BIRTH", "POSTCODE"));
+
+      Assertions.assertEquals(
+          List.of("SURNAME", "DATE_OF_BIRTH", "POSTCODE", "UNKNOWN_FIELD"),
+          result.stream().map(AmendmentFormError::getFieldName).toList());
+    }
+
+    private static FieldError fieldError(String fieldName, String code) {
+      return new FieldError(
+          "form",
+          "inputs[%s]".formatted(fieldName),
+          null,
+          false,
+          new String[] {code},
+          new Object[] {},
+          null);
     }
   }
 

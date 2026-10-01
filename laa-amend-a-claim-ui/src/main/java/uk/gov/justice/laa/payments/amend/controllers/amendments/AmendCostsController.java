@@ -101,6 +101,7 @@ public class AmendCostsController extends AbstractAmendController {
           bindingResult,
           COSTS_FORM,
           costsForm,
+          ClaimCostsViewFactory.create(claim).costFields().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-costs".formatted(submissionId, claimId));
     }
 

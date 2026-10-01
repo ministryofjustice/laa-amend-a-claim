@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 
 class AmendmentFormRedirectsTest {
 
@@ -59,9 +60,39 @@ class AmendmentFormRedirectsTest {
     when(bindingResult.getFieldErrors()).thenReturn(List.of());
 
     AmendmentFormRedirects.redirectWithErrors(
-        redirectAttributes, bindingResult, "costsForm", form, "/other/url");
+        redirectAttributes, bindingResult, "costsForm", form, List.of(), "/other/url");
 
     verify(redirectAttributes).addFlashAttribute("formErrors", List.of());
     verify(redirectAttributes).addFlashAttribute("costsForm", form);
+  }
+
+  @Test
+  void flashesAllErrorsInPageFieldOrder() {
+    var redirectAttributes = mock(RedirectAttributes.class);
+    var bindingResult = mock(BindingResult.class);
+    when(bindingResult.getFieldErrors())
+        .thenReturn(
+            List.of(
+                fieldError("inputs[GENDER]", "amendmentForm.mandatory"),
+                fieldError("inputs[SURNAME]", "amendmentForm.mandatory")));
+
+    AmendmentFormRedirects.redirectWithErrors(
+        redirectAttributes,
+        bindingResult,
+        "client1Form",
+        new Object(),
+        List.of(ClaimDetailsViewField.SURNAME, ClaimDetailsViewField.GENDER),
+        "/other/url");
+
+    verify(redirectAttributes)
+        .addFlashAttribute(
+            "formErrors",
+            List.of(
+                new AmendmentFormError("SURNAME", "amendmentForm.mandatory"),
+                new AmendmentFormError("GENDER", "amendmentForm.mandatory")));
+  }
+
+  private static FieldError fieldError(String field, String code) {
+    return new FieldError("form", field, null, false, new String[] {code}, new Object[] {}, null);
   }
 }

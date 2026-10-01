@@ -8,6 +8,7 @@ import static uk.gov.justice.laa.payments.amend.utils.DateUtils.displayDateValue
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -55,7 +56,24 @@ public class ThymeleafUtils {
   }
 
   public List<AmendmentFormError> toAmendmentFormErrors(List<FieldError> errors) {
-    return mapErrors(errors, AmendmentFormError::new, AmendmentFormError::getMessage);
+    return toAmendmentFormErrors(errors, List.of());
+  }
+
+  // Keeps one error per field (matching the inline message) and orders them as on the page
+  public List<AmendmentFormError> toAmendmentFormErrors(
+      List<FieldError> errors, List<String> fieldOrder) {
+    var errorsByField = new LinkedHashMap<String, AmendmentFormError>();
+    errors.stream()
+        .map(AmendmentFormError::new)
+        .forEach(error -> errorsByField.putIfAbsent(error.getFieldName(), error));
+    return errorsByField.values().stream()
+        .sorted(Comparator.comparingInt(error -> pagePosition(fieldOrder, error.getFieldName())))
+        .toList();
+  }
+
+  private static int pagePosition(List<String> fieldOrder, String fieldName) {
+    var index = fieldOrder.indexOf(fieldName);
+    return index < 0 ? Integer.MAX_VALUE : index;
   }
 
   public List<AmendmentFormError> orEmpty(List<AmendmentFormError> errors) {
