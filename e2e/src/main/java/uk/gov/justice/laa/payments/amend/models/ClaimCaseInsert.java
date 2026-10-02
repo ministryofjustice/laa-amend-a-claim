@@ -12,6 +12,7 @@ public record ClaimCaseInsert(
     String uniqueCaseId,
     String outcomeCode,
     String stageReachedCode,
+    String standardFeeCategoryCode,
     String userId)
     implements Insert {
 
@@ -23,6 +24,14 @@ public record ClaimCaseInsert(
   @Override
   public List<Object> parameters() {
     return Arrays.asList(
-        id, claimId, caseId, uniqueCaseId, outcomeCode, stageReachedCode, userId, userId);
+        id,
+        claimId,
+        caseId,
+        uniqueCaseId,
+        outcomeCode,
+        stageReachedCode,
+        standardFeeCategoryCode,
+        userId,
+        userId);
   }
 }

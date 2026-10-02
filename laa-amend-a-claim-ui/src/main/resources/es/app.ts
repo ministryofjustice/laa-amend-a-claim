@@ -61,6 +61,14 @@ selectDropdowns.forEach(function (select: HTMLSelectElement) {
     });
 
     const input = document.getElementById(id) as HTMLInputElement;
+    // The library only updates the select when an option is confirmed, so clearing the text
+    // would otherwise leave the previous value submitted.
+    input.addEventListener('input', function (): void {
+        if (!input.value.trim()) {
+            select.value = '';
+            select.dispatchEvent(new Event('change'));
+        }
+    });
     // Mark the prefilled option as valid so focusing selects it without reopening the menu.
     input.dispatchEvent(new FocusEvent('focus'));
     input.dispatchEvent(new FocusEvent('blur'));

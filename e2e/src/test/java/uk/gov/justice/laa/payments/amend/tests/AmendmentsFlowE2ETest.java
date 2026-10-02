@@ -210,6 +210,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(UUID.randomUUID().toString())
             .claimId(CRIME_CLAIM_ID)
             .stageReachedCode(CRIME_STAGE_REACHED)
+            .standardFeeCategoryCode("1A")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -539,11 +540,18 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
     viewAmendCaseDetails.fillDateInput("CASE_CONCLUDED_DATE", "31", "January", "2020");
+    viewAmendCaseDetails.clearTypeahead("STANDARD_FEE_CATEGORY");
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
+    assertSummaryListRow(
+        page,
+        "Case details",
+        "Standard fee category",
+        "1A - Youth Court Category 1A",
+        "Not applicable");
 
     viewAmendCase.clickContinue();
 
