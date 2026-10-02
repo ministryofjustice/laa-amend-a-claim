@@ -80,11 +80,13 @@ public class AmendClientController extends AbstractAmendController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     if (bindingResult.hasErrors()) {
+      var claim = getValidClaim(session, submissionId, claimId);
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
           CLIENT_1_FORM,
           client1Form,
+          ClaimClientViewFactory.create(claim).client1Rows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId));
     }
 
@@ -123,11 +125,13 @@ public class AmendClientController extends AbstractAmendController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     if (bindingResult.hasErrors()) {
+      var claim = getValidClaim(session, submissionId, claimId);
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
           CLIENT_2_FORM,
           client2Form,
+          ClaimClientViewFactory.create(claim).client2Rows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-client-two".formatted(submissionId, claimId));
     }
 

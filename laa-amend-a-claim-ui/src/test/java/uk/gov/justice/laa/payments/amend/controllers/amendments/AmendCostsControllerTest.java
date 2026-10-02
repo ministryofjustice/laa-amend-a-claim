@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveClaim;
 
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.BooleanAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
@@ -237,6 +239,34 @@ class AmendCostsControllerTest extends BaseControllerTest {
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST")).isNull();
+  }
+
+  @Test
+  void postCostsWithMultipleInvalidValuesFlashesAllErrorsInPageOrder() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendCostsPath())
+                    .param(INPUTS.formatted("TRAVEL_COSTS"), "not-a-number")
+                    .param(INPUTS.formatted("DISBURSEMENTS"), "not-a-number")
+                    .param(INPUTS.formatted("PROFIT_COST"), "not-a-number")
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+    @SuppressWarnings("unchecked")
+    var errors = (List<AmendmentFormError>) postResult.getFlashMap().get("formErrors");
+    assertThat(errors.stream().map(AmendmentFormError::getFieldName).toList())
+        .isEqualTo(List.of("PROFIT_COST", "DISBURSEMENTS", "TRAVEL_COSTS"));
   }
 
   @Test
