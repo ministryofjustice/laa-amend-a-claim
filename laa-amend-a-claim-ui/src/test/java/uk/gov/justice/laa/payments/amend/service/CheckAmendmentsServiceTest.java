@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -42,11 +43,14 @@ class CheckAmendmentsServiceTest {
 
   @Mock private ClaimsApiClient claimsApiClient;
 
+  private SimpleMeterRegistry meterRegistry;
+
   private CheckAmendmentsService checkAmendmentsService;
 
   @BeforeEach
   void setUp() {
-    checkAmendmentsService = new CheckAmendmentsService(claimsApiClient);
+    meterRegistry = new SimpleMeterRegistry();
+    checkAmendmentsService = new CheckAmendmentsService(claimsApiClient, meterRegistry);
   }
 
   @Test
@@ -92,6 +96,10 @@ class CheckAmendmentsServiceTest {
               assertThat(failure.getErrorMessages())
                   .containsExactly("This claim has been modified by another user.");
             });
+
+    assertThat(meterRegistry.counter("amendment.submissions.successful").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("amendment.submissions.rejected").count()).isEqualTo(1.0);
+    assertThat(meterRegistry.counter("amendment.submissions.failed").count()).isEqualTo(0.0);
   }
 
   @Test
@@ -129,6 +137,36 @@ class CheckAmendmentsServiceTest {
                 checkAmendmentsService.submitAmendments(
                     submissionId, claimId, USER_ID, claim, amendmentForms))
         .isSameAs(thrownException);
+
+    assertThat(meterRegistry.counter("amendment.submissions.successful").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("amendment.submissions.rejected").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("amendment.submissions.failed").count()).isEqualTo(1.0);
+  }
+
+  @Test
+  void submitIncrementsSuccessCounterOnSuccessfulSubmission() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setVersion(1L);
+    var amendmentForms =
+        amendmentForms(
+            forms(Map.of(), Map.of()),
+            forms(Map.of("FEE_CODE", "OLD_FEE"), Map.of("FEE_CODE", "NEW_FEE")),
+            forms(Map.of(), Map.of()),
+            null,
+            forms(Map.of(), Map.of()));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
+
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
+    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
+        .thenReturn(Mono.empty());
+
+    checkAmendmentsService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
+
+    assertThat(meterRegistry.counter("amendment.submissions.successful").count()).isEqualTo(1.0);
+    assertThat(meterRegistry.counter("amendment.submissions.rejected").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("amendment.submissions.failed").count()).isEqualTo(0.0);
   }
 
   @Test
