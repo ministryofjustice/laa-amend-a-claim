@@ -42,7 +42,7 @@ ext['tomcat.version'] = '11.0.25'
 
 dependencyManagement {
     dependencies {
-        dependencySet(group: 'org.bouncycastle', version: '1.85') {
+        dependencySet(group: 'org.bouncycastle', version: '1.86') {
             entry 'bcpkix-jdk18on'
             entry 'bcprov-jdk18on'
             entry 'bcutil-jdk18on'
