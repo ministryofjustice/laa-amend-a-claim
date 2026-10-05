@@ -18,7 +18,7 @@ public class ExceptionControllerAdvice {
 
   @ExceptionHandler(AmendmentSubmissionFailedException.class)
   public String handle(AmendmentSubmissionFailedException ex, HttpSession session) {
-    saveAmendmentErrors(session, ex.getClaimId(), ex.getErrorMessages());
+    saveAmendmentErrors(session, ex.getClaimId(), ex.getErrors());
     return String.format(
         "redirect:/submissions/%s/claims/%s/amendments/cannot-submit",
         ex.getSubmissionId(), ex.getClaimId());

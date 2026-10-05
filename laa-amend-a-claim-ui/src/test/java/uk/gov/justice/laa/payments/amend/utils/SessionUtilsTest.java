@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.payments.amend.config.SessionConfig;
 import uk.gov.justice.laa.payments.amend.exceptions.NoClaimInSessionException;
+import uk.gov.justice.laa.payments.amend.models.AmendmentError;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 
 public class SessionUtilsTest {
@@ -133,7 +135,8 @@ public class SessionUtilsTest {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     var session = new MockHttpSession();
     SessionUtils.saveClaim(session, CLAIM_ID, claim);
-    SessionUtils.saveAmendmentErrors(session, CLAIM_ID, List.of("Some error"));
+    SessionUtils.saveAmendmentErrors(
+        session, CLAIM_ID, List.of(AmendmentError.withMessage("Some error")));
 
     SessionUtils.removeAllForClaim(session, CLAIM_ID);
 
@@ -142,5 +145,20 @@ public class SessionUtilsTest {
         () -> SessionUtils.getClaim(session, SUBMISSION_ID, CLAIM_ID));
     assertThat(session.getAttribute(SessionUtils.AMENDMENT_ERRORS_KEY.formatted(CLAIM_ID)))
         .isNull();
+  }
+
+  @Test
+  void savedAmendmentErrorsSurviveRedisSessionSerialisation() {
+    var serializer = new SessionConfig().springSessionDefaultRedisSerializer();
+    var session = new MockHttpSession();
+    var errors =
+        List.of(
+            new AmendmentError("CLAIM_VERSION_CONFLICT", "Claim modified", "version"),
+            AmendmentError.withMessage("A technical error occurred"));
+
+    SessionUtils.saveAmendmentErrors(session, CLAIM_ID, errors);
+    var stored = session.getAttribute(SessionUtils.AMENDMENT_ERRORS_KEY.formatted(CLAIM_ID));
+
+    assertThat(serializer.deserialize(serializer.serialize(stored))).isEqualTo(errors);
   }
 }

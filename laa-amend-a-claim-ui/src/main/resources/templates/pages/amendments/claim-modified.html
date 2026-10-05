@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.claimModified.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l" th:text="#{amendments.claimModified.title}"></h1>
+
+      <p class="govuk-body" th:text="#{amendments.claimModified.body}"></p>
+
+      <p class="govuk-body">
+        <th:block th:text="#{amendments.claimModified.goBack}"></th:block>
+        <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+           th:text="#{amendments.claimModified.viewClaimDetails}"
+           class="govuk-link govuk-link--no-visited-state"
+           id="view-claim-details"></a>
+        <th:block th:text="#{amendments.claimModified.or}"></th:block>
+        <a th:href="@{${searchUrl}}"
+           th:text="#{amendments.claimModified.searchResults}"
+           class="govuk-link govuk-link--no-visited-state"
+           id="back-to-search"></a>.
+      </p>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.payments.amend.utils;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
@@ -9,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.payments.amend.exceptions.NoClaimInSessionException;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.payments.amend.models.AmendmentError;
 import uk.gov.justice.laa.payments.amend.models.Claim;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 
@@ -90,16 +92,17 @@ public class SessionUtils {
     removeAmendmentErrors(session, claimId);
   }
 
-  public static void saveAmendmentErrors(HttpSession session, UUID claimId, List<String> errors) {
+  public static void saveAmendmentErrors(
+      HttpSession session, UUID claimId, List<AmendmentError> errors) {
     var key = AMENDMENT_ERRORS_KEY.formatted(claimId.toString());
-    session.setAttribute(key, errors);
+    session.setAttribute(key, new ArrayList<>(errors));
   }
 
   @SuppressWarnings("unchecked")
-  public static List<String> getAmendmentErrors(HttpSession session, UUID claimId) {
+  public static List<AmendmentError> getAmendmentErrors(HttpSession session, UUID claimId) {
     var key = AMENDMENT_ERRORS_KEY.formatted(claimId.toString());
     var errors = session.getAttribute(key);
-    return errors == null ? List.of() : (List<String>) errors;
+    return errors == null ? List.of() : (List<AmendmentError>) errors;
   }
 
   public static void removeAmendmentErrors(HttpSession session, UUID claimId) {
