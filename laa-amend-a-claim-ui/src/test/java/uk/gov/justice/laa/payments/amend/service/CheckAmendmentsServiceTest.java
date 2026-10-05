@@ -32,6 +32,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.payments.amend.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.RequestedReasonForm;
+import uk.gov.justice.laa.payments.amend.models.AmendmentError;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
@@ -71,7 +72,11 @@ class CheckAmendmentsServiceTest {
     var claimId = UUID.randomUUID();
     var responseBody =
         """
-        {"errors":[{"code":"CLAIM_VERSION_CONFLICT","message":"This claim has been modified by another user."}]}
+        {"errors":[
+          {"code":"CLAIM_VERSION_CONFLICT","message":"This claim has been modified by another user.",
+           "fieldName":"version"},
+          {"code":"INVALID_FSP_VALIDATION_FAILURE","message":"The fee calculation failed"}
+        ]}
         """;
     when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
         .thenReturn(
@@ -93,8 +98,14 @@ class CheckAmendmentsServiceTest {
               var failure = (AmendmentSubmissionFailedException) ex;
               assertThat(failure.getSubmissionId()).isEqualTo(submissionId);
               assertThat(failure.getClaimId()).isEqualTo(claimId);
-              assertThat(failure.getErrorMessages())
-                  .containsExactly("This claim has been modified by another user.");
+              assertThat(failure.getErrors())
+                  .containsExactly(
+                      new AmendmentError(
+                          "CLAIM_VERSION_CONFLICT",
+                          "This claim has been modified by another user.",
+                          "version"),
+                      new AmendmentError(
+                          "INVALID_FSP_VALIDATION_FAILURE", "The fee calculation failed", null));
             });
 
     assertThat(meterRegistry.counter("amendment.submissions.successful").count()).isEqualTo(0.0);
