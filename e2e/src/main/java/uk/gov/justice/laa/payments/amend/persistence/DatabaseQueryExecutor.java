@@ -75,6 +75,12 @@ public class DatabaseQueryExecutor implements AutoCloseable {
     return executeQuery(SqlStatement.fromRaw(sql, List.of(id)));
   }
 
+  public void incrementVersion(String table, String id) {
+    String sql =
+        String.format("UPDATE claims.%s SET version = version + 1 WHERE id = ?::uuid", table);
+    executeUpdate(SqlStatement.fromRaw(sql, List.of(id)));
+  }
+
   @Override
   public void close() throws Exception {
     connection.close();
