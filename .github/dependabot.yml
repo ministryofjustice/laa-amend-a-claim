@@ -53,3 +53,9 @@ updates:
       npm-updates:
         patterns:
           - "**"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    cooldown:
+      default-days: 7
