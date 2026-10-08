@@ -30,7 +30,7 @@ dependencies {
 
     // Allure + JUnit 5
     testImplementation 'io.qameta.allure:allure-junit5:2.35.5'
-    testImplementation 'org.postgresql:postgresql:42.7.13'
+    testImplementation 'org.postgresql:postgresql:42.7.14'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.48'
