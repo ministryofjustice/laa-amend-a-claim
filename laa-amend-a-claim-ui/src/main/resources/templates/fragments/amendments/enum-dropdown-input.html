@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="amendmentBooleanInput(fieldKey, labelMessageKey, formErrors)"
-          th:with="label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey}">
+<th:block th:fragment="amendmentEnumDropdownInput(field, labelMessageKey, formErrors)"
+          th:with="fieldKey=${field.name()},
+                   label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey},
+                   options=${field.getOptions()}">
   <label class="govuk-label govuk-visually-hidden"
          th:for="${fieldKey}"
          th:text="${label}"></label>
@@ -12,8 +14,9 @@
           th:id="${fieldKey}"
           th:field="*{inputs[__${fieldKey}__]}">
     <option value="" th:text="#{service.noData}"></option>
-    <option value="true" th:text="#{service.yes}"></option>
-    <option value="false" th:text="#{service.no}"></option>
+    <option th:each="option : ${options}"
+            th:value="${option.value()}"
+            th:text="#{${option.messageKey()}}"></option>
   </select>
 </th:block>
 </body>

@@ -106,6 +106,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
           bindingResult,
           "caseTypeForm",
           retainedForm,
+          ClaimCaseViewFactory.create(claim).caseTypeRows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId));
     }
 
@@ -167,6 +168,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
           bindingResult,
           "caseTypeForm",
           retainedForm,
+          ClaimCaseViewFactory.create(claim).caseTypeRows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-stage-reached"
               .formatted(submissionId, claimId));
     }
@@ -213,6 +215,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
           bindingResult,
           "caseTypeForm",
           retainedForm,
+          ClaimCaseViewFactory.create(claim).caseTypeRows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-matter-type"
               .formatted(submissionId, claimId));
     }

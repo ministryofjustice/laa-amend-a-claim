@@ -121,6 +121,23 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void testShowsOptionLabelsForAmendedEnumClientField() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    setupClaim(claim);
+    claim.setClientGender("M");
+
+    var forms = createCrimeForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("GENDER", "F");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.get(1), "Gender", "Male", "Female");
+    assertEquals(2, clientDetails.size());
+  }
+
+  @Test
   void testShowsMediationClientDetails() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     setupClaim(claim);

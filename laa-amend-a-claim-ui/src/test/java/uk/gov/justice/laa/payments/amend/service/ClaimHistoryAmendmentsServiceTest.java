@@ -480,7 +480,7 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "false" : "true";
         yield new SampleValue(raw, Boolean.parseBoolean(raw));
       }
-      case NUMBER -> {
+      case NUMBER, SINGLE_DIGIT -> {
         var raw = isAfter ? "8" : "7";
         yield new SampleValue(raw, Integer.parseInt(raw));
       }
@@ -496,7 +496,7 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "2026-04-02" : "2026-04-01";
         yield new SampleValue(raw, LocalDate.parse(raw));
       }
-      case ENUM -> {
+      case ENUM_TYPEAHEAD, ENUM_DROPDOWN -> {
         var options = field.getOptions();
         var option = options.get(isAfter && options.size() > 1 ? 1 : 0);
         yield new SampleValue(option.value(), option);

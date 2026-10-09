@@ -95,6 +95,7 @@ public class AmendCaseDetailsController extends AbstractAmendController {
           bindingResult,
           CASE_DETAILS_FORM,
           retainedForm,
+          ClaimCaseViewFactory.create(claim).caseDetailsRows().keySet(),
           "/submissions/%s/claims/%s/amendments/amend-case-details"
               .formatted(submissionId, claimId));
     }

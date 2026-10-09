@@ -340,11 +340,11 @@ public class ClaimHistoryAmendmentsService {
       return switch (fieldType) {
         case TEXT -> String.valueOf(raw);
         case BOOLEAN -> raw instanceof Boolean b ? b : Boolean.parseBoolean(String.valueOf(raw));
-        case NUMBER ->
+        case NUMBER, SINGLE_DIGIT ->
             raw instanceof Number n ? n.intValue() : Integer.parseInt(String.valueOf(raw));
         case MONETARY, PERCENTAGE -> new BigDecimal(String.valueOf(raw));
         case DATE -> LocalDate.parse(String.valueOf(raw));
-        case ENUM -> resolveEnumValue(raw, field.getOptions());
+        case ENUM_TYPEAHEAD, ENUM_DROPDOWN -> resolveEnumValue(raw, field.getOptions());
       };
     } catch (Exception e) {
       log.warn(

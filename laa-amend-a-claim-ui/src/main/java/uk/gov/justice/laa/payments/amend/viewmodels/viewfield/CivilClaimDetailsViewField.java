@@ -41,7 +41,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::isEligibleClient,
       "is_eligible_client"),
   CLIENT_TYPE(
-      FieldType.ENUM,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getClientType,
       Builder::clientTypeCode,
@@ -114,7 +114,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::uniqueFileNumber,
       "unique_file_number"),
   CASE_STAGE(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CivilClaimDetails::getCaseStage,
       Builder::caseStageCode,
@@ -157,10 +157,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::claReferenceNumber,
       "cla_reference_number"),
   CIVIL_LEGAL_ADVICE_EXEMPTION(
-      FieldType.TEXT,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getCivilLegalAdviceExemption,
       Builder::claExemptionCode,
+      FieldOptions.CLA_EXEMPTION_CODE,
       "cla_exemption_code"),
   DELIVERY_LOCATION(
       FieldType.TEXT,
@@ -175,7 +176,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::courtLocationCode,
       "court_location_code"),
   AIT_HEARING_CENTRE(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CivilClaimDetails::getAitHearingCentre,
       Builder::aitHearingCentreCode,
@@ -188,7 +189,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::localAuthorityNumber,
       "local_authority_number"),
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
-      FieldType.ENUM,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getDesignatedAccreditedRepresentative,
       Builder::designatedAccreditedRepresentativeCode,
@@ -237,14 +238,14 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::isLegacyCase,
       "is_legacy_case"),
   MEETINGS_ATTENDED(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CivilClaimDetails::getMeetingsAttended,
       Builder::meetingsAttendedCode,
       FieldOptions.MEETINGS_ATTENDED,
       "meetings_attended_code"),
   ADVICE_TYPE(
-      FieldType.ENUM,
+      FieldType.ENUM_DROPDOWN,
       String.class,
       CivilClaimDetails::getAdviceType,
       Builder::adviceTypeCode,
@@ -263,7 +264,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Builder::medicalReportsCount,
       "medical_reports_count"),
   EXEMPTION_CRITERIA_SATISFIED(
-      FieldType.ENUM,
+      FieldType.ENUM_TYPEAHEAD,
       String.class,
       CivilClaimDetails::getExemptionCriteriaSatisfied,
       Builder::exemptionCriteriaSatisfied,
@@ -344,7 +345,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "jr_form_filling_amount",
       "jr_form_filling_amount"),
   ADJOURNED_HEARING_FEE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
@@ -353,7 +354,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "adjourned_hearing_fee_amount",
       "bolt_on_adjourned_hearing_fee"),
   CMRH_TELEPHONE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
@@ -362,7 +363,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_telephone_count",
       "bolt_on_cmrh_telephone_fee"),
   CMRH_ORAL(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getCmrhOral,
@@ -371,7 +372,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "cmrh_oral_count",
       "bolt_on_cmrh_oral_fee"),
   HOME_OFFICE(
-      FieldType.NUMBER,
+      FieldType.SINGLE_DIGIT,
       FieldType.MONETARY,
       Integer.class,
       CivilClaimDetails::getHoInterview,

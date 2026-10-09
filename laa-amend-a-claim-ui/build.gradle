@@ -38,10 +38,11 @@ ext['jackson-2-bom.version'] = '2.21.7'
 ext['jackson-bom.version'] = '3.1.7'
 ext['netty.version'] = '4.2.18.Final'
 ext['logback.version'] = '1.6.3'
+ext['tomcat.version'] = '11.0.26'
 
 dependencyManagement {
     dependencies {
-        dependencySet(group: 'org.bouncycastle', version: '1.85') {
+        dependencySet(group: 'org.bouncycastle', version: '1.86') {
             entry 'bcpkix-jdk18on'
             entry 'bcprov-jdk18on'
             entry 'bcutil-jdk18on'

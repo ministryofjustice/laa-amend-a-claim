@@ -42,7 +42,7 @@ public record ClaimFieldRow(
   }
 
   public static ClaimFieldRow from(BoltOnClaimField claimField) {
-    if (claimField.hasSubmittedValue()) {
+    if (claimField.getSubmitted() != null) {
       return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
     }
     return null;
@@ -114,7 +114,8 @@ public record ClaimFieldRow(
   }
 
   public static ClaimFieldRow fromCustom(BoltOnClaimField claimField) {
-    if (!claimField.hasSubmittedValue()) {
+    // 0 and false are submitted values, distinct from a value that was not provided
+    if (claimField.getSubmitted() == null) {
       return createRow(claimField, null, null);
     }
     return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());

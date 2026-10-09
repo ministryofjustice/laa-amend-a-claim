@@ -16,6 +16,7 @@ import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KE
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveClaim;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.DateAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
@@ -203,6 +205,31 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .andExpect(
             content()
                 .string(containsString("Unique file number (UFN) must be 50 characters or less")));
+  }
+
+  @Test
+  void postCaseDetailsWithMultipleInvalidValuesFlashesAllErrorsInPageOrder() throws Exception {
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId),
+        MockAmendmentFormsFunctions.justCaseDetailsFilled(claim));
+
+    var tooLong = "a".repeat(51);
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendCaseDetailsPath())
+                    .param(INPUTS.formatted("MAAT_ID"), tooLong)
+                    .param(INPUTS.formatted("SCHEME_ID"), tooLong)
+                    .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+    @SuppressWarnings("unchecked")
+    var errors = (List<AmendmentFormError>) postResult.getFlashMap().get("formErrors");
+    assertThat(errors.stream().map(AmendmentFormError::getFieldName).toList())
+        .isEqualTo(List.of("UNIQUE_FILE_NUMBER", "SCHEME_ID", "MAAT_ID"));
   }
 
   @Test

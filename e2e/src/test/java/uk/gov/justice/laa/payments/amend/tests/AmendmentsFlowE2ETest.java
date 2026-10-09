@@ -210,6 +210,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(UUID.randomUUID().toString())
             .claimId(CRIME_CLAIM_ID)
             .stageReachedCode(CRIME_STAGE_REACHED)
+            .standardFeeCategoryCode("1A")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -372,9 +373,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient2.fillInput("CLIENT_2_DATE_OF_BIRTH-year", "1995");
     amendClient2.fillInput("CLIENT_2_UCN", "01051995/X/WXYZ");
     amendClient2.fillInput("CLIENT_2_POSTCODE", "XX196XX");
-    amendClient2.selectFromComboBox("CLIENT_2_GENDER", "Female");
-    amendClient2.selectFromComboBox("CLIENT_2_ETHNICITY", "00 - White British");
-    amendClient2.selectFromComboBox("CLIENT_2_DISABILITY", "NCD - No Condition Declared");
+    amendClient2.selectSelectionValue("CLIENT_2_GENDER", "Female");
+    amendClient2.selectFromTypeahead("CLIENT_2_ETHNICITY", "00 - White British");
+    amendClient2.selectFromTypeahead("CLIENT_2_DISABILITY", "NCD - No Condition Declared");
     amendClient2.selectSelectionValue("IS_CLIENT_2_LEGALLY_AIDED", "Yes");
     amendClient2.selectSelectionValue("IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED", "Yes");
     amendClient2.clickContinueButton();
@@ -385,9 +386,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Client 2 details", "Date of birth", "Not applicable","01 May 1995");
     assertSummaryListRow(page, "Client 2 details", "Unique client number (UCN)", "Not applicable","01051995/X/WXYZ");
     assertSummaryListRow(page, "Client 2 details", "Postcode", "Not applicable","XX196XX");
-    assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","F");
-    assertSummaryListRow(page, "Client 2 details", "Ethnicity", "Not applicable","00");
-    assertSummaryListRow(page, "Client 2 details", "Disability", "Not applicable","NCD");
+    assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","Female");
+    assertSummaryListRow(page, "Client 2 details", "Ethnicity", "Not applicable","00 - White British");
+    assertSummaryListRow(page, "Client 2 details", "Disability", "Not applicable","NCD - No condition declared");
     assertSummaryListRow(page, "Client 2 details", "Legally aided", "Not applicable","Yes");
     assertSummaryListRow(page, "Client 2 details", "Postal application accepted", "Not applicable","Yes");
 
@@ -539,11 +540,18 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
     viewAmendCaseDetails.fillDateInput("CASE_CONCLUDED_DATE", "31", "January", "2020");
+    viewAmendCaseDetails.clearTypeahead("STANDARD_FEE_CATEGORY");
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
+    assertSummaryListRow(
+        page,
+        "Case details",
+        "Standard fee category",
+        "1A - Youth Court Category 1A",
+        "Not applicable");
 
     viewAmendCase.clickContinue();
 

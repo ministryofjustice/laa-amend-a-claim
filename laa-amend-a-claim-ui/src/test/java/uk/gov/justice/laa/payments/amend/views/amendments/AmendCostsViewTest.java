@@ -1,5 +1,9 @@
 package uk.gov.justice.laa.payments.amend.views.amendments;
 
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
 
@@ -95,6 +99,61 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void testSubstantiveHearingNoIsPreserved() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubstantiveHearing(
+        BoltOnClaimField.builder().key(SUBSTANTIVE_HEARING).submitted(false).build());
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+
+    var costs = getSummaryListInCard(doc, "List of costs");
+    assertBooleanSelectRow(
+        costs.get(11), "Substantive hearing", "No", "SUBSTANTIVE_HEARING", false);
+  }
+
+  @Test
+  void testShowsSingleDigitSelectsForCountBoltOns() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAdjournedHearing(BoltOnClaimField.builder().key(ADJOURNED_FEE).submitted(3).build());
+    claim.setCmrhOral(BoltOnClaimField.builder().key(CMRH_ORAL).submitted(0).build());
+    claim.setCmrhTelephone(BoltOnClaimField.builder().key(CMRH_TELEPHONE).build());
+    claim.setHoInterview(BoltOnClaimField.builder().key(HO_INTERVIEW).submitted(4).build());
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+
+    assertSingleDigitSelect(doc, "ADJOURNED_HEARING_FEE", "3");
+    assertSingleDigitSelect(doc, "CMRH_ORAL", "0");
+    assertSingleDigitSelect(doc, "CMRH_TELEPHONE", null);
+    assertSingleDigitSelect(doc, "HOME_OFFICE", "4");
+  }
+
+  private void assertSingleDigitSelect(Document doc, String inputId, String expectedValue) {
+    Element select = selectFirst(doc, "select#%s.govuk-select".formatted(inputId));
+    Assertions.assertEquals(
+        List.of("", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"),
+        select.select("option").eachAttr("value"),
+        inputId + " options");
+    Element blankOption = selectFirst(select, "option[value='']");
+    Assertions.assertNotNull(blankOption, inputId + " expected blank option");
+    Assertions.assertEquals("Not applicable", blankOption.text(), inputId + " blank option label");
+    var selected = select.selectFirst("option[selected]");
+    Assertions.assertEquals(
+        expectedValue, selected == null ? null : selected.attr("value"), inputId + " value");
+  }
+
+  @Test
   void testShowsErrorSummaryWhenCostFormErrorsPresent() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
@@ -121,6 +180,42 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
             .text()
             .contains("Net profit costs must be entered as a valid amount"),
         "Error summary should contain the field error message");
+  }
+
+  @Test
+  void testErrorSummaryListsEveryErrorInOrderWithLinksToFields() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "not-a-number");
+    forms.getCostsForm().getCurrent().getInputs().put("DISBURSEMENTS", "not-a-number");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var errors =
+        List.of(
+            new AmendmentFormError(
+                "PROFIT_COST",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net profit costs"}),
+            new AmendmentFormError(
+                "DISBURSEMENTS",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net disbursements"}));
+
+    var doc = renderDocument(Map.of("formErrors", errors));
+
+    var links = doc.select(".govuk-error-summary__list li a");
+    Assertions.assertEquals(
+        List.of(
+            "Net profit costs must be entered as a valid amount",
+            "Net disbursements must be entered as a valid amount"),
+        links.eachText());
+    Assertions.assertEquals(List.of("#PROFIT_COST", "#DISBURSEMENTS"), links.eachAttr("href"));
+    Assertions.assertFalse(doc.select("#PROFIT_COST").isEmpty());
+    Assertions.assertFalse(doc.select("#DISBURSEMENTS").isEmpty());
   }
 
   @Test

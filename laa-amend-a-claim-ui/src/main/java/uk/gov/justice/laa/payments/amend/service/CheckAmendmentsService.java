@@ -3,11 +3,11 @@ package uk.gov.justice.laa.payments.amend.service;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_1;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_2;
 
-import java.util.ArrayList;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.exceptions.AmendmentSubmissionFailedException;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.OriginalAndCurrent;
+import uk.gov.justice.laa.payments.amend.models.AmendmentError;
 import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.MediationClaimDetails;
@@ -26,7 +27,6 @@ import uk.gov.justice.laa.payments.amend.viewmodels.AmendmentsHeaderView;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CheckAmendmentsService {
 
   private static final String GENERIC_ERROR_MESSAGE =
@@ -37,6 +37,25 @@ public class CheckAmendmentsService {
       Set.of(HttpStatus.BAD_REQUEST, HttpStatus.CONFLICT, HttpStatus.SERVICE_UNAVAILABLE);
 
   private final ClaimsApiClient claimsApiClient;
+  private final Counter amendmentCounter;
+  private final Counter amendmentRejectedCounter;
+  private final Counter amendmentFailureCounter;
+
+  public CheckAmendmentsService(ClaimsApiClient claimsApiClient, MeterRegistry meterRegistry) {
+    this.claimsApiClient = claimsApiClient;
+    this.amendmentCounter =
+        Counter.builder("amendment.submissions.successful")
+            .description("Total number of successful claim amendments")
+            .register(meterRegistry);
+    this.amendmentRejectedCounter =
+        Counter.builder("amendment.submissions.rejected")
+            .description("Total number of claim amendments rejected due to validation errors")
+            .register(meterRegistry);
+    this.amendmentFailureCounter =
+        Counter.builder("amendment.submissions.failed")
+            .description("Total number of claim amendments that failed unexpectedly")
+            .register(meterRegistry);
+  }
 
   public void submitAmendments(
       UUID submissionId,
@@ -64,8 +83,10 @@ public class CheckAmendmentsService {
 
     try {
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
+      amendmentCounter.increment();
     } catch (WebClientResponseException ex) {
       if (!VALIDATION_REJECTION_STATUSES.contains(HttpStatus.resolve(ex.getStatusCode().value()))) {
+        amendmentFailureCounter.increment();
         log.error(
             "Amendment submission to claims-api failed unexpectedly for submission {} claim {}"
                 + " with status {}",
@@ -75,38 +96,44 @@ public class CheckAmendmentsService {
             ex);
         throw ex;
       }
+      amendmentRejectedCounter.increment();
       log.warn(
           "Amendment submission rejected for submission {} claim {} with status {}: {}",
           submissionId,
           claimId,
           ex.getStatusCode(),
           ex.getResponseBodyAsString());
-      throw new AmendmentSubmissionFailedException(submissionId, claimId, extractErrorMessages(ex));
+      throw new AmendmentSubmissionFailedException(submissionId, claimId, extractErrors(ex));
     } catch (Exception ex) {
+      amendmentFailureCounter.increment();
       log.error("Failed to submit amendment for submission {} claim {}", submissionId, claimId, ex);
       throw ex;
     }
   }
 
-  private List<String> extractErrorMessages(WebClientResponseException ex) {
+  private List<AmendmentError> extractErrors(WebClientResponseException ex) {
     try {
       JsonNode root = OBJECT_MAPPER.readTree(ex.getResponseBodyAsString());
       JsonNode errors = root.path("errors");
       if (errors.isArray() && !errors.isEmpty()) {
-        List<String> messages = new ArrayList<>();
-        errors.forEach(
-            error -> messages.add(error.path("message").asString(GENERIC_ERROR_MESSAGE)));
-        return messages;
+        return errors.valueStream().map(CheckAmendmentsService::toAmendmentError).toList();
       }
       String detail = root.path("detail").asString(null);
-      return detail != null ? List.of(detail) : List.of(GENERIC_ERROR_MESSAGE);
+      return List.of(AmendmentError.withMessage(detail != null ? detail : GENERIC_ERROR_MESSAGE));
     } catch (Exception parseException) {
       log.warn(
           "Failed to parse amendment error response body: {}",
           ex.getResponseBodyAsString(),
           parseException);
-      return List.of(GENERIC_ERROR_MESSAGE);
+      return List.of(AmendmentError.withMessage(GENERIC_ERROR_MESSAGE));
     }
+  }
+
+  private static AmendmentError toAmendmentError(JsonNode error) {
+    return new AmendmentError(
+        error.path("code").asString(null),
+        error.path("message").asString(GENERIC_ERROR_MESSAGE),
+        error.path("fieldName").asString(null));
   }
 
   private void applyAmendments(

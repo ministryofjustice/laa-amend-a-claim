@@ -45,7 +45,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String CRIME_OUTCOME_FOR_CLIENT_LABEL = "CN01 - No further instructions";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
-  private static final String CLA_EXEMPTION = "claexemption";
+  private static final String CLA_EXEMPTION = "EDET";
+  private static final String CLA_EXEMPTION_LABEL = "EDET - Client is in detention";
   private static final String DELIVERY_LOCATION = "deliverylocation";
   private static final String COURT_LOCATION = "courtlocation";
   private static final String AIT_HEARING_CENTRE = "16";
@@ -197,10 +198,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Civil Legal Advice (CLA) reference number",
         CLA_REFERENCE,
         CLA_REFERENCE);
-    assertSummaryListRowContainsValues(
+    assertEnumDropdownRow(
         caseDetails.get(15),
         "Civil Legal Advice (CLA) exemption code",
-        CLA_EXEMPTION,
+        CLA_EXEMPTION_LABEL,
+        "CIVIL_LEGAL_ADVICE_EXEMPTION",
         CLA_EXEMPTION);
     assertSummaryListRowContainsValues(
         caseDetails.get(16), "Delivery location", DELIVERY_LOCATION, DELIVERY_LOCATION);
@@ -220,7 +222,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Local authority number",
         LOCAL_AUTHORITY_NUMBER,
         LOCAL_AUTHORITY_NUMBER);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(20),
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL,
@@ -243,7 +245,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         MEETINGS_ATTENDED_LABEL,
         "MEETINGS_ATTENDED",
         MEETINGS_ATTENDED);
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(29), "Type of advice", ADVICE_TYPE_LABEL, "ADVICE_TYPE", ADVICE_TYPE);
     assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
     assertNumberInputRow(
@@ -417,7 +419,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Mediation time (minutes)",
         MEDIATION_TIME_MINUTES,
         "MEDIATION_TIME_MINUTES");
-    assertEnumTypeaheadRow(
+    assertEnumDropdownRow(
         caseDetails.get(8), "Outcome", OUTCOME_FOR_CLIENT, "OUTCOME", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(9), "Outreach location", OUTREACH_LOCATION, OUTREACH_LOCATION);

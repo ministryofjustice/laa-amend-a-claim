@@ -1,12 +1,14 @@
 package uk.gov.justice.laa.payments.amend.forms.amendments.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.support.TestMessageSources;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
@@ -17,6 +19,18 @@ class EnumAmendmentFieldValidatorTest {
 
   private final EnumAmendmentFieldValidator validator =
       new EnumAmendmentFieldValidator(TestMessageSources.real());
+
+  @Test
+  void supportsBothEnumFieldTypes() {
+    assertThat(validator.supports(FieldType.ENUM_TYPEAHEAD)).isTrue();
+    assertThat(validator.supports(FieldType.ENUM_DROPDOWN)).isTrue();
+    assertThat(validator.supports(FieldType.TEXT)).isFalse();
+  }
+
+  @Test
+  void supportedTypeIsUnsupported() {
+    assertThatThrownBy(validator::supportedType).isInstanceOf(UnsupportedOperationException.class);
+  }
 
   @Test
   void acceptsEnumValueMatchingAnAllowedOption() {
@@ -85,6 +99,29 @@ class EnumAmendmentFieldValidatorTest {
     var fieldError = errors.getFieldError("inputs[CLIENT_TYPE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
     assertThat(fieldError.getArguments()[0]).isEqualTo("Client type");
+  }
+
+  @Test
+  void acceptsClaExemptionValueMatchingAnAllowedOption() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION,
+            Map.of("CIVIL_LEGAL_ADVICE_EXEMPTION", "EPRE"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsClaExemptionValueNotMatchingAnAllowedOptionNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION,
+            Map.of("CIVIL_LEGAL_ADVICE_EXEMPTION", "EXXX"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_EXEMPTION]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) exemption code");
   }
 
   @Test

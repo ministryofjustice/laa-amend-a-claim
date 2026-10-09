@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveClaim;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +23,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.justice.laa.payments.amend.controllers.BaseControllerTest;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.DateAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.EnumAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 
@@ -463,6 +466,65 @@ class AmendClientControllerTest extends BaseControllerTest {
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
         .andExpect(content().string(containsString("Last name must be 50 characters or less")));
+  }
+
+  @Test
+  void postClient1WithMultipleInvalidValuesFlashesAllErrorsInPageOrder() throws Exception {
+    useMediationClaim();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), emptyMediationForms());
+
+    var tooLong = "a".repeat(51);
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendClient1Path())
+                    .param(INPUTS.formatted("POSTCODE"), tooLong)
+                    .param(INPUTS.formatted("SURNAME"), tooLong)
+                    .param(INPUTS.formatted("FORENAME"), tooLong)
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+    assertThat(flashedErrorFieldNames(postResult))
+        .containsExactly("FORENAME", "SURNAME", "POSTCODE");
+  }
+
+  @Test
+  void postClient2WithMultipleInvalidValuesFlashesAllErrorsInPageOrder() throws Exception {
+    useMediationClaim();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), emptyMediationForms());
+
+    var tooLong = "a".repeat(51);
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendClient2Path())
+                    .param(INPUTS.formatted("CLIENT_2_POSTCODE"), tooLong)
+                    .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)
+                    .param(INPUTS.formatted("CLIENT_2_FORENAME"), tooLong)
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+    assertThat(flashedErrorFieldNames(postResult))
+        .containsExactly("CLIENT_2_FORENAME", "CLIENT_2_SURNAME", "CLIENT_2_POSTCODE");
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<String> flashedErrorFieldNames(MvcResult result) {
+    var errors = (List<AmendmentFormError>) result.getFlashMap().get("formErrors");
+    return errors.stream().map(AmendmentFormError::getFieldName).toList();
+  }
+
+  private static AmendmentForms emptyMediationForms() {
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .client2(new AmendmentForm())
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void useMediationClaim() {

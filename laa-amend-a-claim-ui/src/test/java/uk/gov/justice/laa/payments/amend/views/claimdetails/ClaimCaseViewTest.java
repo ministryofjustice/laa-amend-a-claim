@@ -57,7 +57,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   private static final String ACCESS_POINT = "accessPoint";
   private static final String EXCEPTIONAL_CASE_FUNDING_REFERENCE = "EX_REF";
   private static final String CLA_REFERENCE = "CLA_REF";
-  private static final String CLA_EXEMPTION = "CLA_EX";
+  private static final String CLA_EXEMPTION = "EPRE";
+  private static final String CLA_EXEMPTION_LABEL = "EPRE - 12 month exemption";
   private static final String DELIVERY_LOCATION = "deliveryLocation";
   private static final String COURT_LOCATION = "courtLocation";
   private static final String AIT_HEARING_CENTRE = "aitHearingCentre";
@@ -312,7 +313,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(13), "Civil Legal Advice (CLA) reference number", CLA_REFERENCE);
     assertSummaryListRowContainsValues(
-        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION);
+        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION_LABEL);
     assertSummaryListRowContainsValues(caseDetails.get(15), "Delivery location", DELIVERY_LOCATION);
     assertSummaryListRowContainsValues(
         caseDetails.get(16),
