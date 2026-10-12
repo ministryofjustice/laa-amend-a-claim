@@ -42,6 +42,7 @@ ext['tomcat.version'] = '11.0.26'
 
 dependencyManagement {
     dependencies {
+        dependency 'com.google.guava:guava:33.7.2-jre'
         dependencySet(group: 'org.bouncycastle', version: '1.86') {
             entry 'bcpkix-jdk18on'
             entry 'bcprov-jdk18on'
