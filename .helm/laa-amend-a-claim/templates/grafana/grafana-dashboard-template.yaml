@@ -1935,10 +1935,10 @@
   "schemaVersion": 40,
   "tags": [
     "LAA",
-    "DSTEW",
+    "CWC",
     "Claims",
-    "laa-amend-a-claim",
     "{{ .Release.Namespace }}",
+    "{{ .Release.Name }}",
     "laa-amend-a-claim"
   ],
   "templating": {
