@@ -17,6 +17,7 @@ import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest;
 import org.springframework.web.reactive.function.client.WebClientResponseException.Conflict;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
@@ -110,6 +111,27 @@ public final class ClaimsUpdateClaimPactTest extends AbstractPactTest {
         .toPact();
   }
 
+  @Pact(consumer = CONSUMER)
+  public RequestResponsePact updateClaim400(PactDslWithProvider builder) {
+    return builder
+        .given("the claim amendment fails field validation")
+        .uponReceiving("a request to amend a claim that fails field validation")
+        .matchPath(
+            "/api/v1/submissions/(" + UUID_REGEX + ")/claims/(" + UUID_REGEX + ")",
+            "/api/v1/submissions/" + SUBMISSION_ID + "/claims/" + CLAIM_ID)
+        .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
+        .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
+        .method("PATCH")
+        .body(LambdaDsl.newJsonBody(ClaimsUpdateClaimPactTest::buildAmendmentRequestBody).build())
+        .willRespondWith()
+        .status(400)
+        .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
+        .body(
+            LambdaDsl.newJsonBody(ClaimsUpdateClaimPactTest::buildValidationFailureResponseBody)
+                .build())
+        .toPact();
+  }
+
   @Test
   @DisplayName("Verify 204 response - claim updated successfully")
   @PactTestFor(pactMethod = "updateClaim204")
@@ -149,12 +171,23 @@ public final class ClaimsUpdateClaimPactTest extends AbstractPactTest {
         () -> claimsApiClient.updateClaim(SUBMISSION_ID, CLAIM_ID, amendment).block());
   }
 
+  @Test
+  @DisplayName("Verify 400 response - amendment fails field validation")
+  @PactTestFor(pactMethod = "updateClaim400")
+  void verify400Response() {
+    var amendment = buildAmendmentPatch();
+
+    assertThrows(
+        BadRequest.class,
+        () -> claimsApiClient.updateClaim(SUBMISSION_ID, CLAIM_ID, amendment).block());
+  }
+
   private static void buildAmendmentRequestBody(LambdaDslJsonBody body) {
     body.nullValue("status");
     body.integerType("version", 1);
     body.uuid("amendment_user_id", USER_ID);
     body.stringType("amendment_requested_by", "PROVIDER");
-    body.stringType("amendment_reason_code", "DATA_ENTRY_ERROR");
+    body.stringType("amendment_reason_code", "PROVIDER_ERROR");
     body.stringType("client_surname", "Amended");
     body.nullValue("total_warnings");
     body.nullValue("fee_calculation_response");
@@ -174,12 +207,23 @@ public final class ClaimsUpdateClaimPactTest extends AbstractPactTest {
         });
   }
 
+  private static void buildValidationFailureResponseBody(LambdaDslJsonBody body) {
+    body.minArrayLike(
+        "errors",
+        2,
+        error -> {
+          error.stringType("code", "INVALID_CLIENT_DATE_OF_BIRTH");
+          error.stringType("message", "Client date of birth must be between 01/01/1900 and today");
+          error.stringType("fieldName", "client_date_of_birth");
+        });
+  }
+
   private static ClaimAmendmentPatch buildAmendmentPatch() {
     return ClaimAmendmentPatch.builder()
         .version(1L)
         .amendmentUserId(USER_ID)
         .amendmentRequestedBy("PROVIDER")
-        .amendmentReasonCode("DATA_ENTRY_ERROR")
+        .amendmentReasonCode("PROVIDER_ERROR")
         .clientSurname("Amended")
         .build();
   }
