@@ -41,6 +41,9 @@ public class DummyUserSecurityService extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
+    // A real login always creates a session, so ensure the dummy user has one too. Otherwise
+    // rendering can try to create it (e.g. for a CSRF token) after the response is committed.
+    request.getSession();
     SecurityContextHolder.getContext().setAuthentication(createAuthToken(roles));
     filterChain.doFilter(request, response);
   }
