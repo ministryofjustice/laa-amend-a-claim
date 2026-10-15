@@ -34,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
     "/actuator/**",
     "/health",
     "/ping",
+    "/auth",
     "/maintenance",
     "/error",
     "/assets/**",
