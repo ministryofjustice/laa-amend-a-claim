@@ -48,6 +48,7 @@ jobs:
             --all-sub-projects \
             --package-manager=gradle \
             --severity-threshold=high \
+            --policy-path=.snyk \
             --json-file-output=snyk-app.json \
             --debug
         env:
