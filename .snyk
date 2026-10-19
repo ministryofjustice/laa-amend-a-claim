@@ -7,6 +7,11 @@ ignore:
         reason: Only affects zlib gzprintf()/gzvprintf(), not used by JVM or app; remove when base image ships zlib 1.3.2-r1
         expires: 2026-10-31T00:00:00.000Z
         created: 2026-10-07T00:00:00.000Z
+  SNYK-JAVA-ORGAPACHETOMCATEMBED-21246252:
+    - '*':
+        reason: No fixed Tomcat 11.x release available (latest 11.0.27 still flagged); remove once Tomcat or Snyk advisory is updated
+        expires: 2026-11-01T00:00:00.000Z
+        created: 2026-10-19T00:00:00.000Z
   'snyk:lic:maven:com.puppycrawl.tools:checkstyle:LGPL-2.1':
     - '*':
         reason: Build-time tool only
