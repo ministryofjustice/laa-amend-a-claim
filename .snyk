@@ -12,6 +12,11 @@ ignore:
         reason: No fixed Tomcat 11.x release available (latest 11.0.27 still flagged); remove once Tomcat or Snyk advisory is updated
         expires: 2026-11-01T00:00:00.000Z
         created: 2026-10-19T00:00:00.000Z
+  SNYK-JAVA-ORGHIBERNATEVALIDATOR-20877468:
+    - '*':
+        reason: No fixed hibernate-validator release available yet; remove once a fix or updated Snyk advisory is available
+        expires: 2026-11-01T00:00:00.000Z
+        created: 2026-10-21T00:00:00.000Z
   'snyk:lic:maven:com.puppycrawl.tools:checkstyle:LGPL-2.1':
     - '*':
         reason: Build-time tool only
