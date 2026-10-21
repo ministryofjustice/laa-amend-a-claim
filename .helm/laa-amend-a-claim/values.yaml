@@ -72,7 +72,7 @@ ingress:
     nginx.ingress.kubernetes.io/session-cookie-hash: sha1
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+    nginx.ingress.kubernetes.io/modsecurity-snippet: | # ADDITIONAL `SecRule` LINES SHOULD BE DOCUMENTED ON CONFLUENCE
       SecRuleEngine On
       SecAuditEngine On
       SecDefaultAction "phase:2,pass,log,tag:github_team=laa-amend-a-claim"
