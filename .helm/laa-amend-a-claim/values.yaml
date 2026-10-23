@@ -118,6 +118,12 @@ sentryEnvironment: ""
 
 # Environment variables
 env:
+  # Ensures the Java checks whether the certificates have been revoked before trusting them
+  - name: JAVA_TOOL_OPTIONS
+    value: >-
+      -Dcom.sun.net.ssl.checkRevocation=true
+      -Dcom.sun.security.enableCRLDP=true
+
   - name: AZURE_CLIENT_ID
     valueFrom:
       secretKeyRef:
