@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -86,6 +87,26 @@ public final class ClaimsCreateAssessmentPactTest extends AbstractPactTest {
         .toPact();
   }
 
+  @Pact(consumer = CONSUMER)
+  public RequestResponsePact createAssessment400(PactDslWithProvider builder) {
+    return builder
+        .given("a claim that is already void exists")
+        .uponReceiving("a request to create an assessment for a void claim")
+        .matchPath(
+            "/api/v1/claims/(" + UUID_REGEX + ")/assessments",
+            "/api/v1/claims/" + CLAIM_ID + "/assessments")
+        .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
+        .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
+        .method("POST")
+        .body(
+            LambdaDsl.newJsonBody(ClaimsCreateAssessmentPactTest::buildAssessmentRequestBody)
+                .build())
+        .willRespondWith()
+        .status(400)
+        .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
+        .toPact();
+  }
+
   @Test
   @DisplayName("Verify 201 response - assessment created successfully")
   @PactTestFor(pactMethod = "createAssessment201")
@@ -109,6 +130,16 @@ public final class ClaimsCreateAssessmentPactTest extends AbstractPactTest {
 
     assertThrows(
         NotFound.class, () -> claimsApiClient.submitAssessment(CLAIM_ID, assessment).block());
+  }
+
+  @Test
+  @DisplayName("Verify 400 response - claim is already void")
+  @PactTestFor(pactMethod = "createAssessment400")
+  void verify400Response() {
+    AssessmentPost assessment = buildAssessmentPost();
+
+    assertThrows(
+        BadRequest.class, () -> claimsApiClient.submitAssessment(CLAIM_ID, assessment).block());
   }
 
   private static void buildAssessmentRequestBody(LambdaDslJsonBody body) {

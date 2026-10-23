@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest;
+import org.springframework.web.reactive.function.client.WebClientResponseException.Conflict;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
@@ -34,6 +36,7 @@ import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
 
   private static final long VERSION = 0;
+  private static final long STALE_VERSION = 1;
 
   @Autowired ClaimsApiClient claimsApiClient;
 
@@ -77,6 +80,40 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
         .toPact();
   }
 
+  @Pact(consumer = CONSUMER)
+  public RequestResponsePact voidClaim400(PactDslWithProvider builder) {
+    return builder
+        .given("a claim that is already void exists")
+        .uponReceiving("a request to void a claim that is already void")
+        .matchPath(
+            "/api/v1/claims/(" + UUID_REGEX + ")/void", "/api/v1/claims/" + CLAIM_ID + "/void")
+        .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
+        .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
+        .method("POST")
+        .body(LambdaDsl.newJsonBody(ClaimsVoidClaimPactTest::buildVoidClaimRequestBody).build())
+        .willRespondWith()
+        .status(400)
+        .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
+        .toPact();
+  }
+
+  @Pact(consumer = CONSUMER)
+  public RequestResponsePact voidClaim409(PactDslWithProvider builder) {
+    return builder
+        .given("a voidable claim exists")
+        .uponReceiving("a request to void a claim with a stale version")
+        .matchPath(
+            "/api/v1/claims/(" + UUID_REGEX + ")/void", "/api/v1/claims/" + CLAIM_ID + "/void")
+        .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
+        .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
+        .method("POST")
+        .body(LambdaDsl.newJsonBody(body -> buildVoidClaimRequestBody(body, STALE_VERSION)).build())
+        .willRespondWith()
+        .status(409)
+        .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
+        .toPact();
+  }
+
   @Test
   @DisplayName("Verify 201 response - claim voided successfully")
   @PactTestFor(pactMethod = "voidClaim201")
@@ -100,9 +137,33 @@ public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
     assertThrows(NotFound.class, () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
   }
 
+  @Test
+  @DisplayName("Verify 400 response - claim is already void")
+  @PactTestFor(pactMethod = "voidClaim400")
+  void verify400Response() {
+    VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(VERSION);
+
+    assertThrows(BadRequest.class, () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
+  }
+
+  @Test
+  @DisplayName("Verify 409 response - claim changed since it was loaded")
+  @PactTestFor(pactMethod = "voidClaim409")
+  void verify409Response() {
+    VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
+    request.setVersion(STALE_VERSION);
+
+    assertThrows(Conflict.class, () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
+  }
+
   private static void buildVoidClaimRequestBody(LambdaDslJsonBody body) {
+    buildVoidClaimRequestBody(body, VERSION);
+  }
+
+  private static void buildVoidClaimRequestBody(LambdaDslJsonBody body, long version) {
     body.uuid("created_by_user_id");
     body.stringType("assessment_reason", ASSESSMENT_REASON_VOID);
-    body.numberType("version", VERSION);
+    body.numberType("version", version);
   }
 }
