@@ -82,7 +82,7 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         CLIENT_2_DISABILITY_LABEL,
         "CLIENT_2_DISABILITY",
         CLIENT_2_DISABILITY);
-    assertBooleanSelectRow(
+    assertMandatoryBooleanSelectRow(
         client2Details.get(9), "Legally aided", "No", "IS_CLIENT_2_LEGALLY_AIDED", false);
     assertBooleanSelectRow(
         client2Details.get(10),

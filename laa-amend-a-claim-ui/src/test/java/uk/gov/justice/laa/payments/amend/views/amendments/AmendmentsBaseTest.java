@@ -91,6 +91,21 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
 
   protected void assertBooleanSelectRow(
       List<Element> row, String label, String currentValue, String inputId, boolean expectedValue) {
+    assertBooleanSelectRowWithBlankOption(row, label, currentValue, inputId, expectedValue, true);
+  }
+
+  protected void assertMandatoryBooleanSelectRow(
+      List<Element> row, String label, String currentValue, String inputId, boolean expectedValue) {
+    assertBooleanSelectRowWithBlankOption(row, label, currentValue, inputId, expectedValue, false);
+  }
+
+  private void assertBooleanSelectRowWithBlankOption(
+      List<Element> row,
+      String label,
+      String currentValue,
+      String inputId,
+      boolean expectedValue,
+      boolean hasNotApplicableOption) {
     assertCellContainsText(row.getFirst(), label);
     assertCellContainsText(row.get(1), currentValue);
 
@@ -101,8 +116,15 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     Assertions.assertEquals(label, selectLabel.text());
 
     Element blankOption = selectFirst(select, "option[value='']");
-    Assertions.assertNotNull(blankOption, "Expected blank option");
-    Assertions.assertEquals("Not applicable", blankOption.text());
+    if (hasNotApplicableOption) {
+      Assertions.assertNotNull(blankOption, "Expected blank option");
+      Assertions.assertEquals("Not applicable", blankOption.text());
+    } else {
+      Assertions.assertNotNull(blankOption, "Expected hidden blank option");
+      Assertions.assertTrue(
+          blankOption.hasAttr("hidden"), "Mandatory blank option should be hidden");
+      Assertions.assertEquals("", blankOption.text(), "Mandatory blank option should be unlabeled");
+    }
 
     Element selectedOption = selectFirst(select, "option[selected]");
     Assertions.assertEquals(Boolean.toString(expectedValue), selectedOption.attr("value"));

@@ -122,7 +122,8 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
         client1Details.get(7), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
         client1Details.get(8), "Disability", DISABILITY_LABEL, "DISABILITY", DISABILITY);
-    assertBooleanSelectRow(client1Details.get(9), "Legally aided", "Yes", "IS_LEGALLY_AIDED", true);
+    assertMandatoryBooleanSelectRow(
+        client1Details.get(9), "Legally aided", "Yes", "IS_LEGALLY_AIDED", true);
     assertBooleanSelectRow(
         client1Details.get(10),
         "Postal application accepted",
