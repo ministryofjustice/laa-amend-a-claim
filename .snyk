@@ -17,6 +17,11 @@ ignore:
         reason: No fixed hibernate-validator release available yet; remove once a fix or updated Snyk advisory is available
         expires: 2026-11-01T00:00:00.000Z
         created: 2026-10-21T00:00:00.000Z
+  SNYK-JAVA-NETMINIDEV-21715438:
+    - '*':
+        reason: No fixed json-smart release available; remove once a fixed release or updated Snyk advisory is available
+        expires: 2026-11-10T00:00:00.000Z
+        created: 2026-10-27T00:00:00.000Z
   'snyk:lic:maven:com.puppycrawl.tools:checkstyle:LGPL-2.1':
     - '*':
         reason: Build-time tool only
