@@ -67,6 +67,7 @@ public class AmendClientController extends AbstractAmendController {
       model.addAttribute(CLIENT_1_FORM, amendmentForms.getClient1Form().getCurrent());
     }
     model.addAttribute("forms", amendmentForms);
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
     return "pages/amendments/amend-client-1";
   }
@@ -112,6 +113,7 @@ public class AmendClientController extends AbstractAmendController {
       model.addAttribute(CLIENT_2_FORM, amendmentForms.getClient2Form().getCurrent());
     }
     model.addAttribute("forms", amendmentForms);
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
     return "pages/amendments/amend-client-2";
   }

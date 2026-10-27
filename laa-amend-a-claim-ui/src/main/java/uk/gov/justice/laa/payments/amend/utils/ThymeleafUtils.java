@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.FieldError;
 import org.thymeleaf.spring6.util.DetailedError;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.payments.amend.forms.errors.AllowedTotalFormError;
 import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.forms.errors.AssessedTotalFormError;
@@ -94,6 +95,10 @@ public class ThymeleafUtils {
 
   public boolean supportsClient2(AreaOfLaw areaOfLaw) {
     return AreaOfLaw.MEDIATION.equals(areaOfLaw);
+  }
+
+  public boolean isMandatoryFor(ClaimViewField<?> field, AreaOfLaw areaOfLaw) {
+    return ClaimFieldRuleJsonLoader.isMandatoryFor(field, areaOfLaw);
   }
 
   public String client1DetailsMessageKey(AreaOfLaw areaOfLaw) {

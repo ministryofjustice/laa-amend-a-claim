@@ -48,7 +48,7 @@
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <th:block th:if="${field.isEditable(claimIsAssessed)}">
-                    <th:block th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${field}, ${'claimField.' + field.name()}, ${formErrors})}"></th:block>
+                    <th:block th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${field}, ${'claimField.' + field.name()}, ${formErrors}, ${areaOfLaw})}"></th:block>
                   </th:block>
                 </dd>
               </div>

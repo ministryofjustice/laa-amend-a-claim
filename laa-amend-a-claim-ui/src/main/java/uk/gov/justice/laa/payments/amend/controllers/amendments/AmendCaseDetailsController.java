@@ -68,6 +68,7 @@ public class AmendCaseDetailsController extends AbstractAmendController {
     }
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
     return "pages/amendments/amend-case-details";
   }
 

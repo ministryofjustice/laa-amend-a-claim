@@ -76,6 +76,7 @@ public class AmendCostsController extends AbstractAmendController {
     }
     model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
     model.addAttribute("forms", amendmentForms);
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
     return "pages/amendments/amend-costs";
   }

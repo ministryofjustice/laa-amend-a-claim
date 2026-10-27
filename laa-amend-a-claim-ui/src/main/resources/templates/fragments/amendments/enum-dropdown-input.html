@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="amendmentEnumDropdownInput(field, labelMessageKey, formErrors)"
+<th:block th:fragment="amendmentEnumDropdownInput(field, labelMessageKey, formErrors, areaOfLaw)"
           th:with="fieldKey=${field.name()},
                    label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey},
                    options=${field.getOptions()}">
@@ -13,7 +13,12 @@
           th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
           th:id="${fieldKey}"
           th:field="*{inputs[__${fieldKey}__]}">
-    <option value="" th:text="#{service.noData}"></option>
+    <option th:if="${@ThymeleafUtils.isMandatoryFor(field, areaOfLaw)}"
+            value=""
+            hidden></option>
+    <option th:unless="${@ThymeleafUtils.isMandatoryFor(field, areaOfLaw)}"
+            value=""
+            th:text="#{service.noData}"></option>
     <option th:each="option : ${options}"
             th:value="${option.value()}"
             th:text="#{${option.messageKey()}}"></option>

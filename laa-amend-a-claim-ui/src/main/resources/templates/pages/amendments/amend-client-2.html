@@ -52,7 +52,7 @@
                     th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <th:block
-                      th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimField.' + entry.key.name()}, ${formErrors})}"></th:block>
+                      th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimField.' + entry.key.name()}, ${formErrors}, ${areaOfLaw})}"></th:block>
                 </dd>
               </div>
             </dl>

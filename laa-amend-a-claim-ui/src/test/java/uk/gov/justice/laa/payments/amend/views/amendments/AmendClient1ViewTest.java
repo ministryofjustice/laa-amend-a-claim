@@ -117,7 +117,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         client1Details.get(4), "Unique client number (UCN)", UCN, UCN);
     assertSummaryListRowContainsValues(client1Details.get(5), "Postcode", POSTCODE, POSTCODE);
-    assertEnumDropdownRow(client1Details.get(6), "Gender", GENDER_LABEL, "GENDER", GENDER);
+    assertMandatoryEnumDropdownRow(client1Details.get(6), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         client1Details.get(7), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -162,7 +162,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
     assertDateOfBirthRow(clientDetails.get(3));
-    assertEnumDropdownRow(clientDetails.get(4), "Gender", GENDER_LABEL, "GENDER", GENDER);
+    assertMandatoryEnumDropdownRow(clientDetails.get(4), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         clientDetails.get(5), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
