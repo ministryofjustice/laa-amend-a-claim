@@ -28,7 +28,7 @@
                     <span id="requestedBy"></span>
                     <th:block th:replace="~{fragments/amendments/field-error :: fieldError('requestedBy', ${formErrors})}"></th:block>
                     <fieldset class="govuk-fieldset">
-                        <div class="govuk-radios govuk-radios--small"
+                        <div class="govuk-radios"
                              data-module="govuk-radios" id="requested-by-input-container">
                             <th:block th:each="requestedBy,idx : ${amendmentRequestedByOptions}">
                                 <div class="govuk-radios__item">

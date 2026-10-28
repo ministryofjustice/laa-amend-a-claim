@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.payments.amend.views.amendments;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
@@ -51,6 +52,8 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
     assertPageHasHeading(doc, "Why was the amendment requested?");
 
     assertPageHasRadioButtons(doc, "Reason Label 1", "Reason Label 2");
+    assertThat(doc.select("#requested-reason-input-container").hasClass("govuk-radios")).isTrue();
+    assertThat(doc.select(".govuk-radios--small")).isEmpty();
     assertNoRadioSelected(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");

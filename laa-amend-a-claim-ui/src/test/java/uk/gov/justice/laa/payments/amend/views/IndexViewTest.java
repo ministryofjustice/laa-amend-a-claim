@@ -13,6 +13,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -178,6 +179,25 @@ class IndexViewTest extends ViewTestBase {
     assertThat(row).isNotNull();
     var cells = row.select("td.govuk-table__cell");
     assertThat(cells.get(5).text()).isEqualTo("£1,234.50");
+  }
+
+  @ParameterizedTest
+  @CsvSource({"true, Yes", "false, No"})
+  void testPageShowsEscapeCaseAsPlainText(boolean escaped, String expectedText) {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(escaped);
+
+    List<BaseClaimView<Claim>> claims = List.of(new ClaimView(claim));
+    var pagination = new Pagination(1, 10, 1, "/");
+    var viewModel = new SearchResultView(claims, pagination);
+
+    var doc = renderDocument(Map.of("viewModel", viewModel));
+
+    var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
+    assertThat(row).isNotNull();
+    var escapeCaseCell = row.select("td.govuk-table__cell").get(6);
+    assertThat(escapeCaseCell.text()).isEqualTo(expectedText);
+    assertThat(escapeCaseCell.children()).isEmpty();
   }
 
   @Test

@@ -51,6 +51,8 @@ public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
     assertPageHasHeading(doc, "Who requested the amendment?");
 
     assertPageHasRadioButtons(doc, "RequestedBy Label 1", "RequestedBy Label 2");
+    assertThat(doc.select("#requested-by-input-container").hasClass("govuk-radios")).isTrue();
+    assertThat(doc.select(".govuk-radios--small")).isEmpty();
     assertThat(doc.getElementsByClass("govuk-radios__label").eachText())
         .containsExactly("RequestedBy Label 1", "RequestedBy Label 2");
     assertNoRadioSelected(doc);

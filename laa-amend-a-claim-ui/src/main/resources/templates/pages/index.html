@@ -148,14 +148,7 @@
                                             <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(claim.claim.effectiveTotalValue).resolve(#messages)}"></td>
 
-                                            <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
-                                                <th:block th:if="${claim.claim.escaped}">
-                                                    <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
-                                                </th:block>
-                                                <th:block th:unless="${claim.claim.escaped}">
-                                                    <span th:text="${value}"></span>
-                                                </th:block>
-                                            </td>
+                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}"></td>
 
                                             <td class="govuk-table__cell">
                                                 <strong th:if="${claim.claim.derivedClaimStatus == DerivedClaimStatus.ACCEPTED}" class="govuk-tag govuk-tag--green"

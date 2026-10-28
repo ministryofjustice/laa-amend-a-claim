@@ -366,7 +366,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Check your amendments");
     assertPageHasHeading(doc, "Check your amendments");
-    assertPageHasBackLink(doc);
+    assertPageDoesNotHaveBackLink(doc);
 
     assertPageHasLink(doc, "change-client1", "Change", amendClientUrl);
     assertPageHasLink(doc, "cancel", "Cancel amendments", overviewUrl);
