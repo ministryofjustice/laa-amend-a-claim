@@ -68,7 +68,7 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         client2Details.get(4), "Unique client number (UCN)", CLIENT_2_UCN, CLIENT_2_UCN);
     assertSummaryListRowContainsValues(
         client2Details.get(5), "Postcode", CLIENT_2_POSTCODE, CLIENT_2_POSTCODE);
-    assertEnumDropdownRow(
+    assertMandatoryEnumDropdownRow(
         client2Details.get(6), "Gender", CLIENT_2_GENDER_LABEL, "CLIENT_2_GENDER", CLIENT_2_GENDER);
     assertEnumTypeaheadRow(
         client2Details.get(7),
@@ -82,7 +82,7 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         CLIENT_2_DISABILITY_LABEL,
         "CLIENT_2_DISABILITY",
         CLIENT_2_DISABILITY);
-    assertBooleanSelectRow(
+    assertMandatoryBooleanSelectRow(
         client2Details.get(9), "Legally aided", "No", "IS_CLIENT_2_LEGALLY_AIDED", false);
     assertBooleanSelectRow(
         client2Details.get(10),

@@ -53,7 +53,7 @@
                 <dd class="govuk-summary-list__value">
                   <th:block th:if="${entry.key.isEditable(claimIsAssessed)}">
                     <th:block
-                        th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimField.' + entry.key.name()}, ${formErrors})}"></th:block>
+                        th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimField.' + entry.key.name()}, ${formErrors}, ${areaOfLaw})}"></th:block>
                   </th:block>
                 </dd>
               </div>

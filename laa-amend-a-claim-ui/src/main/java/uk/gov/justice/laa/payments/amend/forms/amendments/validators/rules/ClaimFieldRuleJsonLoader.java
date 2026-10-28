@@ -15,6 +15,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.validators.MandatoryVa
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RuleDto;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RulesRoot;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
@@ -35,6 +36,13 @@ public final class ClaimFieldRuleJsonLoader {
 
   public static boolean hasRules(ClaimViewField<?> field) {
     return RULES.containsKey(field);
+  }
+
+  public static boolean isMandatoryFor(ClaimViewField<?> field, AreaOfLaw areaOfLaw) {
+    return rulesFor(field).stream()
+        .filter(rule -> rule.category() == RuleCategory.MANDATORY)
+        .anyMatch(
+            rule -> rule.areasOfLaw() != null && rule.areasOfLaw().contains(areaOfLaw.name()));
   }
 
   public static List<FieldRuleSpec> rulesFor(ClaimViewField<?> field) {

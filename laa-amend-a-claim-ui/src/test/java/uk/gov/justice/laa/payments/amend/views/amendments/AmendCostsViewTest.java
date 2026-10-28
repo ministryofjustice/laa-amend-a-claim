@@ -90,7 +90,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     var costs = getSummaryListInCard(doc, "List of costs");
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
     assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "PROFIT_COST", "100.00");
-    assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "VAT_INDICATOR", true);
+    assertMandatoryBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "VAT_INDICATOR", true);
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Not applicable");
     Assertions.assertFalse(
         costs.get(11).get(2).select("select#SUBSTANTIVE_HEARING").isEmpty(),
