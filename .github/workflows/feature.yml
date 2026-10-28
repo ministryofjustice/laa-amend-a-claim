@@ -95,6 +95,7 @@ jobs:
     uses: ./.github/workflows/e2e-tests.yml
     secrets:
       pat_token: ${{ secrets.PAT_TOKEN }}
+      e2e_checkout_token: ${{ secrets.E2E_CHECKOUT_TOKEN }}
       kube_namespace_submit_a_bulk_claim_uat: ${{ secrets.KUBE_NAMESPACE_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
       kube_cert_submit_a_bulk_claim_uat: ${{ secrets.KUBE_CERT_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
       kube_token_submit_a_bulk_claim_uat: ${{ secrets.KUBE_TOKEN_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
