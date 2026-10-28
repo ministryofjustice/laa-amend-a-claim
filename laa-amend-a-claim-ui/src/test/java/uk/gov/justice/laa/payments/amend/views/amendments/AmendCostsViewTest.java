@@ -246,6 +246,12 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     Assertions.assertFalse(
         profitCostRow.get(2).select("input.govuk-input--error").isEmpty(),
         "Input should have error class when invalid");
+    Assertions.assertFalse(
+        profitCostRow.get(2).select(".govuk-form-group--error").isEmpty(),
+        "Field with an error should be wrapped in an error form group");
+    Assertions.assertTrue(
+        costs.get(3).get(2).select(".govuk-form-group--error").isEmpty(),
+        "Fields without an error should not show the error line");
   }
 
   private static AmendmentForms createCostsForms(ClaimDetails claimDetails) {

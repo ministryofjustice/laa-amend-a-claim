@@ -2,6 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="amendmentInput(field, labelMessageKey, formErrors)">
+  <div class="govuk-form-group"
+       th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, field.name()) ? 'govuk-form-group--error' : ''}">
   <th:block th:if="${field.fieldType.name() == 'DATE'}">
     <th:block th:replace="~{fragments/amendments/date-input :: amendmentDateInput(${field.name()}, ${formErrors})}"></th:block>
   </th:block>
@@ -31,6 +33,7 @@
            th:id="${field.name()}"
            th:field="*{inputs[__${field.name()}__]}" />
   </th:block>
+  </div>
 </th:block>
 </body>
 </html>
