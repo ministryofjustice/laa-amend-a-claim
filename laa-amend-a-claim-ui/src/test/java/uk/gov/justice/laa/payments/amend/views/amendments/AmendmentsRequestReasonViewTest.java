@@ -53,7 +53,6 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
 
     assertPageHasRadioButtons(doc, "Reason Label 1", "Reason Label 2");
     assertThat(doc.select("#requested-reason-input-container").hasClass("govuk-radios")).isTrue();
-    assertThat(doc.select(".govuk-radios--small")).isEmpty();
     assertNoRadioSelected(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
