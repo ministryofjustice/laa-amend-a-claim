@@ -383,7 +383,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwoSurname");
     assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
-    assertSummaryListRow(page, "Client 2 details", "Date of birth", "Not applicable","01 May 1995");
+    assertSummaryListRow(page, "Client 2 details", "Date of birth", "Not applicable","1 May 1995");
     assertSummaryListRow(page, "Client 2 details", "Unique client number (UCN)", "Not applicable","01051995/X/WXYZ");
     assertSummaryListRow(page, "Client 2 details", "Postcode", "Not applicable","XX196XX");
     assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","Female");
@@ -399,7 +399,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S");
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB");
     assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL");
-    assertSummaryListRow(page, "Case details", "Case start date", "01 August 2020");
+    assertSummaryListRow(page, "Case details", "Case start date", "1 August 2020");
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);

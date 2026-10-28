@@ -144,7 +144,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
     assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
-    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "1 January 2020");
     assertSummaryListRowContainsValues(
         summaryList1.get(13), "Case concluded date or case claimed date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
@@ -318,7 +318,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(9), "Police station/Court ID/Prison ID", "POLICE_STATION_COURT_PRISON");
     assertSummaryListRowContainsValues(summaryList1.get(10), "Scheme ID", "SCHEME");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type", "IMLB");
-    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "1 January 2020");
     assertSummaryListRowContainsValues(
         summaryList1.get(13), "Case concluded date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
@@ -379,7 +379,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
     assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
-    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "1 January 2020");
     assertSummaryListRowContainsValues(
         summaryList1.get(13), "Case concluded date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");

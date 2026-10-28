@@ -37,7 +37,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
   final String confirmationUrl;
 
   final DateTimeFormatter testFormatter =
-      new DateTimeFormatterBuilder().appendPattern("dd MMMM yyyy").toFormatter();
+      new DateTimeFormatterBuilder().appendPattern("d MMMM yyyy").toFormatter();
 
   AmendmentsBaseTest() {
     overviewUrl = "/submissions/%s/claims/%s".formatted(submissionId, claimId);

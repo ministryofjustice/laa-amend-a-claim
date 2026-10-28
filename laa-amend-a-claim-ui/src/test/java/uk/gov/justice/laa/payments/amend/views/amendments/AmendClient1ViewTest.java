@@ -19,7 +19,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
   private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1970, 1, 1);
-  private static final String DATE_OF_BIRTH_RENDERED = "01 January 1970";
+  private static final String DATE_OF_BIRTH_RENDERED = "1 January 1970";
   private static final String UCN = "ucn";
   private static final String POSTCODE = "postcode";
   private static final String GENDER_LABEL = "Male";
