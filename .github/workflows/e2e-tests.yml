@@ -49,6 +49,7 @@ jobs:
         with:
           repository: ministryofjustice/laa-data-claims-parent
           path: laa-data-claims-parent
+          token: ${{ secrets.pat_token }}
           submodules: "true"
 
       - name: Update parent submodules
