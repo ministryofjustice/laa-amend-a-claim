@@ -85,7 +85,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.61.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.61.1')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
